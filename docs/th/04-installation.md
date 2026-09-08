@@ -4,7 +4,7 @@
 
 # ⚙️ การติดตั้งและตั้งค่า
 
-`ส่วนที่ 4 จาก 9`
+`ส่วนที่ 4 จาก 11`
 
 > แบ่งเป็นสี่ส่วน: เตรียม Tableau Server, รัน Tableau MCP (เริ่มจาก stdio บนเครื่องตัวเอง แล้วค่อยเป็น HTTP server ใช้ร่วมกัน), เชื่อม AI client แต่ละตัว และตรวจสอบ ทุกคำสั่งใช้ชื่อตัวอย่าง ให้แทนด้วยค่าของคุณเอง
 
@@ -498,14 +498,14 @@ curl -s -X POST http://127.0.0.1:3927/tableau-mcp \
 2. *"What fields are in the Sales data source?"* → `list-fields` (หรือ `get-datasource-metadata`)
 3. *"What were total sales by region last year?"* → `query-datasource` ด้วย query แบบ aggregate เล็กๆ
 
-ถ้าข้อ 1 ผ่าน แปลว่า authentication และเครือข่ายเรียบร้อย ถ้าข้อ 3 ล้มเหลวแต่ 1–2 ผ่าน เป็นปัญหาสิทธิ์ (API access) หรือชื่อฟิลด์
+ถ้าข้อ 1 ผ่าน แปลว่า authentication และเครือข่ายเรียบร้อย ถ้าข้อ 3 ล้มเหลวแต่ 1–2 ผ่าน เป็นปัญหาสิทธิ์ (Connect) หรือชื่อฟิลด์
 
 ### ข้อผิดพลาดที่พบบ่อยและวิธีแก้
 
 | อาการ | สาเหตุที่น่าจะเป็น | วิธีแก้ |
 |---|---|---|
 | `401 Unauthorized` ทุก tool | `SERVER`/`SITE_NAME` ผิด, PAT หมดอายุ, ใส่ชื่อผู้ใช้ใน `PAT_NAME`, Connected App ปิดอยู่ | รัน curl sign-in REST ซ้ำ; สร้าง PAT ใหม่; ตรวจสวิตช์ Connected App |
-| `403 Forbidden` เฉพาะ `query-datasource` | ผู้ใช้ไม่มี "API access" / "Connect" บน data source นั้น | ให้สิทธิ์บน data source หรือ project |
+| `403 Forbidden` เฉพาะ `query-datasource` | ผู้ใช้ไม่มี "Connect" (หรือ "View") บน data source นั้น | ให้สิทธิ์บน data source หรือ project |
 | `Method not allowed` เมื่อเปิด URL ในเบราว์เซอร์ | ปกติ: GET ไม่ใช่ส่วนหนึ่งของ MCP | ใช้ curl ทดสอบ `initialize` |
 | Client บอก "authorization required" แต่ไม่เปิดเบราว์เซอร์ | client ไม่รองรับ OAuth flow หรือ `OAUTH_ISSUER` ไม่ตรงกับ URL สาธารณะ | ใช้ `mcp-remote` กับ Claude Desktop; ปรับ `OAUTH_ISSUER`, `OAUTH_RESOURCE_URI` และ `server_name` ใน nginx ให้ตรงกัน |
 | ล็อกอิน OAuth วนซ้ำ หรือ "redirect URI not allowed" | ยังไม่ตั้ง `tsm oauth.allowed_redirect_uri_hosts` หรือใส่ host ผิด | ตั้งเป็นชื่อเครื่อง MCP แล้ว apply pending changes |
@@ -527,12 +527,14 @@ curl -s -X POST http://127.0.0.1:3927/tableau-mcp \
 4. ⚙️ **[การติดตั้งและตั้งค่า](04-installation.md)**
 5. 💡 [5 use case ยอดนิยม](05-use-cases.md)
 6. 🖥️ [ขั้นสูง: สร้าง Web UI ครอบ Tableau Server](06-web-ui-wrapper.md)
-7. 🛡️ [แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย](07-best-practices.md)
-8. ❓ [คำถามที่พบบ่อยและอภิธานศัพท์](08-faq-glossary.md)
-9. 🔗 [เอกสารอ้างอิง](09-references.md)
+7. 🔐 [สิทธิ์ บทบาท และลิขสิทธิ์](07-permissions-security.md)
+8. 📈 [ข้อเสนอโครงการ: แพลตฟอร์ม BI + AI Chat สำหรับองค์กรบน Tableau MCP](08-enterprise-proposal.md)
+9. 🛡️ [แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย](09-best-practices.md)
+10. ❓ [คำถามที่พบบ่อยและอภิธานศัพท์](10-faq-glossary.md)
+11. 🔗 [เอกสารอ้างอิง](11-references.md)
 
 </details>
 
 [🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: สิ่งที่ต้องเตรียม](03-prerequisites.md) · [ถัดไป: 5 use case ยอดนิยม ▶](05-use-cases.md) · [🇺🇸 English](../en/04-installation.md)
 
-<sub>ส่วนที่ 4 จาก 9 · Created by The Narit Lab</sub>
+<sub>ส่วนที่ 4 จาก 11 · Created by The Narit Lab</sub>

@@ -28,15 +28,17 @@
 <li data-slug="04-installation"><a href="04-installation.html"><span class="n">4</span>การติดตั้งและตั้งค่า</a></li>
 <li data-slug="05-use-cases"><a href="05-use-cases.html"><span class="n">5</span>5 use case ยอดนิยม</a></li>
 <li data-slug="06-web-ui-wrapper"><a href="06-web-ui-wrapper.html"><span class="n">6</span>ขั้นสูง: สร้าง Web UI ครอบ Tableau Server</a></li>
-<li data-slug="07-best-practices"><a href="07-best-practices.html"><span class="n">7</span>แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย</a></li>
-<li data-slug="08-faq-glossary"><a href="08-faq-glossary.html"><span class="n">8</span>คำถามที่พบบ่อยและอภิธานศัพท์</a></li>
-<li data-slug="09-references"><a href="09-references.html"><span class="n">9</span>เอกสารอ้างอิง</a></li></ol>
+<li data-slug="07-permissions-security"><a href="07-permissions-security.html"><span class="n">7</span>สิทธิ์ บทบาท และลิขสิทธิ์</a></li>
+<li data-slug="08-enterprise-proposal"><a href="08-enterprise-proposal.html"><span class="n">8</span>ข้อเสนอโครงการ: แพลตฟอร์ม BI + AI Chat สำหรับองค์กรบน Tableau MCP</a></li>
+<li data-slug="09-best-practices"><a href="09-best-practices.html"><span class="n">9</span>แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย</a></li>
+<li data-slug="10-faq-glossary"><a href="10-faq-glossary.html"><span class="n">10</span>คำถามที่พบบ่อยและอภิธานศัพท์</a></li>
+<li data-slug="11-references"><a href="11-references.html"><span class="n">11</span>เอกสารอ้างอิง</a></li></ol>
     <div class="side-progress" data-label="อ่านแล้ว {n} จาก {t} ส่วน"><span class="txt"></span><div class="bar"><i style="width:0"></i></div></div>
   </nav>
   <main class="content">
     <article class="doc-body" data-copy="คัดลอก" data-copied="คัดลอกแล้ว" data-slug="01-overview">
 
-<h1 id="_1">ภาพรวม</h1><div class="doc-meta"><span class="chip">ส่วนที่ 1 จาก 9</span><span class="chip">อ่าน 3 นาที</span></div>
+<h1 id="_1">ภาพรวม</h1><div class="doc-meta"><span class="chip">ส่วนที่ 1 จาก 11</span><span class="chip">อ่าน 4 นาที</span></div>
 <p class="lead">Tableau MCP ทำให้ผู้ช่วย AI อย่าง Claude, ChatGPT, Gemini หรือ Microsoft Copilot อ่านเนื้อหาบน Tableau Server และ query แหล่งข้อมูลที่เผยแพร่ (published data source) ของคุณได้ ผ่านช่องทางที่มีการกำกับดูแลและเคารพสิทธิ์ผู้ใช้ คู่มือนี้พาคุณตั้งแต่ทดสอบครั้งแรกบนเครื่องตัวเอง ไปจนถึงการติดตั้งแบบหลายผู้ใช้ที่ปลอดภัย และการสร้างหน้าเว็บของคุณเองครอบไว้อีกชั้น</p>
 
 <h2 id="tableau-mcp">🔌 Tableau MCP คืออะไร</h2>
@@ -92,6 +94,8 @@
 <li><strong>การติดตั้งและตั้งค่า</strong> พาเตรียม Tableau Server รัน Tableau MCP เชื่อม AI client แต่ละตัว และแก้ปัญหา</li>
 <li><strong>5 use case</strong> ตั้งแต่ "หาเนื้อหาของฉัน" ไปจนถึงการวิเคราะห์หลายขั้นแบบ agentic</li>
 <li><strong>Web UI wrapper</strong> สร้าง portal ด้วย Node.js + Express + React พร้อมช่องแชท AI</li>
+<li><strong>สิทธิ์ บทบาท และลิขสิทธิ์</strong> อธิบายว่าใครเห็นอะไรได้ MCP tool แต่ละตัวต้องใช้สิทธิ์อะไรของ Tableau และออกแบบความปลอดภัยอย่างไร</li>
+<li><strong>ข้อเสนอโครงการสำหรับองค์กร</strong> แผนที่ปรับใช้ได้ทันทีสำหรับฝ่าย IT ในการสร้างแพลตฟอร์ม BI + AI chat ทั่วทั้งองค์กรบน Tableau MCP</li>
 <li><strong>แนวปฏิบัติที่ดี, FAQ และเอกสารอ้างอิง</strong> ปิดท้าย</li>
 </ol>
 <div class="callout verify" markdown="0"><div class="callout-title">ตรวจสอบกับเอกสารล่าสุด</div><p>Tableau MCP ออกเวอร์ชันใหม่บ่อย และ Tableau Server เพิ่มความสามารถทุกไตรมาส เนื้อหาที่มีกล่องสีม่วงแบบนี้อาจเปลี่ยนไปแล้ว คู่มือนี้เขียนอิงจาก Tableau MCP <strong>3.6.x</strong> และ Tableau Server <strong>2025.3+</strong> (กันยายน 2569)</p></div>

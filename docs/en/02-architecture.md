@@ -4,7 +4,7 @@
 
 # 🏗️ Architecture
 
-`Section 2 of 9`
+`Section 2 of 11`
 
 > Three components, two hops. The AI client talks MCP to the Tableau MCP server; the MCP server talks HTTPS to Tableau Server's REST API. Everything to the right of the MCP server is your existing on-premise estate.
 
@@ -70,12 +70,14 @@
 4. ⚙️ [Installation and configuration](04-installation.md)
 5. 💡 [Top 5 use cases](05-use-cases.md)
 6. 🖥️ [Advanced: build a custom Web UI wrapper](06-web-ui-wrapper.md)
-7. 🛡️ [Best practices, governance and security checklist](07-best-practices.md)
-8. ❓ [FAQ and glossary](08-faq-glossary.md)
-9. 🔗 [References](09-references.md)
+7. 🔐 [Permissions, roles and licences](07-permissions-security.md)
+8. 📈 [Enterprise proposal: a BI + AI chat platform on Tableau MCP](08-enterprise-proposal.md)
+9. 🛡️ [Best practices, governance and security checklist](09-best-practices.md)
+10. ❓ [FAQ and glossary](10-faq-glossary.md)
+11. 🔗 [References](11-references.md)
 
 </details>
 
 [🏠 Home](../../README.md) · [◀ Previous: Overview](01-overview.md) · [Next: Prerequisites ▶](03-prerequisites.md) · [🇹🇭 ภาษาไทย](../th/02-architecture.md)
 
-<sub>Section 2 of 9 · Created by The Narit Lab</sub>
+<sub>Section 2 of 11 · Created by The Narit Lab</sub>

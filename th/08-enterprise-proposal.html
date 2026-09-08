@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ข้อเสนอโครงการ: แพลตฟอร์ม BI + AI Chat สำหรับองค์กรบน Tableau MCP · Tableau Server On-Premise + Tableau MCP + AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="doc">
+<div class="progress" aria-hidden="true"></div>
+<header class="topbar">
+  <button class="menu-btn" aria-label="เมนู" aria-expanded="false" data-menu>☰</button>
+  <a class="brand" href="../index.html">Tableau Server On-Premise + Tableau MCP + AI</a>
+  <nav class="lang-switch" aria-label="Language">
+    <a href="../index.html" title="หน้าแรก">หน้าแรก</a>
+    <a class="lang-other" href="../en/08-enterprise-proposal.html">English</a>
+    <button class="icon-btn" data-theme-toggle title="สลับโหมดมืด" aria-label="สลับโหมดมืด">☾</button>
+  </nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="สารบัญ">
+    <div class="side-title">สารบัญ</div>
+    <ol class="side-list"><li data-slug="01-overview"><a href="01-overview.html"><span class="n">1</span>ภาพรวม</a></li>
+<li data-slug="02-architecture"><a href="02-architecture.html"><span class="n">2</span>สถาปัตยกรรม</a></li>
+<li data-slug="03-prerequisites"><a href="03-prerequisites.html"><span class="n">3</span>สิ่งที่ต้องเตรียม</a></li>
+<li data-slug="04-installation"><a href="04-installation.html"><span class="n">4</span>การติดตั้งและตั้งค่า</a></li>
+<li data-slug="05-use-cases"><a href="05-use-cases.html"><span class="n">5</span>5 use case ยอดนิยม</a></li>
+<li data-slug="06-web-ui-wrapper"><a href="06-web-ui-wrapper.html"><span class="n">6</span>ขั้นสูง: สร้าง Web UI ครอบ Tableau Server</a></li>
+<li data-slug="07-permissions-security"><a href="07-permissions-security.html"><span class="n">7</span>สิทธิ์ บทบาท และลิขสิทธิ์</a></li>
+<li class="active" data-slug="08-enterprise-proposal"><a href="08-enterprise-proposal.html"><span class="n">8</span>ข้อเสนอโครงการ: แพลตฟอร์ม BI + AI Chat สำหรับองค์กรบน Tableau MCP</a></li>
+<li data-slug="09-best-practices"><a href="09-best-practices.html"><span class="n">9</span>แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย</a></li>
+<li data-slug="10-faq-glossary"><a href="10-faq-glossary.html"><span class="n">10</span>คำถามที่พบบ่อยและอภิธานศัพท์</a></li>
+<li data-slug="11-references"><a href="11-references.html"><span class="n">11</span>เอกสารอ้างอิง</a></li></ol>
+    <div class="side-progress" data-label="อ่านแล้ว {n} จาก {t} ส่วน"><span class="txt"></span><div class="bar"><i style="width:0"></i></div></div>
+  </nav>
+  <main class="content">
+    <article class="doc-body" data-copy="คัดลอก" data-copied="คัดลอกแล้ว" data-slug="08-enterprise-proposal">
+
+<h1 id="bi-ai-chat-tableau-mcp">ข้อเสนอโครงการ: แพลตฟอร์ม BI + AI Chat สำหรับองค์กรบน Tableau MCP</h1><div class="doc-meta"><span class="chip">ส่วนที่ 8 จาก 11</span><span class="chip">อ่าน 9 นาที</span></div>
+<p class="lead">ข้อเสนอโครงการที่ปรับใช้ได้ทันทีสำหรับฝ่าย IT และทีมพัฒนา แทนที่ "Demo Company" ด้วยชื่อองค์กรของคุณ ปรับตัวเลข แล้วนำเข้าที่ประชุมคณะกรรมการได้เลย ทุกอย่างทางเทคนิคที่สัญญาไว้ในนี้มีวิธีทำอยู่ในบทก่อนหน้า</p>
+
+<div class="callout tip" markdown="0"><div class="callout-title">วิธีใช้บทนี้</div><p>ส่วนที่ 1–4 สำหรับผู้บริหาร (ปัญหา วิสัยทัศน์ คุณค่า) ส่วนที่ 5–9 สำหรับ IT (สถาปัตยกรรม roadmap ทีม ต้นทุน ความเสี่ยง) ส่วนที่ 10 คือสิ่งที่ขอให้ตัดสินใจ เวลานำเสนอควรอยู่ในแปดหน้า</p></div>
+
+<h2 id="1">🎯 1. บทสรุปผู้บริหาร</h2>
+<p>Demo Company มี Tableau Server on-premise พร้อม certified data source และ dashboard อยู่แล้ว แต่ทุกวันนี้การได้คำตอบที่ไม่อยู่บน dashboard หมายถึงเปิด ticket ถึงทีม BI แล้วรอเป็นวัน ข้อเสนอนี้เพิ่ม <strong>ชั้น AI chat ที่มีการกำกับดูแล</strong> บนการลงทุน Tableau ที่มีอยู่ด้วย Tableau MCP เพื่อให้พนักงานถามคำถามทางธุรกิจเป็นภาษาธรรมดา — ใน Claude, Microsoft Copilot, LINE, Teams หรือ portal ของบริษัท — และได้คำตอบที่คำนวณจากข้อมูล certified ชุดเดียวกัน ภายใต้สิทธิ์เดียวกัน</p>
+<ul>
+<li><strong>ไม่ต้องสร้างแพลตฟอร์มข้อมูลใหม่</strong> ใช้ published data source สิทธิ์ และ row-level security ที่มีใน Tableau อยู่แล้ว</li>
+<li><strong>ข้อมูลอยู่ on-premise</strong> มีเพียงผล query ที่ผ่านการกำกับแล้วเท่านั้นที่ถึงโมเดล AI และเลือก endpoint ของโมเดลตามชั้นความลับข้อมูล</li>
+<li><strong>สามเฟสในหกเดือน</strong> เริ่มจาก pilot สี่สัปดาห์บน data source สองชุด</li>
+<li><strong>ผลลัพธ์เป้าหมาย:</strong> ลดคำขอรายงานเฉพาะกิจ 30 % ลดเวลาได้คำตอบจากหลายวันเป็นนาที และปลดปล่อยนักวิเคราะห์ราวหนึ่ง FTE ต่อแผนกไปทำงานที่มีมูลค่าสูงกว่า</li>
+</ul>
+<h2 id="2">🩺 2. ปัญหาในปัจจุบัน</h2>
+<table>
+<thead>
+<tr>
+<th>อาการ</th>
+<th>หลักฐานที่ควรรวบรวม</th>
+<th>ต้นทุน</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>คิวคำขอรายงานเฉพาะกิจ</td>
+<td>คิว ticket ของ BI, เวลารอเฉลี่ย</td>
+<td>ชั่วโมงนักวิเคราะห์ การตัดสินใจล่าช้า</td>
+</tr>
+<tr>
+<td>dashboard ตอบคำถามของเมื่อวาน</td>
+<td>จำนวนคำขอ "ช่วยเพิ่ม filter สำหรับ…"</td>
+<td>ทุก variant กลายเป็น dashboard ใหม่</td>
+</tr>
+<tr>
+<td>export Excel และ shadow BI</td>
+<td>จำนวน event "Download Full Data" ต่อเดือน</td>
+<td>สำเนาข้อมูลอ่อนไหวที่ควบคุมไม่ได้</td>
+</tr>
+<tr>
+<td>ผู้บริหารพึ่งพาคนไม่กี่คน</td>
+<td>ใครโดนโทรตามคืนวันอาทิตย์</td>
+<td>ความเสี่ยงจากบุคคลสำคัญ</td>
+</tr>
+<tr>
+<td>ใช้ AI ทั่วไปโดยไม่มีข้อมูล</td>
+<td>พนักงานวาง export ลงแชทบอทสาธารณะ</td>
+<td>ความเสี่ยงข้อมูลรั่ว ตัวเลขตรวจสอบไม่ได้</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3">🔭 3. วิสัยทัศน์และหลักการ</h2>
+<blockquote>
+<p>พนักงานทุกคนถามคำถามทางธุรกิจแล้วได้คำตอบที่เชื่อถือได้และเคารพสิทธิ์ จากข้อมูล certified ของบริษัท ภายในหนึ่งนาที — จากเครื่องมือที่ใช้อยู่แล้ว</p>
+</blockquote>
+<ol>
+<li><strong>Semantic layer ชุดเดียว</strong> certified data source ของ Tableau คือคลังคำศัพท์เดียวกันสำหรับคน dashboard และ AI</li>
+<li><strong>การกำกับดูแลติดไปกับคำถาม</strong> AI ไม่เห็นมากกว่าที่ผู้ใช้เห็นใน Tableau</li>
+<li><strong>ไปหาคนที่ที่เขาทำงาน</strong> Copilot สำหรับกลุ่ม Microsoft, LINE หรือ Teams สำหรับพนักงานภาคสนาม, portal สำหรับคนอื่นๆ</li>
+<li><strong>มนุษย์ตัดสินใจ</strong> AI อธิบาย อ้างอิง data source และ filter และไม่สั่งการทางธุรกิจเอง</li>
+<li><strong>เริ่มเล็ก พิสูจน์คุณค่า แล้วขยาย</strong> ทุกเฟสมี gate ที่วัดได้</li>
+</ol>
+<h2 id="4-use-case">💼 4. Use case และผลกระทบทางธุรกิจ</h2>
+<table>
+<thead>
+<tr>
+<th>แผนก</th>
+<th>คำถามที่คนถามจริง</th>
+<th>ทุกวันนี้</th>
+<th>ด้วย BI + AI chat</th>
+<th>ตัวชี้วัดผลกระทบ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ขาย</td>
+<td>"ลูกค้ารายไหนในภาคตะวันออกยอดตกเกิน 15 % ไตรมาสนี้ และใครดูแล"</td>
+<td>รอรายงานรายสัปดาห์</td>
+<td>คำตอบในแชทพร้อมรายชื่อผู้ดูแล</td>
+<td>ติดตามเร็วขึ้น; จับ pipeline หลุดได้ก่อนเป็นสัปดาห์</td>
+</tr>
+<tr>
+<td>การเงิน</td>
+<td>"อธิบาย variance ค่าขนส่งเทียบงบตาม cost centre"</td>
+<td>นักวิเคราะห์ทำ pivot เฉพาะกิจ</td>
+<td>ตาราง variance + คำบรรยายใน 1 นาที</td>
+<td>เวลาเขียนคำอธิบายปิดงวด −50 %</td>
+</tr>
+<tr>
+<td>ปฏิบัติการ / supply chain</td>
+<td>"SKU ไหนจะหมดสต็อกใน 14 วันตามอัตราปัจจุบัน"</td>
+<td>โมเดล Excel ที่คนเดียวดูแล</td>
+<td>ตรวจแบบ agentic ตามรอบพร้อมแจ้งเตือนทาง LINE</td>
+<td>เหตุการณ์ของขาด −20 %</td>
+</tr>
+<tr>
+<td>ค้าปลีก / สาขา</td>
+<td>"ยอดขายวันนี้เทียบวันเดียวกันปีก่อนของสาขาผม"</td>
+<td>ผู้จัดการสาขาเปิด dashboard บนโน้ตบุ๊ก</td>
+<td>ถามใน LINE จากหน้าร้าน</td>
+<td>การใช้งานในกลุ่มพนักงานที่ไม่มีโต๊ะทำงาน</td>
+</tr>
+<tr>
+<td>HR</td>
+<td>"headcount และ attrition ตามหน่วยงาน 12 เดือนล่าสุด" (จำกัดด้วย RLS)</td>
+<td>HRBP ขอรายงาน</td>
+<td>self-service เฉพาะผู้จัดการที่ได้รับสิทธิ์</td>
+<td>คำขอรายงาน HR analytics −70 %</td>
+</tr>
+<tr>
+<td>ผู้บริหาร</td>
+<td>"สรุปผลงานสัปดาห์ที่แล้ว 5 ข้อสำหรับบอร์ด"</td>
+<td>นักวิเคราะห์เขียน memo</td>
+<td>ร่างจาก Executive dashboard คนแก้</td>
+<td>เวลาเตรียมบอร์ด −60 %</td>
+</tr>
+<tr>
+<td>BI / IT</td>
+<td>"dashboard ไหนไม่มีใครเปิดใน 90 วัน"</td>
+<td>admin เขียน SQL กับ repository</td>
+<td>admin insight tool ผ่านแชท</td>
+<td>ล้างลิขสิทธิ์และ server</td>
+</tr>
+</tbody>
+</table>
+<p><strong>การประเมินมูลค่า</strong> (ใส่ตัวเลขของคุณ):</p>
+<pre data-lang="text"><code>คำขอเฉพาะกิจต่อเดือน        ×  ชั่วโมงต่อคำขอ  ×  ต้นทุนนักวิเคราะห์ต่อชั่วโมง  =  A
+วันที่ตัดสินใจเร็วขึ้น        ×  มูลค่าต่อวัน (เช่น ของขาด ส่วนลด)         =  B
+ประหยัดจากการล้างลิขสิทธิ์ / server                                        =  C
+มูลค่าต่อปี ≈ 12 × (A + B) + C      เทียบกับ      ค่าใช้จ่ายรายปี (ส่วนที่ 8)
+</code></pre>
+<h2 id="5">🏗️ 5. สถาปัตยกรรมเป้าหมาย</h2>
+<figure>
+<svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="12.5">
+<defs><marker id="a6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#7b8494"/></marker></defs>
+<rect x="10" y="60" width="170" height="120" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="95" y="90" text-anchor="middle" font-weight="600" fill="#1c2430">Browser</text>
+<text x="95" y="112" text-anchor="middle" fill="#4a5566">React chat UI</text>
+<text x="95" y="130" text-anchor="middle" fill="#4a5566">embedded viz (optional)</text>
+<text x="95" y="160" text-anchor="middle" fill="#7b8494">session cookie only</text>
+<line x1="182" y1="120" x2="238" y2="120" stroke="#7b8494" stroke-width="2" marker-end="url(#a6)" marker-start="url(#a6)"/>
+<text x="210" y="140" text-anchor="middle" fill="#7b8494" font-size="11">HTTPS /api</text>
+<rect x="240" y="30" width="250" height="180" rx="10" fill="#e8f0f9" stroke="#1c5d99" stroke-width="1.5"/>
+<text x="365" y="56" text-anchor="middle" font-weight="700" fill="#0f3d6b">Portal API (Node.js + Express)</text>
+<g fill="#4a5566"><rect x="258" y="70" width="214" height="28" rx="6" fill="#fff" stroke="#c9d1dc"/><text x="365" y="89" text-anchor="middle">/api/login · session JWT</text>
+<rect x="258" y="104" width="214" height="28" rx="6" fill="#fff" stroke="#c9d1dc"/><text x="365" y="123" text-anchor="middle">/api/chat · LLM ↔ MCP tool loop</text>
+<rect x="258" y="138" width="214" height="28" rx="6" fill="#fff" stroke="#c9d1dc"/><text x="365" y="157" text-anchor="middle">/api/embed-token · Connected App JWT</text>
+<rect x="258" y="172" width="214" height="28" rx="6" fill="#fff" stroke="#c9d1dc"/><text x="365" y="191" text-anchor="middle">audit.jsonl · rate limit · helmet</text></g>
+<line x1="492" y1="80" x2="588" y2="80" stroke="#7b8494" stroke-width="2" marker-end="url(#a6)" marker-start="url(#a6)"/>
+<text x="540" y="68" text-anchor="middle" fill="#7b8494" font-size="11">LLM API</text>
+<rect x="590" y="50" width="140" height="60" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="660" y="75" text-anchor="middle" font-weight="600" fill="#1c2430">LLM</text>
+<text x="660" y="95" text-anchor="middle" fill="#4a5566">Claude / others</text>
+<line x1="492" y1="160" x2="588" y2="160" stroke="#7b8494" stroke-width="2" marker-end="url(#a6)" marker-start="url(#a6)"/>
+<text x="540" y="148" text-anchor="middle" fill="#7b8494" font-size="11">MCP HTTP</text>
+<rect x="590" y="130" width="140" height="60" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="660" y="155" text-anchor="middle" font-weight="600" fill="#1c2430">Tableau MCP</text>
+<text x="660" y="175" text-anchor="middle" fill="#4a5566">127.0.0.1:3927</text>
+<line x1="732" y1="160" x2="758" y2="160" stroke="#7b8494" stroke-width="2" marker-end="url(#a6)" marker-start="url(#a6)"/>
+<rect x="760" y="130" width="130" height="60" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="825" y="155" text-anchor="middle" font-weight="600" fill="#1c2430">Tableau Server</text>
+<text x="825" y="175" text-anchor="middle" fill="#4a5566">REST · VDS</text>
+<rect x="240" y="225" width="650" height="1" fill="#c9d1dc"/>
+<text x="565" y="248" text-anchor="middle" fill="#7b8494" font-size="11">everything right of the browser runs on your network; only the LLM call may leave it</text>
+</svg>
+<figcaption>รูปที่ 1 สถานะเป้าหมาย: บริการ Tableau MCP ที่มีการกำกับดูแลหนึ่งชุด อยู่หลัง portal ของบริษัทและ AI client ที่ผู้ใช้มีอยู่แล้ว รายละเอียดในบทสถาปัตยกรรมและ Web UI</figcaption>
+</figure>
+
+<table>
+<thead>
+<tr>
+<th>ชั้น</th>
+<th>องค์ประกอบ</th>
+<th>ทางเลือกสำหรับ Demo Company</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ข้อมูล</td>
+<td>Tableau Server 2025.3+ (ที่มีอยู่), certified source ใน project ที่ล็อก, RLS ผ่านตาราง entitlement / virtual connection</td>
+<td>ลิขสิทธิ์เดิม; Data Management add-on หากใช้ virtual connection</td>
+</tr>
+<tr>
+<td>ตัวกลางเข้าถึง</td>
+<td>Tableau MCP สาม instance (analysts / portal / admin) บน Linux VM แยก, Docker, TLS reverse proxy</td>
+<td>รูปแบบในบทที่ 4</td>
+</tr>
+<tr>
+<td>ตัวตน</td>
+<td>OAuth กับ Tableau (SAML SSO อยู่เบื้องหลัง); Connected App สำหรับ portal</td>
+<td>บทที่ 7</td>
+</tr>
+<tr>
+<td>โมเดล</td>
+<td>เฟส 1–2: LLM บนคลาวด์สำหรับข้อมูล Public/Internal; เฟส 3: โมเดลโฮสต์เองหรือในภูมิภาคสำหรับ Confidential</td>
+<td>การจัดชั้นข้อมูลเป็นตัวตัดสิน</td>
+</tr>
+<tr>
+<td>ช่องทาง</td>
+<td>Claude Desktop / Copilot สำหรับนักวิเคราะห์; portal บริษัทพร้อมช่องแชท + dashboard ฝัง; บอท LINE / Teams เรียก API ของ portal</td>
+<td>บทที่ 6 สำหรับ portal</td>
+</tr>
+<tr>
+<td>การปฏิบัติงาน</td>
+<td>file logger + audit ของ portal → SIEM; dashboard การใช้งานใน Tableau; dashboard ต้นทุน token</td>
+<td>บทที่ 9</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-roadmap">🗓️ 6. Roadmap</h2>
+<figure>
+<svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="12.5">
+<line x1="30" y1="60" x2="870" y2="60" stroke="#cfd6e0" stroke-width="3"/>
+<g>
+<circle cx="110" cy="60" r="10" fill="#0e8574"/><text x="110" y="40" text-anchor="middle" font-weight="700" fill="#1f2937">Phase 0 · Pilot</text>
+<rect x="30" y="84" width="160" height="196" rx="10" fill="#e2f5f1" stroke="#0e8574"/>
+<g fill="#1f2937"><text x="42" y="108" font-weight="600">Weeks 1–4</text><text x="42" y="132">• 1 site, 2 data sources</text><text x="42" y="150">• stdio + PAT, 5 users</text><text x="42" y="168">• Claude Desktop / Gemini</text><text x="42" y="186">• Use cases 1–2</text><text x="42" y="212" fill="#0e8574" font-weight="600">Gate: 80% answers</text><text x="42" y="228" fill="#0e8574" font-weight="600">match dashboard</text></g>
+</g>
+<g>
+<circle cx="340" cy="60" r="10" fill="#2563a8"/><text x="340" y="40" text-anchor="middle" font-weight="700" fill="#1f2937">Phase 1 · Shared service</text>
+<rect x="240" y="84" width="200" height="196" rx="10" fill="#e9f1fb" stroke="#2563a8"/>
+<g fill="#1f2937"><text x="252" y="108" font-weight="600">Months 2–3</text><text x="252" y="132">• Dedicated VM, Docker, TLS</text><text x="252" y="150">• OAuth per user, RLS tested</text><text x="252" y="168">• Certified "ai-ready" sources</text><text x="252" y="186">• 30–50 users, 2 departments</text><text x="252" y="212" fill="#2563a8" font-weight="600">Gate: security sign-off,</text><text x="252" y="228" fill="#2563a8" font-weight="600">usage ≥ 3 queries/user/week</text></g>
+</g>
+<g>
+<circle cx="590" cy="60" r="10" fill="#6250b8"/><text x="590" y="40" text-anchor="middle" font-weight="700" fill="#1f2937">Phase 2 · Portal</text>
+<rect x="490" y="84" width="200" height="196" rx="10" fill="#eeebfb" stroke="#6250b8"/>
+<g fill="#1f2937"><text x="502" y="108" font-weight="600">Months 4–6</text><text x="502" y="132">• Web portal + AI chat box</text><text x="502" y="150">• SSO, audit log, embed viz</text><text x="502" y="168">• Use cases 3–5, LINE / Teams</text><text x="502" y="186">• All business units</text><text x="502" y="212" fill="#6250b8" font-weight="600">Gate: NPS ≥ 40,</text><text x="502" y="228" fill="#6250b8" font-weight="600">ad-hoc report tickets −30%</text></g>
+</g>
+<g>
+<circle cx="790" cy="60" r="10" fill="#b4700a"/><text x="790" y="40" text-anchor="middle" font-weight="700" fill="#1f2937">Phase 3 · Scale</text>
+<rect x="710" y="84" width="180" height="196" rx="10" fill="#fdf3df" stroke="#b4700a"/>
+<g fill="#1f2937"><text x="722" y="108" font-weight="600">Month 7+</text><text x="722" y="132">• Self-hosted / regional LLM</text><text x="722" y="150">• Agentic workflows, alerts</text><text x="722" y="168">• Admin insight automation</text><text x="722" y="186">• Cost & quota governance</text><text x="722" y="212" fill="#b4700a" font-weight="600">Gate: run-rate within</text><text x="722" y="228" fill="#b4700a" font-weight="600">budget, KPI review</text></g>
+</g>
+</svg>
+
+<figcaption>รูปที่ 2 สี่เฟส แต่ละเฟสมี exit gate อย่าเริ่มเฟสถัดไปจนกว่าจะผ่าน gate</figcaption>
+</figure>
+
+<table>
+<thead>
+<tr>
+<th>เฟส</th>
+<th>ระยะเวลา</th>
+<th>ขอบเขต</th>
+<th>Exit gate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 · Pilot</td>
+<td>4 สัปดาห์</td>
+<td>1 site, certified data source 2 ชุด (Sales, Finance), ผู้ใช้ 5 คน, stdio + PAT, use case 1–2</td>
+<td>คำถามทดสอบ 50 ข้อ ตรงกับ dashboard ≥ 80 %; ทีมความปลอดภัยทบทวนผลแล้ว</td>
+</tr>
+<tr>
+<td>1 · Shared service</td>
+<td>2 เดือน</td>
+<td>VM แยก, OAuth, ทดสอบ RLS, กระบวนการ certify <code>ai-ready</code>, ผู้ใช้ 30–50 คนใน 2 แผนก</td>
+<td>ความปลอดภัยอนุมัติ; ≥ 3 คำถามต่อผู้ใช้ต่อสัปดาห์; เหตุการณ์ด้านสิทธิ์เป็นศูนย์</td>
+</tr>
+<tr>
+<td>2 · Portal และช่องทาง</td>
+<td>3 เดือน</td>
+<td>portal พร้อม AI chat + dashboard ฝัง, SSO, audit, บอท LINE / Teams, use case 3–5, ทุกหน่วยธุรกิจ</td>
+<td>NPS ≥ 40; ticket รายงานเฉพาะกิจ −30 %; portal พร้อมใช้ ≥ 99.5 %</td>
+</tr>
+<tr>
+<td>3 · ขยายและปรับปรุง</td>
+<td>ต่อเนื่อง</td>
+<td>โมเดลโฮสต์เอง / ในภูมิภาคสำหรับข้อมูล Confidential, แจ้งเตือนแบบ agentic, admin automation, กำกับต้นทุน token</td>
+<td>ค่าใช้จ่ายอยู่ในงบ; ทบทวน KPI รายไตรมาส</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7">👥 7. ทีมและหน้าที่</h2>
+<table>
+<thead>
+<tr>
+<th>บทบาท</th>
+<th>เฟส 0–1</th>
+<th>เฟส 2–3</th>
+<th>หน้าที่</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ผู้บริหารผู้สนับสนุน</td>
+<td>0.05 FTE</td>
+<td>0.05 FTE</td>
+<td>ปลดอุปสรรค เป็นเจ้าของ KPI</td>
+</tr>
+<tr>
+<td>Product owner (หัวหน้า BI)</td>
+<td>0.3 FTE</td>
+<td>0.5 FTE</td>
+<td>จัดลำดับ use case, certify data source, เป็นเจ้าของ prompt และนิยาม</td>
+</tr>
+<tr>
+<td>ผู้ดูแล Tableau</td>
+<td>0.3 FTE</td>
+<td>0.3 FTE</td>
+<td>project, สิทธิ์, RLS, instance ของ MCP</td>
+</tr>
+<tr>
+<td>วิศวกร platform / DevOps</td>
+<td>0.3 FTE</td>
+<td>0.3 FTE</td>
+<td>VM, Docker, TLS, secret, logging</td>
+</tr>
+<tr>
+<td>นักพัฒนา full-stack</td>
+<td>—</td>
+<td>1 FTE (เฟส 2)</td>
+<td>portal, ช่องแชท, บอท LINE / Teams</td>
+</tr>
+<tr>
+<td>ความปลอดภัย / compliance</td>
+<td>0.1 FTE</td>
+<td>0.1 FTE</td>
+<td>จัดชั้นข้อมูล ทบทวน อนุมัติ gate</td>
+</tr>
+<tr>
+<td>แชมเปี้ยนประจำแผนก (×4)</td>
+<td>0.1 FTE ต่อคน</td>
+<td>0.1 FTE ต่อคน</td>
+<td>คำถามทดสอบ การนำไปใช้ feedback</td>
+</tr>
+<tr>
+<td>พาร์ตเนอร์ภายนอก (ไม่บังคับ)</td>
+<td>เร่งเฟส 0–1</td>
+<td>สนับสนุนสร้าง portal</td>
+<td>ตั้งค่า Tableau MCP อบรม portal starter</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8">💰 8. โครงสร้างแรงงานและต้นทุน</h2>
+<p>ใส่อัตราของท้องถิ่นเอง โครงสร้างคือสิ่งสำคัญ</p>
+<table>
+<thead>
+<tr>
+<th>รายการ</th>
+<th>เฟส 0</th>
+<th>เฟส 1</th>
+<th>เฟส 2</th>
+<th>รายปี (run)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>แรงงานภายใน (person-day)</td>
+<td>15</td>
+<td>40</td>
+<td>120</td>
+<td>60</td>
+</tr>
+<tr>
+<td>โครงสร้างพื้นฐาน (VM, TLS, storage)</td>
+<td>—</td>
+<td>VM เล็ก 1 เครื่อง</td>
+<td>VM 2 เครื่อง (MCP, portal)</td>
+<td>✱</td>
+</tr>
+<tr>
+<td>ลิขสิทธิ์ Tableau</td>
+<td>เดิม</td>
+<td>เดิม (+ Viewer สำหรับผู้ใช้ใหม่)</td>
+<td>+ Viewer; Data Management หากใช้ virtual connection</td>
+<td>✱</td>
+</tr>
+<tr>
+<td>การใช้ LLM</td>
+<td>เครดิตทดลอง</td>
+<td>~30k token ต่อการวิเคราะห์ × คำถามต่อเดือน</td>
+<td>โควตาต่อผู้ใช้ เช่น 200 คำถาม/เดือน</td>
+<td>✱</td>
+</tr>
+<tr>
+<td>โมเดลโฮสต์เอง (เฟส 3)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>เครื่อง GPU หรือ managed endpoint ในภูมิภาค</td>
+</tr>
+<tr>
+<td>บริการภายนอก (ไม่บังคับ)</td>
+<td>ตั้งค่า + อบรม</td>
+<td>ทบทวนความปลอดภัย</td>
+<td>portal starter kit</td>
+<td>สัญญาสนับสนุน</td>
+</tr>
+</tbody>
+</table>
+<p>✱ ใส่ตัวเลขของคุณ สัดส่วนที่พบบ่อย: ค่าใช้ LLM น้อยเมื่อเทียบกับค่าคน; รายการใหญ่สุดคือการพัฒนาเฟส 2</p>
+<h2 id="9">⚠️ 9. ความเสี่ยงและการรับมือ</h2>
+<table>
+<thead>
+<tr>
+<th>ความเสี่ยง</th>
+<th>โอกาส</th>
+<th>ผลกระทบ</th>
+<th>การรับมือ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>เชื่อคำตอบผิดโดยไม่ตรวจ</td>
+<td>กลาง</td>
+<td>สูง</td>
+<td>ทุกคำตอบอ้าง data source และ filter; gate ความแม่นยำใน pilot; อบรม "ตรวจกับ dashboard"</td>
+</tr>
+<tr>
+<td>ข้อมูลอ่อนไหวถึงโมเดลบนคลาวด์</td>
+<td>ต่ำเมื่อมีการควบคุม</td>
+<td>สูง</td>
+<td>จัดชั้นข้อมูล; Restricted อยู่นอกขอบเขต MCP; Confidential ผ่านโมเดลโฮสต์เองเท่านั้น; DPA กับผู้ให้บริการ</td>
+</tr>
+<tr>
+<td>ช่องว่างสิทธิ์เปิดเผยข้อมูล</td>
+<td>กลาง</td>
+<td>สูง</td>
+<td>project certified ล็อก, แม่แบบกลุ่ม, ทดสอบ RLS สองผู้ใช้, เฝ้าระวัง 403 (บทที่ 7)</td>
+</tr>
+<tr>
+<td>การนำไปใช้ต่ำ</td>
+<td>กลาง</td>
+<td>กลาง</td>
+<td>แชมเปี้ยนประจำแผนก, ช่องทางที่คนใช้อยู่แล้ว (LINE / Teams / Copilot), use case ที่เห็นผลเร็วก่อน</td>
+</tr>
+<tr>
+<td>ต้นทุน token บานปลาย</td>
+<td>กลาง</td>
+<td>ต่ำ</td>
+<td>โควตา, จำกัดขอบเขต, prompt แบบ aggregate เท่านั้น, dashboard ต้นทุนรายเดือน</td>
+</tr>
+<tr>
+<td>ผู้ให้บริการ / เวอร์ชันเปลี่ยนบ่อย (Tableau MCP, AI client)</td>
+<td>สูง</td>
+<td>ต่ำ</td>
+<td>ระบุเวอร์ชันตายตัว, ช่วงอัปเกรดรายไตรมาส, ทบทวนรายการ "ตรวจสอบกับเอกสาร" ทุก release</td>
+</tr>
+<tr>
+<td>พึ่งพานักพัฒนาคนเดียว</td>
+<td>กลาง</td>
+<td>กลาง</td>
+<td>portal สร้างจาก starter ที่มีเอกสาร (บทที่ 6), โค้ดอยู่ใน repo บริษัท, runbook</td>
+</tr>
+</tbody>
+</table>
+<h2 id="10">✅ 10. สิ่งที่ขอให้ตัดสินใจ</h2>
+<ol>
+<li>อนุมัติ <strong>pilot เฟส 0</strong> (4 สัปดาห์, 15 person-day, ไม่ต้องซื้อลิขสิทธิ์เพิ่ม)</li>
+<li>แต่งตั้ง <strong>product owner</strong> และ <strong>แชมเปี้ยนประจำแผนก</strong> สองคน</li>
+<li>ยืนยันกฎ <strong>การจัดชั้นข้อมูล</strong> สำหรับการเข้าถึงของ AI (Public / Internal ผ่านโมเดลคลาวด์; Confidential ต้องรอเฟส 3)</li>
+<li>เห็นชอบ <strong>เกณฑ์ gate</strong> ข้างต้นเป็น go / no-go สำหรับเฟส 1</li>
+</ol>
+<h2 id="pilot">📎 ภาคผนวก – ชุดคำถามทดสอบสำหรับ pilot (แม่แบบ)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>แผนก</th>
+<th>คำถาม</th>
+<th>source ที่คาดหวัง</th>
+<th>dashboard ที่ใช้ตรวจ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>ขาย</td>
+<td>ยอดขายรวมตามภูมิภาค ไตรมาสที่แล้ว</td>
+<td>Sales</td>
+<td>Sales Overview</td>
+</tr>
+<tr>
+<td>2</td>
+<td>ขาย</td>
+<td>สินค้า 10 อันดับตามจำนวน ภาค West ไตรมาสที่แล้ว</td>
+<td>Sales</td>
+<td>Product Detail</td>
+</tr>
+<tr>
+<td>3</td>
+<td>การเงิน</td>
+<td>ค่าขนส่งเทียบงบตาม cost centre, YTD</td>
+<td>Finance</td>
+<td>Budget vs Actual</td>
+</tr>
+<tr>
+<td>4</td>
+<td>การเงิน</td>
+<td>cost centre ไหนเกินงบมากกว่า 10 %</td>
+<td>Finance</td>
+<td>Budget vs Actual</td>
+</tr>
+<tr>
+<td>5</td>
+<td>ปฏิบัติการ</td>
+<td>SKU ที่มีสต็อกพอน้อยกว่า 14 วัน</td>
+<td>Inventory</td>
+<td>Stock Cover</td>
+</tr>
+<tr>
+<td>…</td>
+<td></td>
+<td>รวม 50 คำถาม แผนกละ 10 ข้อ</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>ให้คะแนนแต่ละคำตอบ: ✅ ตรง dashboard · ⚠️ วิธีถูก filter ผิด · ❌ ผิด Gate: ✅ ≥ 80 %</p>
+    </article>
+    <nav class="pagernav"><a class="pager prev" href="07-permissions-security.html"><small>ก่อนหน้า</small><span>สิทธิ์ บทบาท และลิขสิทธิ์</span></a><a class="pager next" href="09-best-practices.html"><small>ถัดไป</small><span>แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย</span></a></nav>
+    <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">หน้าแรก</a></footer>
+  </main>
+  <aside class="onpage"><div class="onpage-title">ในหน้านี้</div><ul><li><a href="#1">🎯 1. บทสรุปผู้บริหาร</a></li><li><a href="#2">🩺 2. ปัญหาในปัจจุบัน</a></li><li><a href="#3">🔭 3. วิสัยทัศน์และหลักการ</a></li><li><a href="#4-use-case">💼 4. Use case และผลกระทบทางธุรกิจ</a></li><li><a href="#5">🏗️ 5. สถาปัตยกรรมเป้าหมาย</a></li><li><a href="#6-roadmap">🗓️ 6. Roadmap</a></li><li><a href="#7">👥 7. ทีมและหน้าที่</a></li><li><a href="#8">💰 8. โครงสร้างแรงงานและต้นทุน</a></li><li><a href="#9">⚠️ 9. ความเสี่ยงและการรับมือ</a></li><li><a href="#10">✅ 10. สิ่งที่ขอให้ตัดสินใจ</a></li><li><a href="#pilot">📎 ภาคผนวก – ชุดคำถามทดสอบสำหรับ pilot (แม่แบบ)</a></li></ul></aside>
+</div>
+<button class="totop" title="กลับขึ้นบน" aria-label="กลับขึ้นบน">↑</button>
+<script src="../assets/app.js"></script>
+</body>
+</html>

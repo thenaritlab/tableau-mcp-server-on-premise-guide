@@ -4,7 +4,7 @@
 
 # ✅ สิ่งที่ต้องเตรียม
 
-`ส่วนที่ 3 จาก 9`
+`ส่วนที่ 3 จาก 11`
 
 > ตรวจสอบรายการเหล่านี้ก่อนติดตั้งอะไรทั้งสิ้น ความล้มเหลวครั้งแรกส่วนใหญ่มาจาก PAT หมดอายุ ขาดสิทธิ์ API access หรือ client เข้าถึง server ไม่ได้
 
@@ -44,7 +44,7 @@
 1. **เปิดใช้ REST API** — เปิดอยู่โดยปริยาย ตรวจด้วย `tsm configuration get -k api.server.enabled` หากองค์กรปิดไว้ ให้ตั้งเป็น `true` แล้ว apply pending changes
 2. **อนุญาต Personal Access Token** — ที่ site setting *Settings › General › Personal Access Tokens* ระดับ server: `tsm configuration get -k features.PersonalAccessTokensEnabled`
 3. **สร้างผู้ใช้ Tableau เฉพาะสำหรับ MCP server** — สำหรับทดสอบ PAT หรือ Direct Trust ให้สร้าง `svc-mcp-reader` (site role Explorer หรือ Viewer หากต้องการแค่ดู view) ห้ามใช้บัญชี Server Administrator
-4. **สิทธิ์ "Connect" บน data source** — และสำหรับการ query ต้องมี <strong>"API access"</strong> บน published data source ทุกตัวที่ AI ควร query ได้ หากขาด API access จะเห็น HTTP 403 ใน log ของ MCP
+4. **สิทธิ์ "View" และ "Connect" บน data source** — ทุกตัวที่ AI ควร query ได้ (VizQL Data Service ต้องการทั้งสองอย่าง) หากขาด "Connect" จะเห็น HTTP 403 ใน log ของ MCP รายละเอียดอยู่ในบทเรื่องสิทธิ์
 5. **Connected Apps (สำหรับ Direct Trust หรือ portal)** — ที่ site setting *Settings › Connected Apps* ต้องเป็น site administrator จึงสร้างได้
 6. **Metadata API (ไม่บังคับ)** — ช่วยให้ tool ด้าน lineage และค้นหาทำงานดีขึ้น เปิดด้วย `tsm maintenance metadata-services enable`
 7. **OAuth redirect host (เฉพาะโหมด OAuth)** — `tsm configuration set -k oauth.allowed_redirect_uri_hosts -v tableau-mcp.demo-company.local` แล้ว `tsm pending-changes apply`
@@ -84,12 +84,14 @@
 4. ⚙️ [การติดตั้งและตั้งค่า](04-installation.md)
 5. 💡 [5 use case ยอดนิยม](05-use-cases.md)
 6. 🖥️ [ขั้นสูง: สร้าง Web UI ครอบ Tableau Server](06-web-ui-wrapper.md)
-7. 🛡️ [แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย](07-best-practices.md)
-8. ❓ [คำถามที่พบบ่อยและอภิธานศัพท์](08-faq-glossary.md)
-9. 🔗 [เอกสารอ้างอิง](09-references.md)
+7. 🔐 [สิทธิ์ บทบาท และลิขสิทธิ์](07-permissions-security.md)
+8. 📈 [ข้อเสนอโครงการ: แพลตฟอร์ม BI + AI Chat สำหรับองค์กรบน Tableau MCP](08-enterprise-proposal.md)
+9. 🛡️ [แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย](09-best-practices.md)
+10. ❓ [คำถามที่พบบ่อยและอภิธานศัพท์](10-faq-glossary.md)
+11. 🔗 [เอกสารอ้างอิง](11-references.md)
 
 </details>
 
 [🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: สถาปัตยกรรม](02-architecture.md) · [ถัดไป: การติดตั้งและตั้งค่า ▶](04-installation.md) · [🇺🇸 English](../en/03-prerequisites.md)
 
-<sub>ส่วนที่ 3 จาก 9 · Created by The Narit Lab</sub>
+<sub>ส่วนที่ 3 จาก 11 · Created by The Narit Lab</sub>

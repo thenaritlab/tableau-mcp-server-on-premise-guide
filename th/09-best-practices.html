@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย · Tableau Server On-Premise + Tableau MCP + AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="doc">
+<div class="progress" aria-hidden="true"></div>
+<header class="topbar">
+  <button class="menu-btn" aria-label="เมนู" aria-expanded="false" data-menu>☰</button>
+  <a class="brand" href="../index.html">Tableau Server On-Premise + Tableau MCP + AI</a>
+  <nav class="lang-switch" aria-label="Language">
+    <a href="../index.html" title="หน้าแรก">หน้าแรก</a>
+    <a class="lang-other" href="../en/09-best-practices.html">English</a>
+    <button class="icon-btn" data-theme-toggle title="สลับโหมดมืด" aria-label="สลับโหมดมืด">☾</button>
+  </nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="สารบัญ">
+    <div class="side-title">สารบัญ</div>
+    <ol class="side-list"><li data-slug="01-overview"><a href="01-overview.html"><span class="n">1</span>ภาพรวม</a></li>
+<li data-slug="02-architecture"><a href="02-architecture.html"><span class="n">2</span>สถาปัตยกรรม</a></li>
+<li data-slug="03-prerequisites"><a href="03-prerequisites.html"><span class="n">3</span>สิ่งที่ต้องเตรียม</a></li>
+<li data-slug="04-installation"><a href="04-installation.html"><span class="n">4</span>การติดตั้งและตั้งค่า</a></li>
+<li data-slug="05-use-cases"><a href="05-use-cases.html"><span class="n">5</span>5 use case ยอดนิยม</a></li>
+<li data-slug="06-web-ui-wrapper"><a href="06-web-ui-wrapper.html"><span class="n">6</span>ขั้นสูง: สร้าง Web UI ครอบ Tableau Server</a></li>
+<li data-slug="07-permissions-security"><a href="07-permissions-security.html"><span class="n">7</span>สิทธิ์ บทบาท และลิขสิทธิ์</a></li>
+<li data-slug="08-enterprise-proposal"><a href="08-enterprise-proposal.html"><span class="n">8</span>ข้อเสนอโครงการ: แพลตฟอร์ม BI + AI Chat สำหรับองค์กรบน Tableau MCP</a></li>
+<li class="active" data-slug="09-best-practices"><a href="09-best-practices.html"><span class="n">9</span>แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย</a></li>
+<li data-slug="10-faq-glossary"><a href="10-faq-glossary.html"><span class="n">10</span>คำถามที่พบบ่อยและอภิธานศัพท์</a></li>
+<li data-slug="11-references"><a href="11-references.html"><span class="n">11</span>เอกสารอ้างอิง</a></li></ol>
+    <div class="side-progress" data-label="อ่านแล้ว {n} จาก {t} ส่วน"><span class="txt"></span><div class="bar"><i style="width:0"></i></div></div>
+  </nav>
+  <main class="content">
+    <article class="doc-body" data-copy="คัดลอก" data-copied="คัดลอกแล้ว" data-slug="09-best-practices">
+
+<h1 id="_1">แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย</h1><div class="doc-meta"><span class="chip">ส่วนที่ 9 จาก 11</span><span class="chip">อ่าน 3 นาที</span></div>
+<p class="lead">Tableau MCP สืบทอดโมเดลการกำกับดูแลของ Tableau ก็ต่อเมื่อคุณตั้งค่าให้เป็นอย่างนั้น รายการนี้คือสิ่งที่ควรเดินทีละข้อร่วมกับทีมความปลอดภัยของลูกค้าก่อน go-live</p>
+
+<h2 id="_2">🚀 การติดตั้ง</h2>
+<ul>
+<li>เริ่มจาก <strong>stdio + PAT บนโน้ตบุ๊กเครื่องเดียว</strong> สำหรับเดโม แล้วย้ายไป <strong>VM แยกพร้อม OAuth</strong> สำหรับทุกอย่างที่ใช้ร่วมกัน อย่าข้ามไป "บนเครื่อง Tableau node" เพียงเพราะสะดวก</li>
+<li><strong>ระบุเวอร์ชันตายตัว</strong> ของแพ็กเกจ npm หรือ container image อัปเกรดตามรอบหลังอ่าน release notes เพราะชื่อและพฤติกรรมของ tool เปลี่ยนระหว่างเวอร์ชันย่อย</li>
+<li>ให้ MCP server <strong>bind กับ localhost</strong> และมี reverse proxy ที่ทำ TLS และ IP allow-list อยู่ข้างหน้า</li>
+<li>รันด้วย <strong>service user ที่ไม่ใช่ root</strong> และ file system อ่านอย่างเดียวยกเว้นโฟลเดอร์ log</li>
+<li>ตั้ง <code>PRODUCT_TELEMETRY_ENABLED=false</code> หากนโยบายห้ามส่ง product telemetry ออกนอก</li>
+</ul>
+<h2 id="_3">🔐 ตัวตนและการเข้าถึง</h2>
+<ul>
+<li>ใช้ <strong>OAuth</strong> (2025.3+) เป็นหลัก เพื่อให้ทุกการเรียก tool ระบุถึงผู้ใช้จริงและ RLS มีผล</li>
+<li>หากจำเป็นต้องใช้ service identity (Direct Trust หรือ PAT) ให้ <strong>site role ต่ำสุดที่ทำงานได้</strong> และเฉพาะ data source ที่จำเป็น ห้ามเป็น Server Administrator</li>
+<li>บันทึกว่า MCP แต่ละ instance ใช้ตัวตนใด รูปแบบที่สะอาดคือรันสอง instance: หนึ่งสำหรับ admin อีกหนึ่งสำหรับนักวิเคราะห์ โดยใช้ <code>INCLUDE_TOOLS</code> ต่างกัน</li>
+<li>หมุนเวียน PAT และ secret ของ Connected App ตามรอบเดียวกับข้อมูลรับรองบริการอื่น</li>
+</ul>
+<h2 id="_4">🗄️ การกำกับดูแลข้อมูล</h2>
+<ul>
+<li><strong>Certify</strong> published data source ที่จะเปิดให้ใช้ และเพิ่ม <strong>คำอธิบายฟิลด์และ alias</strong> นี่คือ "prompt" ที่โมเดลอ่าน</li>
+<li>ใช้ <code>INCLUDE_TAGS=ai-ready</code> (หรือ project) เพื่อให้ AI เห็นเฉพาะเนื้อหาที่ตรวจทานแล้ว</li>
+<li>ทำ <strong>row-level security</strong> ใน data source ไม่ใช่ใน prompt เชื่อโมเดลให้กรองข้อมูลไม่ได้</li>
+<li>จัดชั้นความลับข้อมูล สิ่งใดที่ผู้ให้บริการ LLM ห้ามเห็น ต้อง query ไม่ได้ผ่าน MCP instance ที่ใช้ผู้ให้บริการนั้น</li>
+<li><strong>exclude Pulse</strong> บน Server เสมอ เป็นฟีเจอร์ของ Cloud และให้แต่ข้อผิดพลาด</li>
+</ul>
+<h2 id="prompt">💬 การเขียน prompt และพฤติกรรมโมเดล</h2>
+<ul>
+<li>ให้ system instruction แก่โมเดลว่า: ระบุ data source และตัวกรอง; ห้ามแต่งตัวเลข; เลือก aggregate; ถามกลับเมื่อฟิลด์กำกวม</li>
+<li>จำกัดรอบการเรียก tool ต่อหนึ่งคำถาม (8 เป็นค่าเริ่มต้นที่ดี) และตั้ง timeout</li>
+<li>ตรวจคำตอบช่วงแรกกับ dashboard เขียนปฏิทินบัญชีและนิยามทางธุรกิจที่โมเดลต้องใช้ไว้เป็นลายลักษณ์อักษร</li>
+</ul>
+<h2 id="_5">📈 การปฏิบัติงาน</h2>
+<ul>
+<li>เปิด <code>ENABLED_LOGGERS=fileLogger</code> และส่ง log ต่อ เชื่อมโยงกับ <code>audit.jsonl</code> ของ portal และ <code>http_requests</code> ของ Tableau Server เพื่อให้ได้ร่องรอยครบ</li>
+<li>เฝ้าระวัง: โปรเซสทำงาน, <code>ping</code> สำเร็จ, อัตรา 401/403, latency ของ tool ที่ p95, ค่าใช้จ่าย token รายผู้ใช้</li>
+<li>รู้จัก <strong>สวิตช์ฉุกเฉิน</strong>: <code>BREAK_GLASS_DISABLE_GLOBALLY=true</code> ทำให้บริการยังอยู่แต่ทุกการเรียก tool ล้มเหลว</li>
+<li>วางแผนรับมือ <strong>ข้อจำกัดของ refresh token</strong>: การ restart บังคับให้ผู้ใช้เชื่อมต่อใหม่ ให้ restart ในช่วง maintenance</li>
+</ul>
+<h2 id="_6">✅ รายการตรวจสอบความปลอดภัย</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>รายการ</th>
+<th>ทำแล้ว</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>พอร์ต MCP เข้าถึงไม่ได้จากภายนอก reverse proxy</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>2</td>
+<td>TLS บน proxy; certificate จาก CA ภายในหรือสาธารณะ</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>3</td>
+<td>เปิด OAuth สำหรับการติดตั้งที่มีผู้ใช้มากกว่าหนึ่งคน</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>4</td>
+<td>ตั้ง <code>oauth.allowed_redirect_uri_hosts</code> เป็น host ของ MCP เท่านั้น</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>5</td>
+<td>RSA private key เก็บด้วยสิทธิ์ 600 หรือใน secrets manager</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>6</td>
+<td>service identity มี site role และสิทธิ์ data source ต่ำสุด</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>EXCLUDE_TOOLS=pulse</code> และไม่เปิด tool ที่เขียน/admin ให้ instance ของนักวิเคราะห์</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>8</td>
+<td>จำกัดขอบเขต tool ไว้ที่ project, tag หรือ data source ที่ certify แล้ว</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>9</td>
+<td>ทดสอบ RLS โดยล็อกอินด้วยผู้ใช้สองคนที่มีสิทธิ์ต่างกัน</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>10</td>
+<td>เปิด server logging และส่งต่อ; เก็บ audit log ของ portal ตามนโยบาย</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>11</td>
+<td>ทบทวน DPA ของผู้ให้บริการ LLM; บันทึกการจัดชั้นข้อมูล</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>12</td>
+<td>ระบุเวอร์ชันตายตัว; เขียนขั้นตอนอัปเกรดและ rollback</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>13</td>
+<td>ทดสอบขั้นตอน break-glass แล้ว</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>14</td>
+<td>อบรมผู้ใช้ให้ตรวจตัวเลขกับ dashboard</td>
+<td>☐</td>
+</tr>
+</tbody>
+</table>
+    </article>
+    <nav class="pagernav"><a class="pager prev" href="08-enterprise-proposal.html"><small>ก่อนหน้า</small><span>ข้อเสนอโครงการ: แพลตฟอร์ม BI + AI Chat สำหรับองค์กรบน Tableau MCP</span></a><a class="pager next" href="10-faq-glossary.html"><small>ถัดไป</small><span>คำถามที่พบบ่อยและอภิธานศัพท์</span></a></nav>
+    <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">หน้าแรก</a></footer>
+  </main>
+  <aside class="onpage"><div class="onpage-title">ในหน้านี้</div><ul><li><a href="#_2">🚀 การติดตั้ง</a></li><li><a href="#_3">🔐 ตัวตนและการเข้าถึง</a></li><li><a href="#_4">🗄️ การกำกับดูแลข้อมูล</a></li><li><a href="#prompt">💬 การเขียน prompt และพฤติกรรมโมเดล</a></li><li><a href="#_5">📈 การปฏิบัติงาน</a></li><li><a href="#_6">✅ รายการตรวจสอบความปลอดภัย</a></li></ul></aside>
+</div>
+<button class="totop" title="กลับขึ้นบน" aria-label="กลับขึ้นบน">↑</button>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -4,7 +4,7 @@
 
 # ⚙️ Installation and configuration
 
-`Section 4 of 9`
+`Section 4 of 11`
 
 > Four parts: prepare Tableau Server, run Tableau MCP (local stdio first, then a shared HTTP server), connect each AI client, and verify. Every command uses placeholder names; replace them with your own.
 
@@ -498,14 +498,14 @@ Ask, in order:
 2. *"What fields are in the Sales data source?"* → `list-fields` (or `get-datasource-metadata`).
 3. *"What were total sales by region last year?"* → `query-datasource` with a small aggregate query.
 
-If step 1 works, authentication and networking are fine. If step 3 fails but 1–2 work, it is a permission (API access) or a field-name problem.
+If step 1 works, authentication and networking are fine. If step 3 fails but 1–2 work, it is a permission (Connect) or a field-name problem.
 
 ### Common errors and fixes
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | `401 Unauthorized` on every tool | Wrong `SERVER`/`SITE_NAME`, PAT expired, `PAT_NAME` set to username, Connected App disabled | Re-run the REST sign-in curl; regenerate the PAT; check the Connected App toggle |
-| `403 Forbidden` on `query-datasource` only | User lacks "API access" / "Connect" on that data source | Grant the capability on the data source or project |
+| `403 Forbidden` on `query-datasource` only | User lacks "Connect" (or "View") on that data source | Grant the capability on the data source or project |
 | `Method not allowed` when opening the URL in a browser | Normal: GET is not part of MCP | Use the curl `initialize` test |
 | Client says "authorization required" and never opens a browser | Client does not support OAuth flow, or `OAUTH_ISSUER` does not match the public URL | Use `mcp-remote` for Claude Desktop; align `OAUTH_ISSUER`, `OAUTH_RESOURCE_URI` and the nginx `server_name` |
 | OAuth sign-in loops or "redirect URI not allowed" | `tsm oauth.allowed_redirect_uri_hosts` not set or wrong host | Set it to the MCP host name, apply pending changes |
@@ -527,12 +527,14 @@ If step 1 works, authentication and networking are fine. If step 3 fails but 1�
 4. ⚙️ **[Installation and configuration](04-installation.md)**
 5. 💡 [Top 5 use cases](05-use-cases.md)
 6. 🖥️ [Advanced: build a custom Web UI wrapper](06-web-ui-wrapper.md)
-7. 🛡️ [Best practices, governance and security checklist](07-best-practices.md)
-8. ❓ [FAQ and glossary](08-faq-glossary.md)
-9. 🔗 [References](09-references.md)
+7. 🔐 [Permissions, roles and licences](07-permissions-security.md)
+8. 📈 [Enterprise proposal: a BI + AI chat platform on Tableau MCP](08-enterprise-proposal.md)
+9. 🛡️ [Best practices, governance and security checklist](09-best-practices.md)
+10. ❓ [FAQ and glossary](10-faq-glossary.md)
+11. 🔗 [References](11-references.md)
 
 </details>
 
 [🏠 Home](../../README.md) · [◀ Previous: Prerequisites](03-prerequisites.md) · [Next: Top 5 use cases ▶](05-use-cases.md) · [🇹🇭 ภาษาไทย](../th/04-installation.md)
 
-<sub>Section 4 of 9 · Created by The Narit Lab</sub>
+<sub>Section 4 of 11 · Created by The Narit Lab</sub>

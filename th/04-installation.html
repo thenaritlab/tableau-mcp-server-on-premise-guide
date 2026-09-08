@@ -28,15 +28,17 @@
 <li class="active" data-slug="04-installation"><a href="04-installation.html"><span class="n">4</span>การติดตั้งและตั้งค่า</a></li>
 <li data-slug="05-use-cases"><a href="05-use-cases.html"><span class="n">5</span>5 use case ยอดนิยม</a></li>
 <li data-slug="06-web-ui-wrapper"><a href="06-web-ui-wrapper.html"><span class="n">6</span>ขั้นสูง: สร้าง Web UI ครอบ Tableau Server</a></li>
-<li data-slug="07-best-practices"><a href="07-best-practices.html"><span class="n">7</span>แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย</a></li>
-<li data-slug="08-faq-glossary"><a href="08-faq-glossary.html"><span class="n">8</span>คำถามที่พบบ่อยและอภิธานศัพท์</a></li>
-<li data-slug="09-references"><a href="09-references.html"><span class="n">9</span>เอกสารอ้างอิง</a></li></ol>
+<li data-slug="07-permissions-security"><a href="07-permissions-security.html"><span class="n">7</span>สิทธิ์ บทบาท และลิขสิทธิ์</a></li>
+<li data-slug="08-enterprise-proposal"><a href="08-enterprise-proposal.html"><span class="n">8</span>ข้อเสนอโครงการ: แพลตฟอร์ม BI + AI Chat สำหรับองค์กรบน Tableau MCP</a></li>
+<li data-slug="09-best-practices"><a href="09-best-practices.html"><span class="n">9</span>แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย</a></li>
+<li data-slug="10-faq-glossary"><a href="10-faq-glossary.html"><span class="n">10</span>คำถามที่พบบ่อยและอภิธานศัพท์</a></li>
+<li data-slug="11-references"><a href="11-references.html"><span class="n">11</span>เอกสารอ้างอิง</a></li></ol>
     <div class="side-progress" data-label="อ่านแล้ว {n} จาก {t} ส่วน"><span class="txt"></span><div class="bar"><i style="width:0"></i></div></div>
   </nav>
   <main class="content">
     <article class="doc-body" data-copy="คัดลอก" data-copied="คัดลอกแล้ว" data-slug="04-installation">
 
-<h1 id="_1">การติดตั้งและตั้งค่า</h1><div class="doc-meta"><span class="chip">ส่วนที่ 4 จาก 9</span><span class="chip">อ่าน 8 นาที</span></div>
+<h1 id="_1">การติดตั้งและตั้งค่า</h1><div class="doc-meta"><span class="chip">ส่วนที่ 4 จาก 11</span><span class="chip">อ่าน 8 นาที</span></div>
 <p class="lead">แบ่งเป็นสี่ส่วน: เตรียม Tableau Server, รัน Tableau MCP (เริ่มจาก stdio บนเครื่องตัวเอง แล้วค่อยเป็น HTTP server ใช้ร่วมกัน), เชื่อม AI client แต่ละตัว และตรวจสอบ ทุกคำสั่งใช้ชื่อตัวอย่าง ให้แทนด้วยค่าของคุณเอง</p>
 
 <h2 id="41-tableau-server">🛠️ 4.1 เตรียม Tableau Server</h2>
@@ -417,7 +419,7 @@ claude mcp list</code></pre>
 <li><em>"What fields are in the Sales data source?"</em> → <code>list-fields</code> (หรือ <code>get-datasource-metadata</code>)</li>
 <li><em>"What were total sales by region last year?"</em> → <code>query-datasource</code> ด้วย query แบบ aggregate เล็กๆ</li>
 </ol>
-<p>ถ้าข้อ 1 ผ่าน แปลว่า authentication และเครือข่ายเรียบร้อย ถ้าข้อ 3 ล้มเหลวแต่ 1–2 ผ่าน เป็นปัญหาสิทธิ์ (API access) หรือชื่อฟิลด์</p>
+<p>ถ้าข้อ 1 ผ่าน แปลว่า authentication และเครือข่ายเรียบร้อย ถ้าข้อ 3 ล้มเหลวแต่ 1–2 ผ่าน เป็นปัญหาสิทธิ์ (Connect) หรือชื่อฟิลด์</p>
 <h3 id="_2">ข้อผิดพลาดที่พบบ่อยและวิธีแก้</h3>
 <table>
 <thead>
@@ -435,7 +437,7 @@ claude mcp list</code></pre>
 </tr>
 <tr>
 <td><code>403 Forbidden</code> เฉพาะ <code>query-datasource</code></td>
-<td>ผู้ใช้ไม่มี "API access" / "Connect" บน data source นั้น</td>
+<td>ผู้ใช้ไม่มี "Connect" (หรือ "View") บน data source นั้น</td>
 <td>ให้สิทธิ์บน data source หรือ project</td>
 </tr>
 <tr>

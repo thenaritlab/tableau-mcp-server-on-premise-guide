@@ -1,0 +1,23 @@
+<svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="12.5">
+<line x1="30" y1="60" x2="870" y2="60" stroke="#cfd6e0" stroke-width="3"/>
+<g>
+<circle cx="110" cy="60" r="10" fill="#0e8574"/><text x="110" y="40" text-anchor="middle" font-weight="700" fill="#1f2937">Phase 0 · Pilot</text>
+<rect x="30" y="84" width="160" height="196" rx="10" fill="#e2f5f1" stroke="#0e8574"/>
+<g fill="#1f2937"><text x="42" y="108" font-weight="600">Weeks 1–4</text><text x="42" y="132">• 1 site, 2 data sources</text><text x="42" y="150">• stdio + PAT, 5 users</text><text x="42" y="168">• Claude Desktop / Gemini</text><text x="42" y="186">• Use cases 1–2</text><text x="42" y="212" fill="#0e8574" font-weight="600">Gate: 80% answers</text><text x="42" y="228" fill="#0e8574" font-weight="600">match dashboard</text></g>
+</g>
+<g>
+<circle cx="340" cy="60" r="10" fill="#2563a8"/><text x="340" y="40" text-anchor="middle" font-weight="700" fill="#1f2937">Phase 1 · Shared service</text>
+<rect x="240" y="84" width="200" height="196" rx="10" fill="#e9f1fb" stroke="#2563a8"/>
+<g fill="#1f2937"><text x="252" y="108" font-weight="600">Months 2–3</text><text x="252" y="132">• Dedicated VM, Docker, TLS</text><text x="252" y="150">• OAuth per user, RLS tested</text><text x="252" y="168">• Certified "ai-ready" sources</text><text x="252" y="186">• 30–50 users, 2 departments</text><text x="252" y="212" fill="#2563a8" font-weight="600">Gate: security sign-off,</text><text x="252" y="228" fill="#2563a8" font-weight="600">usage ≥ 3 queries/user/week</text></g>
+</g>
+<g>
+<circle cx="590" cy="60" r="10" fill="#6250b8"/><text x="590" y="40" text-anchor="middle" font-weight="700" fill="#1f2937">Phase 2 · Portal</text>
+<rect x="490" y="84" width="200" height="196" rx="10" fill="#eeebfb" stroke="#6250b8"/>
+<g fill="#1f2937"><text x="502" y="108" font-weight="600">Months 4–6</text><text x="502" y="132">• Web portal + AI chat box</text><text x="502" y="150">• SSO, audit log, embed viz</text><text x="502" y="168">• Use cases 3–5, LINE / Teams</text><text x="502" y="186">• All business units</text><text x="502" y="212" fill="#6250b8" font-weight="600">Gate: NPS ≥ 40,</text><text x="502" y="228" fill="#6250b8" font-weight="600">ad-hoc report tickets −30%</text></g>
+</g>
+<g>
+<circle cx="790" cy="60" r="10" fill="#b4700a"/><text x="790" y="40" text-anchor="middle" font-weight="700" fill="#1f2937">Phase 3 · Scale</text>
+<rect x="710" y="84" width="180" height="196" rx="10" fill="#fdf3df" stroke="#b4700a"/>
+<g fill="#1f2937"><text x="722" y="108" font-weight="600">Month 7+</text><text x="722" y="132">• Self-hosted / regional LLM</text><text x="722" y="150">• Agentic workflows, alerts</text><text x="722" y="168">• Admin insight automation</text><text x="722" y="186">• Cost & quota governance</text><text x="722" y="212" fill="#b4700a" font-weight="600">Gate: run-rate within</text><text x="722" y="228" fill="#b4700a" font-weight="600">budget, KPI review</text></g>
+</g>
+</svg>

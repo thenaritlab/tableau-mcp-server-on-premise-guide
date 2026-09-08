@@ -4,7 +4,7 @@
 
 # ✅ Prerequisites
 
-`Section 3 of 9`
+`Section 3 of 11`
 
 > Check these before you install anything. Most failed first attempts come from an expired PAT, a missing API-access permission, or a client that cannot reach the server.
 
@@ -44,7 +44,7 @@
 1. **REST API enabled** — It is on by default. Confirm with `tsm configuration get -k api.server.enabled`. If your organisation disabled it, set it to `true` and apply pending changes.
 2. **Personal Access Tokens allowed** — Site setting *Settings › General › Personal Access Tokens*. Server-wide: `tsm configuration get -k features.PersonalAccessTokensEnabled`.
 3. **A dedicated Tableau user for the MCP server** — For PAT or Direct Trust testing create `svc-mcp-reader` (site role Explorer, or Viewer if it only needs views). Do not use a Server Administrator account.
-4. **Data source permission "Connect"** — and, for querying, <strong>"API access"</strong> on every published data source the AI should query. A missing "API access" capability shows up as HTTP 403 in the MCP logs.
+4. **Data source permissions "View" and "Connect"** — on every published data source the AI should query (VizQL Data Service needs both). A missing "Connect" capability shows up as HTTP 403 in the MCP logs. Full detail in the Permissions chapter.
 5. **Connected Apps (for Direct Trust or the portal)** — Site setting *Settings › Connected Apps*. You need to be a site administrator to create one.
 6. **Metadata API (optional)** — Improves lineage and search tools. Enable with `tsm maintenance metadata-services enable`.
 7. **OAuth redirect host (for OAuth mode)** — `tsm configuration set -k oauth.allowed_redirect_uri_hosts -v tableau-mcp.demo-company.local` then `tsm pending-changes apply`.
@@ -84,12 +84,14 @@
 4. ⚙️ [Installation and configuration](04-installation.md)
 5. 💡 [Top 5 use cases](05-use-cases.md)
 6. 🖥️ [Advanced: build a custom Web UI wrapper](06-web-ui-wrapper.md)
-7. 🛡️ [Best practices, governance and security checklist](07-best-practices.md)
-8. ❓ [FAQ and glossary](08-faq-glossary.md)
-9. 🔗 [References](09-references.md)
+7. 🔐 [Permissions, roles and licences](07-permissions-security.md)
+8. 📈 [Enterprise proposal: a BI + AI chat platform on Tableau MCP](08-enterprise-proposal.md)
+9. 🛡️ [Best practices, governance and security checklist](09-best-practices.md)
+10. ❓ [FAQ and glossary](10-faq-glossary.md)
+11. 🔗 [References](11-references.md)
 
 </details>
 
 [🏠 Home](../../README.md) · [◀ Previous: Architecture](02-architecture.md) · [Next: Installation and configuration ▶](04-installation.md) · [🇹🇭 ภาษาไทย](../th/03-prerequisites.md)
 
-<sub>Section 3 of 9 · Created by The Narit Lab</sub>
+<sub>Section 3 of 11 · Created by The Narit Lab</sub>

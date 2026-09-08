@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Permissions, roles and licences · Tableau Server On-Premise + Tableau MCP + AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="doc">
+<div class="progress" aria-hidden="true"></div>
+<header class="topbar">
+  <button class="menu-btn" aria-label="Menu" aria-expanded="false" data-menu>☰</button>
+  <a class="brand" href="../index.html">Tableau Server On-Premise + Tableau MCP + AI</a>
+  <nav class="lang-switch" aria-label="Language">
+    <a href="../index.html" title="Home">Home</a>
+    <a class="lang-other" href="../th/07-permissions-security.html">ไทย</a>
+    <button class="icon-btn" data-theme-toggle title="Toggle dark mode" aria-label="Toggle dark mode">☾</button>
+  </nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Contents">
+    <div class="side-title">Contents</div>
+    <ol class="side-list"><li data-slug="01-overview"><a href="01-overview.html"><span class="n">1</span>Overview</a></li>
+<li data-slug="02-architecture"><a href="02-architecture.html"><span class="n">2</span>Architecture</a></li>
+<li data-slug="03-prerequisites"><a href="03-prerequisites.html"><span class="n">3</span>Prerequisites</a></li>
+<li data-slug="04-installation"><a href="04-installation.html"><span class="n">4</span>Installation and configuration</a></li>
+<li data-slug="05-use-cases"><a href="05-use-cases.html"><span class="n">5</span>Top 5 use cases</a></li>
+<li data-slug="06-web-ui-wrapper"><a href="06-web-ui-wrapper.html"><span class="n">6</span>Advanced: build a custom Web UI wrapper</a></li>
+<li class="active" data-slug="07-permissions-security"><a href="07-permissions-security.html"><span class="n">7</span>Permissions, roles and licences</a></li>
+<li data-slug="08-enterprise-proposal"><a href="08-enterprise-proposal.html"><span class="n">8</span>Enterprise proposal: a BI + AI chat platform on Tableau MCP</a></li>
+<li data-slug="09-best-practices"><a href="09-best-practices.html"><span class="n">9</span>Best practices, governance and security checklist</a></li>
+<li data-slug="10-faq-glossary"><a href="10-faq-glossary.html"><span class="n">10</span>FAQ and glossary</a></li>
+<li data-slug="11-references"><a href="11-references.html"><span class="n">11</span>References</a></li></ol>
+    <div class="side-progress" data-label="Read {n} of {t} sections"><span class="txt"></span><div class="bar"><i style="width:0"></i></div></div>
+  </nav>
+  <main class="content">
+    <article class="doc-body" data-copy="Copy" data-copied="Copied" data-slug="07-permissions-security">
+
+<h1 id="permissions-roles-and-licences">Permissions, roles and licences</h1><div class="doc-meta"><span class="chip">Section 7 of 11</span><span class="chip">9 min read</span></div>
+<p class="lead">Tableau MCP does not add a security model of its own: it inherits Tableau's. That is its biggest strength, but only if you understand how licences, site roles, project permissions, content capabilities and row-level security stack up — and which capability each MCP tool actually needs.</p>
+
+<h2 id="the-five-layers">🧱 The five layers</h2>
+<figure>
+<svg viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="13">
+<defs><marker id="ap" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5 0 10z" fill="#7b8494"/></marker></defs>
+<text x="20" y="28" font-weight="700" font-size="14" fill="#1f2937">An AI request must pass every layer — the first "no" wins</text>
+<g>
+<rect x="20" y="48" width="160" height="290" rx="10" fill="#e9f1fb" stroke="#2563a8" stroke-width="1.5"/>
+<text x="100" y="74" text-anchor="middle" font-weight="700" fill="#17457a">1 · Licence</text>
+<text x="100" y="94" text-anchor="middle" fill="#4b5563" font-size="12">Site role</text>
+<g fill="#1f2937" font-size="12"><text x="100" y="124" text-anchor="middle">Creator</text><text x="100" y="146" text-anchor="middle">Explorer (can publish)</text><text x="100" y="168" text-anchor="middle">Explorer</text><text x="100" y="190" text-anchor="middle">Viewer</text><text x="100" y="212" text-anchor="middle" fill="#b83a3a">Unlicensed = nothing</text></g>
+<text x="100" y="258" text-anchor="middle" fill="#6b7280" font-size="11">ceiling of what a user</text><text x="100" y="274" text-anchor="middle" fill="#6b7280" font-size="11">can ever be allowed</text>
+</g>
+<line x1="182" y1="190" x2="198" y2="190" stroke="#7b8494" stroke-width="2" marker-end="url(#ap)"/>
+<g>
+<rect x="200" y="48" width="160" height="290" rx="10" fill="#f4f6fa" stroke="#cfd6e0"/>
+<text x="280" y="74" text-anchor="middle" font-weight="700" fill="#1f2937">2 · Project</text>
+<text x="280" y="94" text-anchor="middle" fill="#4b5563" font-size="12">Folder hierarchy</text>
+<g fill="#1f2937" font-size="12"><text x="280" y="124" text-anchor="middle">View project</text><text x="280" y="146" text-anchor="middle">Publish / Save</text><text x="280" y="168" text-anchor="middle">Project leader</text><text x="280" y="190" text-anchor="middle">🔒 Locked permissions</text></g>
+<text x="280" y="258" text-anchor="middle" fill="#6b7280" font-size="11">the AI only sees</text><text x="280" y="274" text-anchor="middle" fill="#6b7280" font-size="11">projects the user can view</text>
+</g>
+<line x1="362" y1="190" x2="378" y2="190" stroke="#7b8494" stroke-width="2" marker-end="url(#ap)"/>
+<g>
+<rect x="380" y="48" width="160" height="290" rx="10" fill="#f4f6fa" stroke="#cfd6e0"/>
+<text x="460" y="74" text-anchor="middle" font-weight="700" fill="#1f2937">3 · Content</text>
+<text x="460" y="94" text-anchor="middle" fill="#4b5563" font-size="12">Capabilities</text>
+<g fill="#1f2937" font-size="12"><text x="460" y="124" text-anchor="middle">Workbook: View, Filter,</text><text x="460" y="141" text-anchor="middle">Download Summary / Full</text><text x="460" y="158" text-anchor="middle">Data, Web Edit …</text><text x="460" y="184" text-anchor="middle">Data source: View,</text><text x="460" y="201" text-anchor="middle">Connect, Download …</text></g>
+<text x="460" y="258" text-anchor="middle" fill="#6b7280" font-size="11">each MCP tool needs</text><text x="460" y="274" text-anchor="middle" fill="#6b7280" font-size="11">a specific capability</text>
+</g>
+<line x1="542" y1="190" x2="558" y2="190" stroke="#7b8494" stroke-width="2" marker-end="url(#ap)"/>
+<g>
+<rect x="560" y="48" width="160" height="290" rx="10" fill="#f4f6fa" stroke="#cfd6e0"/>
+<text x="640" y="74" text-anchor="middle" font-weight="700" fill="#1f2937">4 · Rows</text>
+<text x="640" y="94" text-anchor="middle" fill="#4b5563" font-size="12">Row-level security</text>
+<g fill="#1f2937" font-size="12"><text x="640" y="124" text-anchor="middle">USERNAME() filter</text><text x="640" y="146" text-anchor="middle">Entitlement table</text><text x="640" y="168" text-anchor="middle">Virtual Connection</text><text x="640" y="185" text-anchor="middle">data policy</text><text x="640" y="207" text-anchor="middle">User attribute functions</text></g>
+<text x="640" y="258" text-anchor="middle" fill="#6b7280" font-size="11">same data source,</text><text x="640" y="274" text-anchor="middle" fill="#6b7280" font-size="11">different rows per user</text>
+</g>
+<line x1="722" y1="190" x2="738" y2="190" stroke="#7b8494" stroke-width="2" marker-end="url(#ap)"/>
+<g>
+<rect x="740" y="48" width="150" height="290" rx="10" fill="#e2f5f1" stroke="#0e8574" stroke-width="1.5"/>
+<text x="815" y="74" text-anchor="middle" font-weight="700" fill="#0e8574">5 · MCP scope</text>
+<text x="815" y="94" text-anchor="middle" fill="#4b5563" font-size="12">Tableau MCP env</text>
+<g fill="#1f2937" font-size="11.5" font-family="IBM Plex Mono, monospace"><text x="815" y="124" text-anchor="middle">INCLUDE_TOOLS</text><text x="815" y="146" text-anchor="middle">INCLUDE_PROJECT_IDS</text><text x="815" y="168" text-anchor="middle">INCLUDE_TAGS</text><text x="815" y="190" text-anchor="middle">INCLUDE_DATASOURCE_IDS</text><text x="815" y="212" text-anchor="middle">EXCLUDE_TOOLS</text></g>
+<text x="815" y="258" text-anchor="middle" fill="#6b7280" font-size="11">extra fence on top of</text><text x="815" y="274" text-anchor="middle" fill="#6b7280" font-size="11">Tableau — never instead</text>
+</g>
+</svg>
+
+<figcaption>Figure 1. Five layers between an AI question and a row of data. Tableau enforces 1–4; Tableau MCP adds 5 as an extra fence.</figcaption>
+</figure>
+
+<h2 id="layer-1-licences-and-site-roles">🪪 Layer 1 – Licences and site roles</h2>
+<p>A licence type is what you buy; a <strong>site role</strong> is what an administrator assigns to a user on a site, bounded by the licence. The site role is the <em>ceiling</em>: permissions can never grant more than the role allows.</p>
+<table>
+<thead>
+<tr>
+<th>Site role</th>
+<th>Licence</th>
+<th>Can view content</th>
+<th>Can query a published data source (Connect)</th>
+<th>Can download full data</th>
+<th>Can publish / web edit</th>
+<th>Typical AI persona</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Viewer</td>
+<td>Viewer</td>
+<td>✅</td>
+<td>✅ if granted</td>
+<td>❌ (summary only)</td>
+<td>❌</td>
+<td>Manager asking questions through the portal</td>
+</tr>
+<tr>
+<td>Explorer</td>
+<td>Explorer</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅ if granted</td>
+<td>Web edit, no publish</td>
+<td>Analyst using Claude / Gemini for exploration</td>
+</tr>
+<tr>
+<td>Explorer (can publish)</td>
+<td>Explorer</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>Power user building certified sources</td>
+</tr>
+<tr>
+<td>Creator</td>
+<td>Creator</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅ + Desktop / Prep</td>
+<td>Data team, MCP service identity for admin tasks</td>
+</tr>
+<tr>
+<td>Site Administrator Explorer / Creator</td>
+<td>Explorer / Creator</td>
+<td>✅ all</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>Runs admin tool group (stale content, refresh tasks)</td>
+</tr>
+<tr>
+<td>Server Administrator</td>
+<td>Creator</td>
+<td>✅ everything, all sites</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td><strong>Never</strong> use as an MCP identity</td>
+</tr>
+<tr>
+<td>Unlicensed</td>
+<td>—</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>AI gets nothing; sign-in fails</td>
+</tr>
+</tbody>
+</table>
+<div class="callout note" markdown="0"><div class="callout-title">Viewer and &quot;Connect&quot;</div><p>A Viewer can hold the <em>Connect</em> capability on a published data source. Tableau uses it so Viewers can open workbooks built on that source; it also lets VizQL Data Service (and therefore <code>query-datasource</code>) run for them. What Viewers cannot do is connect from Tableau Desktop or download full data. Check your licence agreement before relying on Viewers for heavy ad-hoc AI querying.</p></div>
+
+<div class="callout verify" markdown="0"><div class="callout-title">Verify with current docs</div><p>Site-role names and what they allow are stable but not frozen: Tableau has adjusted Viewer capabilities in the past. Confirm against the "Site roles and permissions" page for your server version.</p></div>
+
+<h2 id="layer-2-projects">📁 Layer 2 – Projects</h2>
+<p>Projects are the folders content lives in. Two settings matter most for AI access:</p>
+<ul>
+<li><strong>View project</strong> – if the user cannot see the project, the AI cannot list or query anything inside it. <code>search-content</code> and <code>list-datasources</code> silently omit it.</li>
+<li><strong>Locked permissions (Content Permissions › Locked)</strong> – every item inherits the project's permission rules and owners cannot override them. This is the setting that makes an "AI-ready" project trustworthy: whatever the data team certifies stays locked down the way they set it.</li>
+</ul>
+<p>Recommended structure:</p>
+<pre data-lang="text"><code>📁 Certified (locked)            ← published data sources for AI + dashboards; only data team publishes
+   📁 Sales
+   📁 Finance                    ← finance group only
+   📁 HR (restricted)            ← HR group only, RLS mandatory
+📁 Departmental (locked)         ← team workbooks on certified sources
+📁 Sandbox (customizable)        ← personal exploration; excluded from MCP scope
+📁 Admin                         ← admin reports, server admins only
+</code></pre>
+<h2 id="layer-3-content-capabilities">🔑 Layer 3 – Content capabilities</h2>
+<p>Permissions are granted to <strong>groups</strong> (preferably) or users as <em>Allowed / Denied / Unspecified</em> per capability. Denied always wins over Allowed; Unspecified falls back to the next rule and finally to "no".</p>
+<h3 id="workbook-capabilities">Workbook capabilities</h3>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>What it allows</th>
+<th>MCP tools that need it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>View</td>
+<td>See the workbook and its views</td>
+<td><code>list-workbooks</code>, <code>list-views</code>, <code>get-workbook</code></td>
+</tr>
+<tr>
+<td>Filter</td>
+<td>Change filters and parameters</td>
+<td><code>get-view-data</code> with filters, <code>get-view-image</code> with filters</td>
+</tr>
+<tr>
+<td>Download Image/PDF</td>
+<td>Export view image</td>
+<td><code>get-view-image</code></td>
+</tr>
+<tr>
+<td>Download Summary Data</td>
+<td>Aggregated data behind a view</td>
+<td><code>get-view-data</code> (summary)</td>
+</tr>
+<tr>
+<td>Download Full Data</td>
+<td>Row-level data behind a view</td>
+<td><code>get-view-data</code> when the model asks for underlying rows</td>
+</tr>
+<tr>
+<td>Web Edit, Download Workbook, Overwrite, Move, Delete, Set Permissions</td>
+<td>Editing and administration</td>
+<td>Not used by read-only AI instances — deny for AI groups</td>
+</tr>
+</tbody>
+</table>
+<h3 id="data-source-capabilities">Data source capabilities</h3>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>What it allows</th>
+<th>MCP tools that need it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>View</td>
+<td>See the data source in lists</td>
+<td><code>list-datasources</code>, <code>search-content</code></td>
+</tr>
+<tr>
+<td>Connect</td>
+<td>Query it (Desktop, web authoring, <strong>VizQL Data Service</strong>)</td>
+<td><code>list-fields</code>, <code>get-datasource-metadata</code>, <code>query-datasource</code></td>
+</tr>
+<tr>
+<td>Download Data Source / Save a Copy</td>
+<td>Get the .tdsx</td>
+<td>Not needed — deny for AI groups</td>
+</tr>
+<tr>
+<td>Overwrite, Delete, Set Permissions</td>
+<td>Administration</td>
+<td>Deny for AI groups</td>
+</tr>
+<tr>
+<td>(Extract refresh: owner or project leader)</td>
+<td>Trigger / schedule refresh</td>
+<td><code>list-extract-refresh-tasks</code>, refresh tools — admin instance only</td>
+</tr>
+</tbody>
+</table>
+<h3 id="permission-templates-for-ai-groups">Permission templates for AI groups</h3>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Purpose</th>
+<th>Workbook</th>
+<th>Data source</th>
+<th>Site role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ai-viewers</code></td>
+<td>Ask questions through the portal</td>
+<td>View, Filter, Download Summary Data</td>
+<td>View, Connect</td>
+<td>Viewer</td>
+</tr>
+<tr>
+<td><code>ai-analysts</code></td>
+<td>Explore with Claude / Gemini / VS Code</td>
+<td>+ Download Full Data, Download Image</td>
+<td>View, Connect</td>
+<td>Explorer</td>
+</tr>
+<tr>
+<td><code>ai-admins</code></td>
+<td>Housekeeping with the admin tool group</td>
+<td>All</td>
+<td>All</td>
+<td>Site Administrator Explorer</td>
+</tr>
+<tr>
+<td><code>svc-mcp-portal</code> (service)</td>
+<td>Portal's Direct Trust identity</td>
+<td>View, Filter, Download Summary Data</td>
+<td>View, Connect</td>
+<td>Viewer or Explorer</td>
+</tr>
+</tbody>
+</table>
+<p>Set these on the <em>Certified</em> project with permissions locked, and the whole tree follows.</p>
+<h2 id="layer-4-row-level-security">🔒 Layer 4 – Row-level security</h2>
+<p>Capabilities decide <em>whether</em> a user can query a data source; RLS decides <em>which rows</em> they get. Tableau applies RLS by the identity the MCP server signs in as, so the auth mode from the Architecture chapter matters:</p>
+<table>
+<thead>
+<tr>
+<th>MCP auth</th>
+<th>Identity Tableau sees</th>
+<th>RLS result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OAuth</td>
+<td>The real user</td>
+<td>✅ Correct per user</td>
+</tr>
+<tr>
+<td>Direct Trust with <code>JWT_SUB_CLAIM={OAUTH_USERNAME}</code> (portal pattern)</td>
+<td>The real user</td>
+<td>✅ Correct per user</td>
+</tr>
+<tr>
+<td>Direct Trust with a fixed <code>JWT_SUB_CLAIM</code></td>
+<td>One service user</td>
+<td>⚠️ Everyone gets the service user's rows</td>
+</tr>
+<tr>
+<td>PAT</td>
+<td>PAT owner</td>
+<td>⚠️ Everyone gets the owner's rows</td>
+</tr>
+</tbody>
+</table>
+<p>Four ways to implement RLS on Tableau Server, from simplest to most scalable:</p>
+<ol>
+<li><strong>User filter in the workbook</strong> – <code>USERNAME()</code> or <code>ISMEMBEROF('group')</code> in a calculated filter. Quick, but lives in each workbook; the AI querying the <em>data source</em> directly bypasses it. Use only for view-based use cases.</li>
+<li><strong>Calculated filter in the published data source</strong> – same functions, applied to the data source so every workbook <em>and</em> every <code>query-datasource</code> call inherits it. Minimum for AI.</li>
+<li><strong>Entitlement table join</strong> – a security table (<code>user</code>, <code>region</code>, <code>cost_center</code>) joined into the data source with a filter <code>USERNAME() = [user]</code>. Scales to thousands of users; managed by data, not by editing calculations.</li>
+<li><strong>Virtual Connection with a data policy</strong> – RLS defined once at the connection level, enforced for every data source built on it. Requires Data Management. The cleanest answer for enterprise AI access.</li>
+</ol>
+<div class="callout warning" markdown="0"><div class="callout-title">Test RLS with two users before go-live</div><p>Sign in to the MCP server as two people with different entitlements and ask the same question. If both get the same numbers, RLS is not reaching the AI path. Check the auth mode first, then whether the filter is on the data source rather than the workbook.</p></div>
+
+<h2 id="layer-5-tableau-mcp-scoping">🧭 Layer 5 – Tableau MCP scoping</h2>
+<p>Tableau MCP's <code>INCLUDE_*</code> / <code>EXCLUDE_*</code> variables (Installation § 4.2) are a fence <em>around</em> Tableau permissions. They stop the AI from seeing content it technically could — useful for keeping Sandbox out of scope or exposing only <code>datasource</code> tools — but they are not a substitute for permissions: a user could still reach the content through the Tableau UI.</p>
+<p>Typical mapping:</p>
+<table>
+<thead>
+<tr>
+<th>MCP instance</th>
+<th><code>INCLUDE_TOOLS</code></th>
+<th><code>INCLUDE_PROJECT_IDS</code> / <code>INCLUDE_TAGS</code></th>
+<th>Who connects</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mcp-analysts</code> (port 3927)</td>
+<td><code>datasource,workbook,view</code></td>
+<td>Certified project · tag <code>ai-ready</code></td>
+<td>ai-analysts, ai-viewers via OAuth</td>
+</tr>
+<tr>
+<td><code>mcp-portal</code> (port 3928, localhost only)</td>
+<td><code>datasource</code></td>
+<td>Certified project</td>
+<td>Portal service identity</td>
+</tr>
+<tr>
+<td><code>mcp-admin</code> (port 3929)</td>
+<td><code>admin,workbook,datasource</code></td>
+<td>(all)</td>
+<td>ai-admins via OAuth</td>
+</tr>
+</tbody>
+</table>
+<h2 id="security-design-best-practices">🛡️ Security design best practices</h2>
+<h3 id="identity">Identity</h3>
+<ul>
+<li>One identity per human (OAuth) for anything interactive; one dedicated service identity per system (portal, scheduled agent) with its own Connected App.</li>
+<li>Groups synced from Active Directory / SAML; never assign permissions to individual users.</li>
+<li>Site Administrator only for the admin MCP instance; Server Administrator never.</li>
+</ul>
+<h3 id="data">Data</h3>
+<ul>
+<li>Certify the published data sources the AI may use; add field descriptions — the description <em>is</em> the AI's prompt.</li>
+<li>RLS in the data source or virtual connection, not in workbooks or system prompts.</li>
+<li>Classify data: <strong>Public / Internal / Confidential / Restricted</strong>. Only Public and Internal go through a cloud LLM; Confidential requires a self-hosted or in-region model; Restricted (PII, salary, medical) stays out of MCP scope entirely.</li>
+<li>Mask or aggregate sensitive columns in the certified source (e.g. salary bands instead of salary).</li>
+</ul>
+<h3 id="network-and-platform">Network and platform</h3>
+<ul>
+<li>MCP bound to localhost, behind TLS reverse proxy with IP allow-list; separate instances for analysts, portal and admins.</li>
+<li>Secrets in a vault; RSA key for OAuth with 600 permissions; rotate Connected App secrets quarterly.</li>
+<li>Pin versions; patch on a schedule; test upgrades on the pilot site first.</li>
+</ul>
+<h3 id="ai-specific-controls">AI-specific controls</h3>
+<ul>
+<li>Read-only instances for everyone except admins: no refresh, no overwrite, no permission tools.</li>
+<li>Cap tool rounds and result sizes; reject queries that return more than N rows unaggregated.</li>
+<li>System prompt forbids revealing URLs, LUIDs and tokens; strip them from tool results in the portal.</li>
+<li>Prompt-injection awareness: field descriptions and workbook names are <em>inputs to the model</em> — only certified authors may edit them.</li>
+</ul>
+<h3 id="audit-and-monitoring">Audit and monitoring</h3>
+<ul>
+<li>Tableau Server <code>http_requests</code> + MCP file logger + portal audit log, joined by user and timestamp.</li>
+<li>Weekly review: top users, top data sources, 403 spikes (permission gaps or probing), unusual row counts.</li>
+<li>Retention per policy; alert on Restricted-tagged content appearing in any MCP log.</li>
+</ul>
+<h3 id="go-live-checklist-security-team">Go-live checklist (security team)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Check</th>
+<th>✓</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Certified project locked; only data team can publish</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>ai-*</code> groups exist, synced from directory, permission templates applied</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Every AI-exposed data source has View + Connect for the right group and nothing more</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>4</td>
+<td>RLS implemented in data source or virtual connection; two-user test passed</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Auth mode gives Tableau the real user (OAuth or <code>{OAUTH_USERNAME}</code>)</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Restricted data not in any <code>INCLUDE_*</code> scope; verified by listing data sources through the AI</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Data classification decides which LLM endpoint each instance uses</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Admin tools only on the admin instance; analysts' instance has <code>EXCLUDE_TOOLS=pulse,admin</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Logs flowing to SIEM with user attribution</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Owner named for quarterly permission and secret review</td>
+<td>☐</td>
+</tr>
+</tbody>
+</table>
+    </article>
+    <nav class="pagernav"><a class="pager prev" href="06-web-ui-wrapper.html"><small>Previous</small><span>Advanced: build a custom Web UI wrapper</span></a><a class="pager next" href="08-enterprise-proposal.html"><small>Next</small><span>Enterprise proposal: a BI + AI chat platform on Tableau MCP</span></a></nav>
+    <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">Home</a></footer>
+  </main>
+  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#the-five-layers">🧱 The five layers</a></li><li><a href="#layer-1-licences-and-site-roles">🪪 Layer 1 – Licences and site roles</a></li><li><a href="#layer-2-projects">📁 Layer 2 – Projects</a></li><li><a href="#layer-3-content-capabilities">🔑 Layer 3 – Content capabilities</a><ul><li><a href="#workbook-capabilities">Workbook capabilities</a></li><li><a href="#data-source-capabilities">Data source capabilities</a></li><li><a href="#permission-templates-for-ai-groups">Permission templates for AI groups</a></li></ul></li><li><a href="#layer-4-row-level-security">🔒 Layer 4 – Row-level security</a></li><li><a href="#layer-5-tableau-mcp-scoping">🧭 Layer 5 – Tableau MCP scoping</a></li><li><a href="#security-design-best-practices">🛡️ Security design best practices</a><ul><li><a href="#identity">Identity</a></li><li><a href="#data">Data</a></li><li><a href="#network-and-platform">Network and platform</a></li><li><a href="#ai-specific-controls">AI-specific controls</a></li><li><a href="#audit-and-monitoring">Audit and monitoring</a></li><li><a href="#go-live-checklist-security-team">Go-live checklist (security team)</a></li></ul></li></ul></aside>
+</div>
+<button class="totop" title="Back to top" aria-label="Back to top">↑</button>
+<script src="../assets/app.js"></script>
+</body>
+</html>

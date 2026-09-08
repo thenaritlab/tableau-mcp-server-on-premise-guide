@@ -1,10 +1,10 @@
-[🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: 5 use case ยอดนิยม](05-use-cases.md) · [ถัดไป: แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย ▶](07-best-practices.md) · [🇺🇸 English](../en/06-web-ui-wrapper.md)
+[🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: 5 use case ยอดนิยม](05-use-cases.md) · [ถัดไป: สิทธิ์ บทบาท และลิขสิทธิ์ ▶](07-permissions-security.md) · [🇺🇸 English](../en/06-web-ui-wrapper.md)
 
 ---
 
 # 🖥️ ขั้นสูง: สร้าง Web UI ครอบ Tableau Server
 
-`ส่วนที่ 6 จาก 9`
+`ส่วนที่ 6 จาก 11`
 
 > "หน้ากาก" ที่วางไว้หน้า Tableau Server: ผู้ใช้ล็อกอินเข้า portal ของคุณ แชทกับ AI ที่ query Tableau ผ่าน MCP และเห็น dashboard แบบฝังได้ตามต้องการ ผู้ใช้ไม่มีทางรู้ URL ของ server, โทเคน หรือ ID ของ data source และทุกคำถามถูกบันทึก
 
@@ -487,12 +487,14 @@ export default function EmbeddedView({ viewPath }) {   // e.g. "SalesOverview/Da
 4. ⚙️ [การติดตั้งและตั้งค่า](04-installation.md)
 5. 💡 [5 use case ยอดนิยม](05-use-cases.md)
 6. 🖥️ **[ขั้นสูง: สร้าง Web UI ครอบ Tableau Server](06-web-ui-wrapper.md)**
-7. 🛡️ [แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย](07-best-practices.md)
-8. ❓ [คำถามที่พบบ่อยและอภิธานศัพท์](08-faq-glossary.md)
-9. 🔗 [เอกสารอ้างอิง](09-references.md)
+7. 🔐 [สิทธิ์ บทบาท และลิขสิทธิ์](07-permissions-security.md)
+8. 📈 [ข้อเสนอโครงการ: แพลตฟอร์ม BI + AI Chat สำหรับองค์กรบน Tableau MCP](08-enterprise-proposal.md)
+9. 🛡️ [แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย](09-best-practices.md)
+10. ❓ [คำถามที่พบบ่อยและอภิธานศัพท์](10-faq-glossary.md)
+11. 🔗 [เอกสารอ้างอิง](11-references.md)
 
 </details>
 
-[🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: 5 use case ยอดนิยม](05-use-cases.md) · [ถัดไป: แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย ▶](07-best-practices.md) · [🇺🇸 English](../en/06-web-ui-wrapper.md)
+[🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: 5 use case ยอดนิยม](05-use-cases.md) · [ถัดไป: สิทธิ์ บทบาท และลิขสิทธิ์ ▶](07-permissions-security.md) · [🇺🇸 English](../en/06-web-ui-wrapper.md)
 
-<sub>ส่วนที่ 6 จาก 9 · Created by The Narit Lab</sub>
+<sub>ส่วนที่ 6 จาก 11 · Created by The Narit Lab</sub>

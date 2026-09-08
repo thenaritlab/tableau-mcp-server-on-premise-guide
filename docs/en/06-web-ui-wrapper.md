@@ -1,10 +1,10 @@
-[🏠 Home](../../README.md) · [◀ Previous: Top 5 use cases](05-use-cases.md) · [Next: Best practices, governance and security checklist ▶](07-best-practices.md) · [🇹🇭 ภาษาไทย](../th/06-web-ui-wrapper.md)
+[🏠 Home](../../README.md) · [◀ Previous: Top 5 use cases](05-use-cases.md) · [Next: Permissions, roles and licences ▶](07-permissions-security.md) · [🇹🇭 ภาษาไทย](../th/06-web-ui-wrapper.md)
 
 ---
 
 # 🖥️ Advanced: build a custom Web UI wrapper
 
-`Section 6 of 9`
+`Section 6 of 11`
 
 > A "mask" in front of Tableau Server: users sign in to your portal, chat with an AI that queries Tableau through MCP, and optionally see embedded dashboards. They never learn the server URL, tokens or data source IDs, and every question is logged.
 
@@ -487,12 +487,14 @@ export default function EmbeddedView({ viewPath }) {   // e.g. "SalesOverview/Da
 4. ⚙️ [Installation and configuration](04-installation.md)
 5. 💡 [Top 5 use cases](05-use-cases.md)
 6. 🖥️ **[Advanced: build a custom Web UI wrapper](06-web-ui-wrapper.md)**
-7. 🛡️ [Best practices, governance and security checklist](07-best-practices.md)
-8. ❓ [FAQ and glossary](08-faq-glossary.md)
-9. 🔗 [References](09-references.md)
+7. 🔐 [Permissions, roles and licences](07-permissions-security.md)
+8. 📈 [Enterprise proposal: a BI + AI chat platform on Tableau MCP](08-enterprise-proposal.md)
+9. 🛡️ [Best practices, governance and security checklist](09-best-practices.md)
+10. ❓ [FAQ and glossary](10-faq-glossary.md)
+11. 🔗 [References](11-references.md)
 
 </details>
 
-[🏠 Home](../../README.md) · [◀ Previous: Top 5 use cases](05-use-cases.md) · [Next: Best practices, governance and security checklist ▶](07-best-practices.md) · [🇹🇭 ภาษาไทย](../th/06-web-ui-wrapper.md)
+[🏠 Home](../../README.md) · [◀ Previous: Top 5 use cases](05-use-cases.md) · [Next: Permissions, roles and licences ▶](07-permissions-security.md) · [🇹🇭 ภาษาไทย](../th/06-web-ui-wrapper.md)
 
-<sub>Section 6 of 9 · Created by The Narit Lab</sub>
+<sub>Section 6 of 11 · Created by The Narit Lab</sub>

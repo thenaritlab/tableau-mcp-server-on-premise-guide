@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enterprise proposal: a BI + AI chat platform on Tableau MCP · Tableau Server On-Premise + Tableau MCP + AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="doc">
+<div class="progress" aria-hidden="true"></div>
+<header class="topbar">
+  <button class="menu-btn" aria-label="Menu" aria-expanded="false" data-menu>☰</button>
+  <a class="brand" href="../index.html">Tableau Server On-Premise + Tableau MCP + AI</a>
+  <nav class="lang-switch" aria-label="Language">
+    <a href="../index.html" title="Home">Home</a>
+    <a class="lang-other" href="../th/08-enterprise-proposal.html">ไทย</a>
+    <button class="icon-btn" data-theme-toggle title="Toggle dark mode" aria-label="Toggle dark mode">☾</button>
+  </nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Contents">
+    <div class="side-title">Contents</div>
+    <ol class="side-list"><li data-slug="01-overview"><a href="01-overview.html"><span class="n">1</span>Overview</a></li>
+<li data-slug="02-architecture"><a href="02-architecture.html"><span class="n">2</span>Architecture</a></li>
+<li data-slug="03-prerequisites"><a href="03-prerequisites.html"><span class="n">3</span>Prerequisites</a></li>
+<li data-slug="04-installation"><a href="04-installation.html"><span class="n">4</span>Installation and configuration</a></li>
+<li data-slug="05-use-cases"><a href="05-use-cases.html"><span class="n">5</span>Top 5 use cases</a></li>
+<li data-slug="06-web-ui-wrapper"><a href="06-web-ui-wrapper.html"><span class="n">6</span>Advanced: build a custom Web UI wrapper</a></li>
+<li data-slug="07-permissions-security"><a href="07-permissions-security.html"><span class="n">7</span>Permissions, roles and licences</a></li>
+<li class="active" data-slug="08-enterprise-proposal"><a href="08-enterprise-proposal.html"><span class="n">8</span>Enterprise proposal: a BI + AI chat platform on Tableau MCP</a></li>
+<li data-slug="09-best-practices"><a href="09-best-practices.html"><span class="n">9</span>Best practices, governance and security checklist</a></li>
+<li data-slug="10-faq-glossary"><a href="10-faq-glossary.html"><span class="n">10</span>FAQ and glossary</a></li>
+<li data-slug="11-references"><a href="11-references.html"><span class="n">11</span>References</a></li></ol>
+    <div class="side-progress" data-label="Read {n} of {t} sections"><span class="txt"></span><div class="bar"><i style="width:0"></i></div></div>
+  </nav>
+  <main class="content">
+    <article class="doc-body" data-copy="Copy" data-copied="Copied" data-slug="08-enterprise-proposal">
+
+<h1 id="enterprise-proposal-a-bi-ai-chat-platform-on-tableau-mcp">Enterprise proposal: a BI + AI chat platform on Tableau MCP</h1><div class="doc-meta"><span class="chip">Section 8 of 11</span><span class="chip">9 min read</span></div>
+<p class="lead">A ready-to-adapt proposal for IT and development teams. Replace "Demo Company" with your organisation, adjust the numbers, and take it to the steering committee. Everything technical it promises is covered in the earlier chapters.</p>
+
+<div class="callout tip" markdown="0"><div class="callout-title">How to use this chapter</div><p>Sections 1–4 are for executives (problem, vision, value). Sections 5–9 are for IT (architecture, roadmap, team, cost, risk). Section 10 is the decision you are asking for. Keep it to eight pages when you present it.</p></div>
+
+<h2 id="1-executive-summary">🎯 1. Executive summary</h2>
+<p>Demo Company already runs Tableau Server on-premise with certified data sources and dashboards. Today, getting an answer that is not on a dashboard means a ticket to the BI team and a wait of days. This proposal adds a governed <strong>AI chat layer</strong> on top of the existing Tableau investment using Tableau MCP, so employees can ask business questions in plain language — in Claude, Microsoft Copilot, LINE, Teams or a company portal — and receive answers computed from the same certified data, under the same permissions.</p>
+<ul>
+<li><strong>No new data platform.</strong> Reuses published data sources, permissions and row-level security already in Tableau.</li>
+<li><strong>Data stays on-premise.</strong> Only governed query results reach the AI model, and the model endpoint is chosen per data classification.</li>
+<li><strong>Three phases over six months</strong>, starting with a four-week pilot on two data sources.</li>
+<li><strong>Target outcome:</strong> cut ad-hoc report requests by 30 %, reduce time-to-answer from days to minutes, and free roughly one analyst FTE per department for higher-value work.</li>
+</ul>
+<h2 id="2-the-problem-today">🩺 2. The problem today</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Evidence to collect</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ad-hoc report backlog</td>
+<td>BI ticket queue, average lead time</td>
+<td>Analyst hours, delayed decisions</td>
+</tr>
+<tr>
+<td>Dashboards answer yesterday's questions</td>
+<td>Number of "can you add a filter for…" requests</td>
+<td>Every variant becomes a new dashboard</td>
+</tr>
+<tr>
+<td>Excel exports and shadow BI</td>
+<td>Count of "Download Full Data" events per month</td>
+<td>Uncontrolled copies of sensitive data</td>
+</tr>
+<tr>
+<td>Executives depend on a few people</td>
+<td>Who gets called on Sunday night?</td>
+<td>Key-person risk</td>
+</tr>
+<tr>
+<td>Generic AI tools used without data</td>
+<td>Staff pasting exports into public chatbots</td>
+<td>Data-leak risk, unverifiable numbers</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-vision-and-guiding-principles">🔭 3. Vision and guiding principles</h2>
+<blockquote>
+<p>Any employee can ask a business question and get a trustworthy, permission-aware answer from certified company data in under a minute — from the tool they already use.</p>
+</blockquote>
+<ol>
+<li><strong>One semantic layer.</strong> Certified Tableau data sources are the single vocabulary for humans, dashboards and AI.</li>
+<li><strong>Governance travels with the question.</strong> The AI never sees more than the user could see in Tableau.</li>
+<li><strong>Meet people where they work.</strong> Copilot for the Microsoft crowd, LINE or Teams for field staff, a portal for everyone else.</li>
+<li><strong>Humans decide.</strong> The AI explains, cites the data source and filters, and never triggers a business action on its own.</li>
+<li><strong>Start small, prove value, then scale.</strong> Every phase has a measurable gate.</li>
+</ol>
+<h2 id="4-use-cases-and-business-impact">💼 4. Use cases and business impact</h2>
+<table>
+<thead>
+<tr>
+<th>Department</th>
+<th>Question people actually ask</th>
+<th>Today</th>
+<th>With BI + AI chat</th>
+<th>Impact metric</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sales</td>
+<td>"Which accounts in the East slipped more than 15 % this quarter and who owns them?"</td>
+<td>Wait for weekly report</td>
+<td>Answer in chat, with owner list</td>
+<td>Faster follow-up; pipeline slippage caught weeks earlier</td>
+</tr>
+<tr>
+<td>Finance</td>
+<td>"Explain the variance in logistics cost vs budget by cost centre."</td>
+<td>Analyst builds a one-off pivot</td>
+<td>Variance table + narrative in 1 minute</td>
+<td>Month-end commentary time −50 %</td>
+</tr>
+<tr>
+<td>Operations / Supply chain</td>
+<td>"Which SKUs will stock out in 14 days at current run-rate?"</td>
+<td>Excel model maintained by one person</td>
+<td>Recurring agentic check with alert to LINE</td>
+<td>Stock-out incidents −20 %</td>
+</tr>
+<tr>
+<td>Retail / Branch</td>
+<td>"Sales today vs same day last year for my branch."</td>
+<td>Branch manager opens a dashboard on a laptop</td>
+<td>Ask in LINE from the shop floor</td>
+<td>Adoption among non-desk staff</td>
+</tr>
+<tr>
+<td>HR</td>
+<td>"Headcount and attrition by unit, last 12 months." (RLS-restricted)</td>
+<td>HRBP requests report</td>
+<td>Self-service for authorised managers only</td>
+<td>Report requests −70 % for HR analytics</td>
+</tr>
+<tr>
+<td>Executive</td>
+<td>"Give me five bullet points on last week's performance for the board."</td>
+<td>Analyst writes a memo</td>
+<td>Draft generated from the Executive dashboard, human edits</td>
+<td>Board-prep time −60 %</td>
+</tr>
+<tr>
+<td>BI / IT</td>
+<td>"Which dashboards has nobody opened in 90 days?"</td>
+<td>Repository SQL by an admin</td>
+<td>Admin insight tools via chat</td>
+<td>Licence and server clean-up</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Quantifying value</strong> (fill with your numbers):</p>
+<pre data-lang="text"><code>Ad-hoc requests per month          ×  hours per request  ×  analyst hourly cost  =  A
+Decision delay days avoided        ×  value per day (e.g. stock-out, discount)   =  B
+Licence / server clean-up savings                                               =  C
+Annual value ≈ 12 × (A + B) + C      vs      annual run cost (Section 8)
+</code></pre>
+<h2 id="5-target-architecture">🏗️ 5. Target architecture</h2>
+<figure>
+<svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="12.5">
+<defs><marker id="a6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#7b8494"/></marker></defs>
+<rect x="10" y="60" width="170" height="120" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="95" y="90" text-anchor="middle" font-weight="600" fill="#1c2430">Browser</text>
+<text x="95" y="112" text-anchor="middle" fill="#4a5566">React chat UI</text>
+<text x="95" y="130" text-anchor="middle" fill="#4a5566">embedded viz (optional)</text>
+<text x="95" y="160" text-anchor="middle" fill="#7b8494">session cookie only</text>
+<line x1="182" y1="120" x2="238" y2="120" stroke="#7b8494" stroke-width="2" marker-end="url(#a6)" marker-start="url(#a6)"/>
+<text x="210" y="140" text-anchor="middle" fill="#7b8494" font-size="11">HTTPS /api</text>
+<rect x="240" y="30" width="250" height="180" rx="10" fill="#e8f0f9" stroke="#1c5d99" stroke-width="1.5"/>
+<text x="365" y="56" text-anchor="middle" font-weight="700" fill="#0f3d6b">Portal API (Node.js + Express)</text>
+<g fill="#4a5566"><rect x="258" y="70" width="214" height="28" rx="6" fill="#fff" stroke="#c9d1dc"/><text x="365" y="89" text-anchor="middle">/api/login · session JWT</text>
+<rect x="258" y="104" width="214" height="28" rx="6" fill="#fff" stroke="#c9d1dc"/><text x="365" y="123" text-anchor="middle">/api/chat · LLM ↔ MCP tool loop</text>
+<rect x="258" y="138" width="214" height="28" rx="6" fill="#fff" stroke="#c9d1dc"/><text x="365" y="157" text-anchor="middle">/api/embed-token · Connected App JWT</text>
+<rect x="258" y="172" width="214" height="28" rx="6" fill="#fff" stroke="#c9d1dc"/><text x="365" y="191" text-anchor="middle">audit.jsonl · rate limit · helmet</text></g>
+<line x1="492" y1="80" x2="588" y2="80" stroke="#7b8494" stroke-width="2" marker-end="url(#a6)" marker-start="url(#a6)"/>
+<text x="540" y="68" text-anchor="middle" fill="#7b8494" font-size="11">LLM API</text>
+<rect x="590" y="50" width="140" height="60" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="660" y="75" text-anchor="middle" font-weight="600" fill="#1c2430">LLM</text>
+<text x="660" y="95" text-anchor="middle" fill="#4a5566">Claude / others</text>
+<line x1="492" y1="160" x2="588" y2="160" stroke="#7b8494" stroke-width="2" marker-end="url(#a6)" marker-start="url(#a6)"/>
+<text x="540" y="148" text-anchor="middle" fill="#7b8494" font-size="11">MCP HTTP</text>
+<rect x="590" y="130" width="140" height="60" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="660" y="155" text-anchor="middle" font-weight="600" fill="#1c2430">Tableau MCP</text>
+<text x="660" y="175" text-anchor="middle" fill="#4a5566">127.0.0.1:3927</text>
+<line x1="732" y1="160" x2="758" y2="160" stroke="#7b8494" stroke-width="2" marker-end="url(#a6)" marker-start="url(#a6)"/>
+<rect x="760" y="130" width="130" height="60" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="825" y="155" text-anchor="middle" font-weight="600" fill="#1c2430">Tableau Server</text>
+<text x="825" y="175" text-anchor="middle" fill="#4a5566">REST · VDS</text>
+<rect x="240" y="225" width="650" height="1" fill="#c9d1dc"/>
+<text x="565" y="248" text-anchor="middle" fill="#7b8494" font-size="11">everything right of the browser runs on your network; only the LLM call may leave it</text>
+</svg>
+<figcaption>Figure 1. Target state: one governed Tableau MCP service behind the company portal and the users' existing AI clients. Detail in the Architecture and Web UI chapters.</figcaption>
+</figure>
+
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Component</th>
+<th>Choice for Demo Company</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Data</td>
+<td>Tableau Server 2025.3+ (existing), certified sources in a locked project, RLS via entitlement table / virtual connection</td>
+<td>Existing licence; Data Management add-on if virtual connections are used</td>
+</tr>
+<tr>
+<td>Access broker</td>
+<td>Tableau MCP, three instances (analysts / portal / admin) on a dedicated Linux VM, Docker, TLS reverse proxy</td>
+<td>Section 4 patterns</td>
+</tr>
+<tr>
+<td>Identity</td>
+<td>OAuth against Tableau (SAML SSO behind it); Connected App for the portal</td>
+<td>Section 7</td>
+</tr>
+<tr>
+<td>Model</td>
+<td>Phase 1–2: cloud LLM for Public/Internal data; Phase 3: self-hosted or in-region model for Confidential</td>
+<td>Data classification decides</td>
+</tr>
+<tr>
+<td>Channels</td>
+<td>Claude Desktop / Copilot for analysts; company portal with chat box + embedded dashboards; LINE / Teams bot calling the portal API</td>
+<td>Section 6 for the portal</td>
+</tr>
+<tr>
+<td>Operations</td>
+<td>File logger + portal audit → SIEM; usage dashboard in Tableau; cost dashboard for tokens</td>
+<td>Section 9</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-roadmap">🗓️ 6. Roadmap</h2>
+<figure>
+<svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="12.5">
+<line x1="30" y1="60" x2="870" y2="60" stroke="#cfd6e0" stroke-width="3"/>
+<g>
+<circle cx="110" cy="60" r="10" fill="#0e8574"/><text x="110" y="40" text-anchor="middle" font-weight="700" fill="#1f2937">Phase 0 · Pilot</text>
+<rect x="30" y="84" width="160" height="196" rx="10" fill="#e2f5f1" stroke="#0e8574"/>
+<g fill="#1f2937"><text x="42" y="108" font-weight="600">Weeks 1–4</text><text x="42" y="132">• 1 site, 2 data sources</text><text x="42" y="150">• stdio + PAT, 5 users</text><text x="42" y="168">• Claude Desktop / Gemini</text><text x="42" y="186">• Use cases 1–2</text><text x="42" y="212" fill="#0e8574" font-weight="600">Gate: 80% answers</text><text x="42" y="228" fill="#0e8574" font-weight="600">match dashboard</text></g>
+</g>
+<g>
+<circle cx="340" cy="60" r="10" fill="#2563a8"/><text x="340" y="40" text-anchor="middle" font-weight="700" fill="#1f2937">Phase 1 · Shared service</text>
+<rect x="240" y="84" width="200" height="196" rx="10" fill="#e9f1fb" stroke="#2563a8"/>
+<g fill="#1f2937"><text x="252" y="108" font-weight="600">Months 2–3</text><text x="252" y="132">• Dedicated VM, Docker, TLS</text><text x="252" y="150">• OAuth per user, RLS tested</text><text x="252" y="168">• Certified "ai-ready" sources</text><text x="252" y="186">• 30–50 users, 2 departments</text><text x="252" y="212" fill="#2563a8" font-weight="600">Gate: security sign-off,</text><text x="252" y="228" fill="#2563a8" font-weight="600">usage ≥ 3 queries/user/week</text></g>
+</g>
+<g>
+<circle cx="590" cy="60" r="10" fill="#6250b8"/><text x="590" y="40" text-anchor="middle" font-weight="700" fill="#1f2937">Phase 2 · Portal</text>
+<rect x="490" y="84" width="200" height="196" rx="10" fill="#eeebfb" stroke="#6250b8"/>
+<g fill="#1f2937"><text x="502" y="108" font-weight="600">Months 4–6</text><text x="502" y="132">• Web portal + AI chat box</text><text x="502" y="150">• SSO, audit log, embed viz</text><text x="502" y="168">• Use cases 3–5, LINE / Teams</text><text x="502" y="186">• All business units</text><text x="502" y="212" fill="#6250b8" font-weight="600">Gate: NPS ≥ 40,</text><text x="502" y="228" fill="#6250b8" font-weight="600">ad-hoc report tickets −30%</text></g>
+</g>
+<g>
+<circle cx="790" cy="60" r="10" fill="#b4700a"/><text x="790" y="40" text-anchor="middle" font-weight="700" fill="#1f2937">Phase 3 · Scale</text>
+<rect x="710" y="84" width="180" height="196" rx="10" fill="#fdf3df" stroke="#b4700a"/>
+<g fill="#1f2937"><text x="722" y="108" font-weight="600">Month 7+</text><text x="722" y="132">• Self-hosted / regional LLM</text><text x="722" y="150">• Agentic workflows, alerts</text><text x="722" y="168">• Admin insight automation</text><text x="722" y="186">• Cost & quota governance</text><text x="722" y="212" fill="#b4700a" font-weight="600">Gate: run-rate within</text><text x="722" y="228" fill="#b4700a" font-weight="600">budget, KPI review</text></g>
+</g>
+</svg>
+
+<figcaption>Figure 2. Four phases, each with an exit gate. Do not start the next phase until the gate is met.</figcaption>
+</figure>
+
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Duration</th>
+<th>Scope</th>
+<th>Exit gate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 · Pilot</td>
+<td>4 weeks</td>
+<td>1 site, 2 certified data sources (Sales, Finance), 5 users, stdio + PAT, use cases 1–2</td>
+<td>≥ 80 % of 50 test questions match dashboard numbers; security review of findings</td>
+</tr>
+<tr>
+<td>1 · Shared service</td>
+<td>2 months</td>
+<td>Dedicated VM, OAuth, RLS tested, <code>ai-ready</code> certification process, 30–50 users in 2 departments</td>
+<td>Security sign-off; ≥ 3 queries per user per week; zero permission incidents</td>
+</tr>
+<tr>
+<td>2 · Portal &amp; channels</td>
+<td>3 months</td>
+<td>Web portal with AI chat + embedded dashboards, SSO, audit, LINE / Teams bot, use cases 3–5, all business units</td>
+<td>NPS ≥ 40; ad-hoc report tickets −30 %; portal availability ≥ 99.5 %</td>
+</tr>
+<tr>
+<td>3 · Scale &amp; optimise</td>
+<td>ongoing</td>
+<td>Self-hosted / in-region model for Confidential data, agentic alerts, admin automation, token-cost governance</td>
+<td>Run-rate within budget; quarterly KPI review</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-team-and-responsibilities">👥 7. Team and responsibilities</h2>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Phase 0–1</th>
+<th>Phase 2–3</th>
+<th>Responsibilities</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Executive sponsor</td>
+<td>0.05 FTE</td>
+<td>0.05 FTE</td>
+<td>Removes blockers, owns the KPI</td>
+</tr>
+<tr>
+<td>Product owner (BI lead)</td>
+<td>0.3 FTE</td>
+<td>0.5 FTE</td>
+<td>Prioritises use cases, certifies data sources, owns prompts and definitions</td>
+</tr>
+<tr>
+<td>Tableau administrator</td>
+<td>0.3 FTE</td>
+<td>0.3 FTE</td>
+<td>Projects, permissions, RLS, MCP instances</td>
+</tr>
+<tr>
+<td>Platform / DevOps engineer</td>
+<td>0.3 FTE</td>
+<td>0.3 FTE</td>
+<td>VM, Docker, TLS, secrets, logging</td>
+</tr>
+<tr>
+<td>Full-stack developer</td>
+<td>—</td>
+<td>1 FTE (Phase 2)</td>
+<td>Portal, chat box, LINE / Teams bot</td>
+</tr>
+<tr>
+<td>Security / compliance</td>
+<td>0.1 FTE</td>
+<td>0.1 FTE</td>
+<td>Data classification, reviews, sign-off gates</td>
+</tr>
+<tr>
+<td>Department champions (×4)</td>
+<td>0.1 FTE each</td>
+<td>0.1 FTE each</td>
+<td>Test questions, adoption, feedback</td>
+</tr>
+<tr>
+<td>External partner (optional)</td>
+<td>Accelerator for Phase 0–1</td>
+<td>Portal build support</td>
+<td>Tableau MCP setup, training, portal starter</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8-effort-and-cost-structure">💰 8. Effort and cost structure</h2>
+<p>Fill in local rates; the structure is what matters.</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Phase 0</th>
+<th>Phase 1</th>
+<th>Phase 2</th>
+<th>Run / year</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Internal effort (person-days)</td>
+<td>15</td>
+<td>40</td>
+<td>120</td>
+<td>60</td>
+</tr>
+<tr>
+<td>Infrastructure (VM, TLS, storage)</td>
+<td>—</td>
+<td>1 small VM</td>
+<td>2 VMs (MCP, portal)</td>
+<td>✱</td>
+</tr>
+<tr>
+<td>Tableau licences</td>
+<td>Existing</td>
+<td>Existing (+ Viewer seats for new users)</td>
+<td>+ Viewer seats; Data Management if virtual connections</td>
+<td>✱</td>
+</tr>
+<tr>
+<td>LLM usage</td>
+<td>Trial credits</td>
+<td>~30k tokens per analysis × queries per month</td>
+<td>Per-user quota, e.g. 200 queries/month</td>
+<td>✱</td>
+</tr>
+<tr>
+<td>Self-hosted model (Phase 3)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>GPU host or in-region managed endpoint</td>
+</tr>
+<tr>
+<td>External services (optional)</td>
+<td>Setup + training</td>
+<td>Security review</td>
+<td>Portal starter kit</td>
+<td>Support retainer</td>
+</tr>
+</tbody>
+</table>
+<p>✱ enter your figures. Typical ratio: LLM usage is small compared with people cost; the largest cost line is Phase 2 development.</p>
+<h2 id="9-risks-and-mitigations">⚠️ 9. Risks and mitigations</h2>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Likelihood</th>
+<th>Impact</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wrong answers trusted blindly</td>
+<td>Medium</td>
+<td>High</td>
+<td>Every answer cites data source and filters; pilot accuracy gate; "verify with dashboard" training</td>
+</tr>
+<tr>
+<td>Sensitive data reaches a cloud model</td>
+<td>Low with controls</td>
+<td>High</td>
+<td>Data classification; Restricted out of MCP scope; Confidential only via self-hosted model; DPA with vendor</td>
+</tr>
+<tr>
+<td>Permission gaps expose data</td>
+<td>Medium</td>
+<td>High</td>
+<td>Locked certified project, group templates, two-user RLS test, 403 monitoring (Chapter 7)</td>
+</tr>
+<tr>
+<td>Low adoption</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Champions per department, channels people already use (LINE / Teams / Copilot), quick-win use cases first</td>
+</tr>
+<tr>
+<td>Token cost creep</td>
+<td>Medium</td>
+<td>Low</td>
+<td>Quotas, scoping, aggregates-only prompting, monthly cost dashboard</td>
+</tr>
+<tr>
+<td>Vendor / version churn (Tableau MCP, AI clients)</td>
+<td>High</td>
+<td>Low</td>
+<td>Pinned versions, quarterly upgrade window, "verify with docs" items reviewed each release</td>
+</tr>
+<tr>
+<td>Key-person dependency on the developer</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Portal built from the documented starter (Chapter 6), code in company repo, runbook</td>
+</tr>
+</tbody>
+</table>
+<h2 id="10-decision-requested">✅ 10. Decision requested</h2>
+<ol>
+<li>Approve <strong>Phase 0 pilot</strong> (4 weeks, 15 person-days, no new licences).</li>
+<li>Nominate the <strong>product owner</strong> and two <strong>department champions</strong>.</li>
+<li>Confirm the <strong>data classification</strong> rules for AI access (Public / Internal via cloud model; Confidential requires Phase 3).</li>
+<li>Agree the <strong>gate criteria</strong> above as the go / no-go for Phase 1.</li>
+</ol>
+<h2 id="appendix-pilot-test-question-set-template">📎 Appendix – Pilot test-question set (template)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Department</th>
+<th>Question</th>
+<th>Expected source</th>
+<th>Dashboard to verify against</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Sales</td>
+<td>Total sales by region, last quarter</td>
+<td>Sales</td>
+<td>Sales Overview</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Sales</td>
+<td>Top 10 products by quantity, West, last quarter</td>
+<td>Sales</td>
+<td>Product Detail</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Finance</td>
+<td>Logistics cost vs budget by cost centre, YTD</td>
+<td>Finance</td>
+<td>Budget vs Actual</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Finance</td>
+<td>Which cost centres exceeded budget by more than 10 %?</td>
+<td>Finance</td>
+<td>Budget vs Actual</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Ops</td>
+<td>SKUs with fewer than 14 days of cover</td>
+<td>Inventory</td>
+<td>Stock Cover</td>
+</tr>
+<tr>
+<td>…</td>
+<td></td>
+<td>50 questions in total, 10 per department</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Score each answer: ✅ matches dashboard · ⚠️ right method, wrong filter · ❌ wrong. Gate: ≥ 80 % ✅.</p>
+    </article>
+    <nav class="pagernav"><a class="pager prev" href="07-permissions-security.html"><small>Previous</small><span>Permissions, roles and licences</span></a><a class="pager next" href="09-best-practices.html"><small>Next</small><span>Best practices, governance and security checklist</span></a></nav>
+    <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">Home</a></footer>
+  </main>
+  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#1-executive-summary">🎯 1. Executive summary</a></li><li><a href="#2-the-problem-today">🩺 2. The problem today</a></li><li><a href="#3-vision-and-guiding-principles">🔭 3. Vision and guiding principles</a></li><li><a href="#4-use-cases-and-business-impact">💼 4. Use cases and business impact</a></li><li><a href="#5-target-architecture">🏗️ 5. Target architecture</a></li><li><a href="#6-roadmap">🗓️ 6. Roadmap</a></li><li><a href="#7-team-and-responsibilities">👥 7. Team and responsibilities</a></li><li><a href="#8-effort-and-cost-structure">💰 8. Effort and cost structure</a></li><li><a href="#9-risks-and-mitigations">⚠️ 9. Risks and mitigations</a></li><li><a href="#10-decision-requested">✅ 10. Decision requested</a></li><li><a href="#appendix-pilot-test-question-set-template">📎 Appendix – Pilot test-question set (template)</a></li></ul></aside>
+</div>
+<button class="totop" title="Back to top" aria-label="Back to top">↑</button>
+<script src="../assets/app.js"></script>
+</body>
+</html>

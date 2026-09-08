@@ -4,7 +4,7 @@
 
 # 🏗️ สถาปัตยกรรม
 
-`ส่วนที่ 2 จาก 9`
+`ส่วนที่ 2 จาก 11`
 
 > สามองค์ประกอบ สองช่วงการเชื่อมต่อ AI client คุยกับ Tableau MCP server ด้วยโปรโตคอล MCP ส่วน MCP server คุยกับ REST API ของ Tableau Server ผ่าน HTTPS ทุกอย่างที่อยู่ทางขวาของ MCP server คือระบบ on-premise ที่คุณมีอยู่แล้ว
 
@@ -77,12 +77,14 @@
 4. ⚙️ [การติดตั้งและตั้งค่า](04-installation.md)
 5. 💡 [5 use case ยอดนิยม](05-use-cases.md)
 6. 🖥️ [ขั้นสูง: สร้าง Web UI ครอบ Tableau Server](06-web-ui-wrapper.md)
-7. 🛡️ [แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย](07-best-practices.md)
-8. ❓ [คำถามที่พบบ่อยและอภิธานศัพท์](08-faq-glossary.md)
-9. 🔗 [เอกสารอ้างอิง](09-references.md)
+7. 🔐 [สิทธิ์ บทบาท และลิขสิทธิ์](07-permissions-security.md)
+8. 📈 [ข้อเสนอโครงการ: แพลตฟอร์ม BI + AI Chat สำหรับองค์กรบน Tableau MCP](08-enterprise-proposal.md)
+9. 🛡️ [แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย](09-best-practices.md)
+10. ❓ [คำถามที่พบบ่อยและอภิธานศัพท์](10-faq-glossary.md)
+11. 🔗 [เอกสารอ้างอิง](11-references.md)
 
 </details>
 
 [🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: ภาพรวม](01-overview.md) · [ถัดไป: สิ่งที่ต้องเตรียม ▶](03-prerequisites.md) · [🇺🇸 English](../en/02-architecture.md)
 
-<sub>ส่วนที่ 2 จาก 9 · Created by The Narit Lab</sub>
+<sub>ส่วนที่ 2 จาก 11 · Created by The Narit Lab</sub>
