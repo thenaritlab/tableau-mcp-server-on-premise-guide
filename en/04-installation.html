@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installation and configuration · Tableau Server On-Premise + Tableau MCP + AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="doc">
+<div class="progress" aria-hidden="true"></div>
+<header class="topbar">
+  <button class="menu-btn" aria-label="Menu" aria-expanded="false" data-menu>☰</button>
+  <a class="brand" href="../index.html">Tableau Server On-Premise + Tableau MCP + AI</a>
+  <nav class="lang-switch" aria-label="Language">
+    <a href="../index.html" title="Home">Home</a>
+    <a class="lang-other" href="../th/04-installation.html">ไทย</a>
+    <button class="icon-btn" data-theme-toggle title="Toggle dark mode" aria-label="Toggle dark mode">☾</button>
+  </nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Contents">
+    <div class="side-title">Contents</div>
+    <ol class="side-list"><li data-slug="01-overview"><a href="01-overview.html"><span class="n">1</span>Overview</a></li>
+<li data-slug="02-architecture"><a href="02-architecture.html"><span class="n">2</span>Architecture</a></li>
+<li data-slug="03-prerequisites"><a href="03-prerequisites.html"><span class="n">3</span>Prerequisites</a></li>
+<li class="active" data-slug="04-installation"><a href="04-installation.html"><span class="n">4</span>Installation and configuration</a></li>
+<li data-slug="05-use-cases"><a href="05-use-cases.html"><span class="n">5</span>Top 5 use cases</a></li>
+<li data-slug="06-web-ui-wrapper"><a href="06-web-ui-wrapper.html"><span class="n">6</span>Advanced: build a custom Web UI wrapper</a></li>
+<li data-slug="07-best-practices"><a href="07-best-practices.html"><span class="n">7</span>Best practices, governance and security checklist</a></li>
+<li data-slug="08-faq-glossary"><a href="08-faq-glossary.html"><span class="n">8</span>FAQ and glossary</a></li>
+<li data-slug="09-references"><a href="09-references.html"><span class="n">9</span>References</a></li></ol>
+    <div class="side-progress" data-label="Read {n} of {t} sections"><span class="txt"></span><div class="bar"><i style="width:0"></i></div></div>
+  </nav>
+  <main class="content">
+    <article class="doc-body" data-copy="Copy" data-copied="Copied" data-slug="04-installation">
+
+<h1 id="installation-and-configuration">Installation and configuration</h1><div class="doc-meta"><span class="chip">Section 4 of 9</span><span class="chip">6 min read</span></div>
+<p class="lead">Four parts: prepare Tableau Server, run Tableau MCP (local stdio first, then a shared HTTP server), connect each AI client, and verify. Every command uses placeholder names; replace them with your own.</p>
+
+<h2 id="41-prepare-tableau-server">4.1 Prepare Tableau Server</h2>
+<h3 id="create-a-personal-access-token-for-local-testing">Create a Personal Access Token (for local testing)</h3>
+<ol class="steps">
+<li><strong>Sign in to Tableau Server</strong> as the user the MCP server will act as. For a quick test that can be your own account; for anything shared use a dedicated user such as <code>svc-mcp-reader</code>.</li>
+<li><strong>Open account settings</strong> Click your avatar (top right) › <em>My Account Settings</em> › scroll to <em>Personal Access Tokens</em>.</li>
+<li><strong>Create the token</strong> Token name <code>mcp-demo-pat</code> › <em>Create Token</em>. Copy the secret now: it is shown once. The token name, not your username, goes into <code>PAT_NAME</code>.</li>
+<li><strong>Note the site content URL</strong> It is the part after <code>/#/site/</code> in your browser URL, e.g. <code>DemoSite</code>. For the Default site leave <code>SITE_NAME</code> empty.</li>
+<li><strong>Prove the PAT works</strong> before involving MCP:</li>
+</ol>
+
+<pre data-lang="bash" data-file="rest-signin-check.sh"><code># Proves the PAT works against Tableau Server REST API directly (bypasses MCP)
+curl -s -k -X POST https://demo-server.local/api/3.24/auth/signin \
+  -H &#x27;Content-Type: application/json&#x27; -H &#x27;Accept: application/json&#x27; \
+  -d &#x27;{&quot;credentials&quot;:{&quot;personalAccessTokenName&quot;:&quot;mcp-demo-pat&quot;,
+       &quot;personalAccessTokenSecret&quot;:&quot;&lt;YOUR_PAT_VALUE&gt;&quot;,
+       &quot;site&quot;:{&quot;contentUrl&quot;:&quot;DemoSite&quot;}}}&#x27;
+# success: {&quot;credentials&quot;:{&quot;site&quot;:{...},&quot;user&quot;:{...},&quot;token&quot;:&quot;...&quot;}}</code></pre>
+
+<div class="callout warning" markdown="0"><div class="callout-title">PATs expire</div><p>A PAT that is not used for 15 days is revoked (site admins can change the window). If a working setup suddenly returns 401 after a holiday, this is usually why.</p></div>
+
+<h3 id="create-a-connected-app-for-direct-trust-or-the-portal">Create a Connected App (for Direct Trust or the portal)</h3>
+<ol class="steps">
+<li><strong>Go to</strong> <em>Settings › Connected Apps › New Connected App › Direct Trust</em> (site administrator required).</li>
+<li><strong>Name it</strong> <code>mcp-direct-trust</code>. Access level: <em>All projects</em> or a specific project if you want to fence the AI in. Domain allow-list: leave default for server-side use.</li>
+<li><strong>Generate a secret</strong> and record <em>Client ID</em>, <em>Secret ID</em> and <em>Secret value</em>.</li>
+<li><strong>Enable the app</strong> The toggle is off after creation. A disabled Connected App produces 401 with a JWT error in the log.</li>
+</ol>
+
+<h3 id="allow-the-oauth-redirect-oauth-mode-only-20253">Allow the OAuth redirect (OAuth mode only, 2025.3+)</h3>
+<p>Run on a Tableau Server node as a TSM administrator:</p>
+<pre data-lang="bash" data-file="tsm-oauth.sh"><code># Run on a Tableau Server node as a TSM admin. Value = MCP host WITHOUT protocol or trailing slash.
+tsm configuration set -k oauth.allowed_redirect_uri_hosts -v tableau-mcp.demo-company.local
+tsm pending-changes apply</code></pre>
+
+<h2 id="42-install-and-run-tableau-mcp">4.2 Install and run Tableau MCP</h2>
+<h3 id="option-a-local-stdio-5-minutes">Option A – local stdio (5 minutes)</h3>
+<p>Nothing to install: the AI client runs <code>npx -y @tableau/mcp-server@latest</code> and passes the environment variables. You only need Node.js 18+ on PATH. Jump to 4.3 and use the <em>stdio</em> config for your client.</p>
+<p>To check Node.js:</p>
+<pre data-lang="bash"><code>node -v      # v18 or later
+npx -y @tableau/mcp-server@latest --help
+</code></pre>
+<h3 id="option-b-shared-http-server-with-docker-30-minutes">Option B – shared HTTP server with Docker (30 minutes)</h3>
+<ol class="steps">
+<li><strong>Prepare a folder</strong> on the MCP host: <code>sudo mkdir -p /opt/tableau-mcp && cd /opt/tableau-mcp</code>.</li>
+<li><strong>Choose an auth mode and write <code>.env</code></strong> Pick one of the three files below. Start with PAT on an isolated machine; move to OAuth before letting other people connect.</li>
+</ol>
+
+<details><summary>.env – PAT (testing only)</summary>
+
+
+<pre data-lang="text" data-file="http-pat.env"><code># Tableau MCP - HTTP transport, PAT auth (testing / single user only)
+SERVER=https://demo-server.local
+SITE_NAME=DemoSite
+TRANSPORT=http
+PORT=3927
+
+AUTH=pat
+PAT_NAME=mcp-demo-pat
+PAT_VALUE=&lt;YOUR_PAT_VALUE&gt;
+
+# With TRANSPORT=http, OAuth is required by default.
+# Only disable it on an isolated network for testing.
+DANGEROUSLY_DISABLE_OAUTH=true
+
+# Tableau Server has no Pulse - hide those tools
+EXCLUDE_TOOLS=pulse
+PRODUCT_TELEMETRY_ENABLED=false</code></pre>
+
+</details>
+
+<details><summary>.env – Connected App / Direct Trust</summary>
+
+
+<pre data-lang="text" data-file="http-direct-trust.env"><code># Tableau MCP - HTTP transport, Connected App (Direct Trust) auth
+SERVER=https://demo-server.local
+SITE_NAME=DemoSite
+TRANSPORT=http
+PORT=3927
+
+AUTH=direct-trust
+JWT_SUB_CLAIM=svc-mcp-reader
+CONNECTED_APP_CLIENT_ID=&lt;CONNECTED_APP_CLIENT_ID&gt;
+CONNECTED_APP_SECRET_ID=&lt;CONNECTED_APP_SECRET_ID&gt;
+CONNECTED_APP_SECRET_VALUE=&lt;CONNECTED_APP_SECRET_VALUE&gt;
+
+# Required when not using OAuth on HTTP transport (see warning in the guide)
+DANGEROUSLY_DISABLE_OAUTH=true
+
+EXCLUDE_TOOLS=pulse
+PRODUCT_TELEMETRY_ENABLED=false</code></pre>
+
+</details>
+
+<details><summary>.env – OAuth (recommended for teams)</summary>
+
+Generate the RSA key first:
+
+
+<pre data-lang="bash" data-file="openssl-key.sh"><code>sudo mkdir -p /etc/tableau-mcp
+sudo openssl genrsa -out /etc/tableau-mcp/private.pem 2048
+sudo chmod 600 /etc/tableau-mcp/private.pem</code></pre>
+
+
+<pre data-lang="text" data-file="http-oauth.env"><code># Tableau MCP - HTTP transport, OAuth (recommended for multi-user). Tableau Server 2025.3+
+SERVER=https://demo-server.local
+SITE_NAME=DemoSite
+TRANSPORT=http
+PORT=3927
+
+AUTH=oauth
+# Local testing:
+OAUTH_ISSUER=http://127.0.0.1:3927
+# Production (behind your reverse proxy / TLS):
+#OAUTH_ISSUER=https://tableau-mcp.demo-company.local
+#OAUTH_RESOURCE_URI=https://tableau-mcp.demo-company.local
+
+# RSA private key used to decrypt the access tokens it issues (one of the two)
+OAUTH_JWE_PRIVATE_KEY_PATH=/etc/tableau-mcp/private.pem
+#OAUTH_JWE_PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----\nMIIE...\n-----END RSA PRIVATE KEY-----
+
+# Optional: let users pick any site they can access
+#OAUTH_LOCK_SITE=false
+# Optional: access token lifetime (default 1 hour)
+#OAUTH_ACCESS_TOKEN_TIMEOUT_MS=86400000
+
+EXCLUDE_TOOLS=pulse
+PRODUCT_TELEMETRY_ENABLED=false
+ENABLED_LOGGERS=fileLogger
+FILE_LOGGER_DIRECTORY=/var/log/tableau-mcp</code></pre>
+
+</details>
+
+<div class="callout verify" markdown="0"><div class="callout-title">Verify with current docs</div><p>The listening port is <code>3927</code> by default. Confirm the exact environment variable that overrides it in the current Configuration › Environment variables page of the Tableau MCP docs before relying on <code>PORT</code>.</p></div>
+
+<ol class="steps" style="counter-reset:step 2">
+<li><strong>Run the container</strong></li>
+</ol>
+
+<pre data-lang="bash" data-file="docker-run.sh"><code># Pin a real version tag instead of :latest in production
+docker run -d --name tableau-mcp \
+  --restart unless-stopped \
+  --env-file /opt/tableau-mcp/.env \
+  -p 3927:3927 \
+  ghcr.io/tableau/tableau-mcp:latest
+docker logs -f tableau-mcp</code></pre>
+
+<p>Or with Docker Compose (binds to localhost so only the reverse proxy can reach it):</p>
+<pre data-lang="yaml" data-file="docker-compose.yml"><code>services:
+  tableau-mcp:
+    image: ghcr.io/tableau/tableau-mcp:latest   # pin a version in production
+    container_name: tableau-mcp
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - &quot;127.0.0.1:3927:3927&quot;    # bind to localhost; expose via reverse proxy only
+    volumes:
+      - ./private.pem:/etc/tableau-mcp/private.pem:ro
+      - ./logs:/var/log/tableau-mcp</code></pre>
+
+<ol class="steps" style="counter-reset:step 3">
+<li><strong>Look for the ready line</strong> in the logs: <code>tableau-mcp v3.6.0 streamable HTTP server available at http://localhost:3927/tableau-mcp</code>.</li>
+</ol>
+
+<h3 id="option-c-shared-http-server-with-nodejs-and-systemd">Option C – shared HTTP server with Node.js and systemd</h3>
+<p>Use the same <code>.env</code> as option B.</p>
+<pre data-lang="bash" data-file="run-npx.sh"><code># Runs in the folder that contains your .env file
+cd /opt/tableau-mcp
+npx -y @tableau/mcp-server@latest
+# expected: tableau-mcp vX.Y.Z streamable HTTP server available at http://localhost:3927/tableau-mcp</code></pre>
+
+<p>For an unattended service:</p>
+<pre data-lang="text" data-file="tableau-mcp.service"><code># /etc/systemd/system/tableau-mcp.service
+[Unit]
+Description=Tableau MCP server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=tableaumcp
+WorkingDirectory=/opt/tableau-mcp
+EnvironmentFile=/opt/tableau-mcp/.env
+ExecStart=/usr/bin/npx -y @tableau/mcp-server@3.6.0
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+
+<pre data-lang="bash" data-file="systemd-enable.sh"><code>sudo useradd -r -s /usr/sbin/nologin tableaumcp
+sudo chown -R tableaumcp:tableaumcp /opt/tableau-mcp /etc/tableau-mcp
+sudo systemctl daemon-reload
+sudo systemctl enable --now tableau-mcp
+sudo systemctl status tableau-mcp</code></pre>
+
+<h3 id="put-tls-and-an-allow-list-in-front-options-b-and-c">Put TLS and an allow-list in front (options B and C)</h3>
+<pre data-lang="text" data-file="nginx-tableau-mcp.conf"><code># /etc/nginx/conf.d/tableau-mcp.conf
+server {
+    listen 443 ssl;
+    server_name tableau-mcp.demo-company.local;
+
+    ssl_certificate     /etc/ssl/certs/tableau-mcp.crt;
+    ssl_certificate_key /etc/ssl/private/tableau-mcp.key;
+
+    # Only allow your office / VPN ranges
+    allow 10.0.0.0/8;
+    allow 192.168.0.0/16;
+    deny  all;
+
+    location / {
+        proxy_pass         http://127.0.0.1:3927;
+        proxy_http_version 1.1;
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+        # Streamable HTTP uses SSE-style streaming - do not buffer
+        proxy_buffering    off;
+        proxy_read_timeout 300s;
+    }
+}</code></pre>
+
+<p>With this in place the URL your users configure is <code>https://tableau-mcp.demo-company.local/tableau-mcp</code>, and <code>OAUTH_ISSUER</code> / <code>OAUTH_RESOURCE_URI</code> in <code>.env</code> must match <code>https://tableau-mcp.demo-company.local</code>.</p>
+<h3 id="limit-what-the-ai-can-see-optional-but-recommended">Limit what the AI can see (optional but recommended)</h3>
+<pre data-lang="text" data-file="tool-scoping.env"><code># Limit what the AI can see. All values are comma-separated LUIDs / names.
+INCLUDE_PROJECT_IDS=&lt;PROJECT_LUID&gt;
+INCLUDE_TAGS=ai-ready
+# or lock to specific published data sources only:
+#INCLUDE_DATASOURCE_IDS=&lt;DATASOURCE_LUID_1&gt;,&lt;DATASOURCE_LUID_2&gt;
+# or expose only the data source tool group:
+#INCLUDE_TOOLS=datasource</code></pre>
+
+<p>Tool groups you will use most: <code>datasource</code> (metadata + query), <code>workbook</code>, <code>view</code>, <code>pulse</code> (exclude on Server), <code>admin</code>. The full list is in <code>src/tools/web/toolName.ts</code> in the repo.</p>
+<h2 id="43-connect-each-ai-client">4.3 Connect each AI client</h2>
+<h3 id="claude-desktop">Claude Desktop</h3>
+<ol class="steps">
+<li><strong>Open the config file</strong> Claude Desktop › <em>Settings › Developer › Edit Config</em>. Paths: Windows <code>%APPDATA%\Claude\claude_desktop_config.json</code>, macOS <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>.</li>
+<li><strong>Add the server (stdio)</strong></li>
+</ol>
+
+<pre data-lang="json" data-file="claude-desktop.json"><code>{
+  &quot;mcpServers&quot;: {
+    &quot;tableau-demo&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;-y&quot;, &quot;@tableau/mcp-server@latest&quot;],
+      &quot;env&quot;: {
+        &quot;SERVER&quot;: &quot;https://demo-server.local&quot;,
+        &quot;SITE_NAME&quot;: &quot;DemoSite&quot;,
+        &quot;PAT_NAME&quot;: &quot;mcp-demo-pat&quot;,
+        &quot;PAT_VALUE&quot;: &quot;&lt;YOUR_PAT_VALUE&gt;&quot;,
+        &quot;EXCLUDE_TOOLS&quot;: &quot;pulse&quot;
+      }
+    }
+  }
+}</code></pre>
+
+<p>Or point Claude Desktop at the shared HTTP server through the <code>mcp-remote</code> bridge (it handles the OAuth sign-in pop-up):</p>
+<pre data-lang="json" data-file="claude-desktop-http.json"><code>{
+  &quot;mcpServers&quot;: {
+    &quot;tableau-demo&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;-y&quot;, &quot;mcp-remote&quot;, &quot;http://127.0.0.1:3927/tableau-mcp&quot;]
+    }
+  }
+}</code></pre>
+
+<ol class="steps" style="counter-reset:step 2">
+<li><strong>Restart Claude Desktop</strong> fully (quit from the tray on Windows). The tools icon under the prompt box should list <code>tableau-demo</code>.</li>
+<li><strong>Test</strong> with <em>"List my Tableau data sources."</em></li>
+</ol>
+
+<h3 id="claude-code">Claude Code</h3>
+<pre data-lang="bash" data-file="claude-code.sh"><code># Option A: local stdio server (Claude Code starts it for you)
+claude mcp add tableau-demo \
+  -e SERVER=https://demo-server.local \
+  -e SITE_NAME=DemoSite \
+  -e PAT_NAME=mcp-demo-pat \
+  -e PAT_VALUE=&lt;YOUR_PAT_VALUE&gt; \
+  -e EXCLUDE_TOOLS=pulse \
+  -- npx -y @tableau/mcp-server@latest
+
+# Option B: shared HTTP server (already running on port 3927)
+claude mcp add --transport http tableau-demo http://127.0.0.1:3927/tableau-mcp
+
+# Check the connection
+claude mcp list</code></pre>
+
+<p>Then inside a Claude Code session type <code>/mcp</code> to see the connection status and sign in if OAuth is enabled.</p>
+<h3 id="chatgpt">ChatGPT</h3>
+<p>ChatGPT runs in OpenAI's cloud, so it needs the HTTP deployment reachable on a public HTTPS URL with OAuth enabled (options B/C + reverse proxy, or a tunnel for a demo).</p>
+<ol class="steps">
+<li><strong>Enable developer mode</strong> <em>Settings › Connectors › Advanced › Developer mode</em> (name and location vary by plan).</li>
+<li><strong>Create a connector</strong> <em>Connectors › Create</em>. Name <code>Tableau Demo</code>, MCP server URL <code>https://tableau-mcp.demo-company.local/tableau-mcp</code>, authentication <em>OAuth</em>. ChatGPT discovers the embedded authorization server automatically.</li>
+<li><strong>Authorise</strong> You are redirected to your Tableau Server sign-in page and back.</li>
+<li><strong>Use it</strong> In a new chat open <em>Tools</em> › enable <code>Tableau Demo</code> and ask <em>"Which published data sources can I query?"</em></li>
+</ol>
+
+<div class="callout verify" markdown="0"><div class="callout-title">Verify with current docs</div><p>The connector UI and plan requirements in ChatGPT change frequently. Confirm the current path in OpenAI's Help Center before a customer demo.</p></div>
+
+<h3 id="gemini-cli">Gemini CLI</h3>
+<p>Edit <code>~/.gemini/settings.json</code> (or <code>.gemini/settings.json</code> inside a project):</p>
+<pre data-lang="json" data-file="gemini-settings.json"><code>{
+  &quot;mcpServers&quot;: {
+    &quot;tableau-demo&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;-y&quot;, &quot;@tableau/mcp-server@latest&quot;],
+      &quot;env&quot;: {
+        &quot;SERVER&quot;: &quot;https://demo-server.local&quot;,
+        &quot;SITE_NAME&quot;: &quot;DemoSite&quot;,
+        &quot;PAT_NAME&quot;: &quot;mcp-demo-pat&quot;,
+        &quot;PAT_VALUE&quot;: &quot;&lt;YOUR_PAT_VALUE&gt;&quot;,
+        &quot;EXCLUDE_TOOLS&quot;: &quot;pulse&quot;
+      },
+      &quot;timeout&quot;: 60000
+    }
+  }
+}</code></pre>
+
+<p>For the shared server use <code>httpUrl</code> instead:</p>
+<pre data-lang="json" data-file="gemini-settings-http.json"><code>{
+  &quot;mcpServers&quot;: {
+    &quot;tableau-demo&quot;: {
+      &quot;httpUrl&quot;: &quot;http://127.0.0.1:3927/tableau-mcp&quot;,
+      &quot;timeout&quot;: 60000
+    }
+  }
+}</code></pre>
+
+<p>Start <code>gemini</code>, run <code>/mcp</code> to confirm the server is connected, then ask a question.</p>
+<h3 id="microsoft-copilot">Microsoft Copilot</h3>
+<p><strong>Copilot Studio (agents for Teams / M365):</strong> Copilot Studio calls MCP servers over Streamable HTTP from Microsoft's cloud, so use the public HTTPS URL with OAuth.</p>
+<ol class="steps">
+<li><strong>Open your agent</strong> › <em>Tools › Add a tool › Model Context Protocol</em>.</li>
+<li><strong>Server URL</strong> <code>https://tableau-mcp.demo-company.local/tableau-mcp</code>, authentication <em>OAuth 2.0</em>. Fill the authorize / token endpoints shown by <code>https://tableau-mcp.demo-company.local/.well-known/oauth-authorization-server</code>.</li>
+<li><strong>Add the tool to the agent</strong>, publish, and test in the test pane with <em>"Show me the list of Tableau workbooks."</em></li>
+</ol>
+
+<p><strong>GitHub Copilot in VS Code:</strong> create <code>.vscode/mcp.json</code> in your workspace:</p>
+<pre data-lang="json" data-file="vscode-mcp.json"><code>{
+  &quot;servers&quot;: {
+    &quot;tableau-demo&quot;: {
+      &quot;type&quot;: &quot;http&quot;,
+      &quot;url&quot;: &quot;http://127.0.0.1:3927/tableau-mcp&quot;
+    }
+  }
+}</code></pre>
+
+<p>Open Copilot Chat in <em>Agent</em> mode; the Tableau tools appear in the tools picker.</p>
+<div class="callout verify" markdown="0"><div class="callout-title">Verify with current docs</div><p>Copilot Studio's MCP support and the exact authentication form fields are evolving. Check Microsoft Learn › Copilot Studio › "Add an MCP server" for the current steps.</p></div>
+
+<h2 id="44-verify-the-connection">4.4 Verify the connection</h2>
+<h3 id="from-the-mcp-host">From the MCP host</h3>
+<pre data-lang="bash" data-file="curl-ping.sh"><code>curl -s -X POST http://127.0.0.1:3927/tableau-mcp \
+  -H &#x27;accept: application/json, text/event-stream&#x27; \
+  -H &#x27;content-type: application/json&#x27; \
+  -d &#x27;{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:&quot;1&quot;,&quot;method&quot;:&quot;ping&quot;}&#x27;
+# healthy: {&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:&quot;1&quot;,&quot;result&quot;:{}}</code></pre>
+
+<pre data-lang="bash" data-file="curl-init.sh"><code>curl -s -X POST http://127.0.0.1:3927/tableau-mcp \
+  -H &#x27;accept: application/json, text/event-stream&#x27; \
+  -H &#x27;content-type: application/json&#x27; \
+  -d &#x27;{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;id&quot;: 1, &quot;method&quot;: &quot;initialize&quot;,
+    &quot;params&quot;: {
+      &quot;protocolVersion&quot;: &quot;2025-11-25&quot;,
+      &quot;capabilities&quot;: {},
+      &quot;clientInfo&quot;: { &quot;name&quot;: &quot;curl-check&quot;, &quot;version&quot;: &quot;1.0.0&quot; }
+    }
+  }&#x27;
+# No OAuth  -&gt; {&quot;result&quot;:{&quot;serverInfo&quot;:{&quot;name&quot;:&quot;tableau-mcp&quot;,...}}}
+# With OAuth -&gt; {&quot;error&quot;:&quot;unauthorized&quot;,&quot;error_description&quot;:&quot;Authorization required. Use OAuth 2.1 flow.&quot;}</code></pre>
+
+<h3 id="from-the-ai-client">From the AI client</h3>
+<p>Ask, in order:</p>
+<ol>
+<li><em>"List my Tableau data sources."</em> → the client should call <code>list-datasources</code> and show names.</li>
+<li><em>"What fields are in the Sales data source?"</em> → <code>list-fields</code> (or <code>get-datasource-metadata</code>).</li>
+<li><em>"What were total sales by region last year?"</em> → <code>query-datasource</code> with a small aggregate query.</li>
+</ol>
+<p>If step 1 works, authentication and networking are fine. If step 3 fails but 1–2 work, it is a permission (API access) or a field-name problem.</p>
+<h3 id="common-errors-and-fixes">Common errors and fixes</h3>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401 Unauthorized</code> on every tool</td>
+<td>Wrong <code>SERVER</code>/<code>SITE_NAME</code>, PAT expired, <code>PAT_NAME</code> set to username, Connected App disabled</td>
+<td>Re-run the REST sign-in curl; regenerate the PAT; check the Connected App toggle</td>
+</tr>
+<tr>
+<td><code>403 Forbidden</code> on <code>query-datasource</code> only</td>
+<td>User lacks "API access" / "Connect" on that data source</td>
+<td>Grant the capability on the data source or project</td>
+</tr>
+<tr>
+<td><code>Method not allowed</code> when opening the URL in a browser</td>
+<td>Normal: GET is not part of MCP</td>
+<td>Use the curl <code>initialize</code> test</td>
+</tr>
+<tr>
+<td>Client says "authorization required" and never opens a browser</td>
+<td>Client does not support OAuth flow, or <code>OAUTH_ISSUER</code> does not match the public URL</td>
+<td>Use <code>mcp-remote</code> for Claude Desktop; align <code>OAUTH_ISSUER</code>, <code>OAUTH_RESOURCE_URI</code> and the nginx <code>server_name</code></td>
+</tr>
+<tr>
+<td>OAuth sign-in loops or "redirect URI not allowed"</td>
+<td><code>tsm oauth.allowed_redirect_uri_hosts</code> not set or wrong host</td>
+<td>Set it to the MCP host name, apply pending changes</td>
+</tr>
+<tr>
+<td>Users must reconnect after every restart</td>
+<td>Refresh tokens live in MCP process memory</td>
+<td>Known limitation; raise <code>OAUTH_ACCESS_TOKEN_TIMEOUT_MS</code>, avoid unnecessary restarts</td>
+</tr>
+<tr>
+<td><code>self signed certificate</code> / TLS errors</td>
+<td>Tableau Server uses an internal CA</td>
+<td>Export the CA chain and set <code>NODE_EXTRA_CA_CERTS=/path/ca.pem</code> for the MCP process (in Docker, mount it and set the variable)</td>
+</tr>
+<tr>
+<td>Tools list is empty in the client</td>
+<td>Server started with a typo in <code>INCLUDE_TOOLS</code></td>
+<td>Check the startup log; tool names are case-sensitive</td>
+</tr>
+<tr>
+<td>Model calls no tool and answers from memory</td>
+<td>Client not in agent/tools mode, or a weak model</td>
+<td>Enable tools for the chat; use a tool-capable model</td>
+</tr>
+<tr>
+<td>Pulse tools appear and fail</td>
+<td>Pulse is Tableau Cloud only</td>
+<td><code>EXCLUDE_TOOLS=pulse</code></td>
+</tr>
+<tr>
+<td>Very slow responses</td>
+<td>Huge data sources; every query goes through VDS</td>
+<td>Scope with <code>INCLUDE_DATASOURCE_IDS</code>; ask for aggregates, not row-level dumps</td>
+</tr>
+</tbody>
+</table>
+    </article>
+    <nav class="pagernav"><a class="pager prev" href="03-prerequisites.html"><small>Previous</small><span>Prerequisites</span></a><a class="pager next" href="05-use-cases.html"><small>Next</small><span>Top 5 use cases</span></a></nav>
+    <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">Home</a></footer>
+  </main>
+  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#41-prepare-tableau-server">4.1 Prepare Tableau Server</a><ul><li><a href="#create-a-personal-access-token-for-local-testing">Create a Personal Access Token (for local testing)</a></li><li><a href="#create-a-connected-app-for-direct-trust-or-the-portal">Create a Connected App (for Direct Trust or the portal)</a></li><li><a href="#allow-the-oauth-redirect-oauth-mode-only-20253">Allow the OAuth redirect (OAuth mode only, 2025.3+)</a></li></ul></li><li><a href="#42-install-and-run-tableau-mcp">4.2 Install and run Tableau MCP</a><ul><li><a href="#option-a-local-stdio-5-minutes">Option A – local stdio (5 minutes)</a></li><li><a href="#option-b-shared-http-server-with-docker-30-minutes">Option B – shared HTTP server with Docker (30 minutes)</a></li><li><a href="#option-c-shared-http-server-with-nodejs-and-systemd">Option C – shared HTTP server with Node.js and systemd</a></li><li><a href="#put-tls-and-an-allow-list-in-front-options-b-and-c">Put TLS and an allow-list in front (options B and C)</a></li><li><a href="#limit-what-the-ai-can-see-optional-but-recommended">Limit what the AI can see (optional but recommended)</a></li></ul></li><li><a href="#43-connect-each-ai-client">4.3 Connect each AI client</a><ul><li><a href="#claude-desktop">Claude Desktop</a></li><li><a href="#claude-code">Claude Code</a></li><li><a href="#chatgpt">ChatGPT</a></li><li><a href="#gemini-cli">Gemini CLI</a></li><li><a href="#microsoft-copilot">Microsoft Copilot</a></li></ul></li><li><a href="#44-verify-the-connection">4.4 Verify the connection</a><ul><li><a href="#from-the-mcp-host">From the MCP host</a></li><li><a href="#from-the-ai-client">From the AI client</a></li><li><a href="#common-errors-and-fixes">Common errors and fixes</a></li></ul></li></ul></aside>
+</div>
+<button class="totop" title="Back to top" aria-label="Back to top">↑</button>
+<script src="../assets/app.js"></script>
+</body>
+</html>

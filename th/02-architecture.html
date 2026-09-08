@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>สถาปัตยกรรม · Tableau Server On-Premise + Tableau MCP + AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="doc">
+<div class="progress" aria-hidden="true"></div>
+<header class="topbar">
+  <button class="menu-btn" aria-label="เมนู" aria-expanded="false" data-menu>☰</button>
+  <a class="brand" href="../index.html">Tableau Server On-Premise + Tableau MCP + AI</a>
+  <nav class="lang-switch" aria-label="Language">
+    <a href="../index.html" title="หน้าแรก">หน้าแรก</a>
+    <a class="lang-other" href="../en/02-architecture.html">English</a>
+    <button class="icon-btn" data-theme-toggle title="สลับโหมดมืด" aria-label="สลับโหมดมืด">☾</button>
+  </nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="สารบัญ">
+    <div class="side-title">สารบัญ</div>
+    <ol class="side-list"><li data-slug="01-overview"><a href="01-overview.html"><span class="n">1</span>ภาพรวม</a></li>
+<li class="active" data-slug="02-architecture"><a href="02-architecture.html"><span class="n">2</span>สถาปัตยกรรม</a></li>
+<li data-slug="03-prerequisites"><a href="03-prerequisites.html"><span class="n">3</span>สิ่งที่ต้องเตรียม</a></li>
+<li data-slug="04-installation"><a href="04-installation.html"><span class="n">4</span>การติดตั้งและตั้งค่า</a></li>
+<li data-slug="05-use-cases"><a href="05-use-cases.html"><span class="n">5</span>5 use case ยอดนิยม</a></li>
+<li data-slug="06-web-ui-wrapper"><a href="06-web-ui-wrapper.html"><span class="n">6</span>ขั้นสูง: สร้าง Web UI ครอบ Tableau Server</a></li>
+<li data-slug="07-best-practices"><a href="07-best-practices.html"><span class="n">7</span>แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย</a></li>
+<li data-slug="08-faq-glossary"><a href="08-faq-glossary.html"><span class="n">8</span>คำถามที่พบบ่อยและอภิธานศัพท์</a></li>
+<li data-slug="09-references"><a href="09-references.html"><span class="n">9</span>เอกสารอ้างอิง</a></li></ol>
+    <div class="side-progress" data-label="อ่านแล้ว {n} จาก {t} ส่วน"><span class="txt"></span><div class="bar"><i style="width:0"></i></div></div>
+  </nav>
+  <main class="content">
+    <article class="doc-body" data-copy="คัดลอก" data-copied="คัดลอกแล้ว" data-slug="02-architecture">
+
+<h1 id="_1">สถาปัตยกรรม</h1><div class="doc-meta"><span class="chip">ส่วนที่ 2 จาก 9</span><span class="chip">อ่าน 3 นาที</span></div>
+<p class="lead">สามองค์ประกอบ สองช่วงการเชื่อมต่อ AI client คุยกับ Tableau MCP server ด้วยโปรโตคอล MCP ส่วน MCP server คุยกับ REST API ของ Tableau Server ผ่าน HTTPS ทุกอย่างที่อยู่ทางขวาของ MCP server คือระบบ on-premise ที่คุณมีอยู่แล้ว</p>
+
+<h2 id="_2">มุมมององค์ประกอบ</h2>
+<figure>
+<svg viewBox="0 0 900 330" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="13">
+<defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#7b8494"/></marker></defs>
+<!-- user zone -->
+<rect x="10" y="20" width="260" height="290" rx="10" fill="#fff" stroke="#dfe4ec" stroke-dasharray="5 4"/>
+<text x="140" y="44" text-anchor="middle" font-weight="600" fill="#4a5566">User workstation / SaaS AI</text>
+<rect x="30" y="62" width="220" height="56" rx="8" fill="#f6f8fb" stroke="#c9d1dc"/>
+<text x="140" y="85" text-anchor="middle" font-weight="600" fill="#1c2430">MCP host (AI client)</text>
+<text x="140" y="104" text-anchor="middle" fill="#4a5566">Claude · ChatGPT · Gemini · Copilot</text>
+<rect x="30" y="136" width="220" height="56" rx="8" fill="#f6f8fb" stroke="#c9d1dc"/>
+<text x="140" y="159" text-anchor="middle" font-weight="600" fill="#1c2430">LLM</text>
+<text x="140" y="178" text-anchor="middle" fill="#4a5566">decides which tool to call</text>
+<line x1="140" y1="118" x2="140" y2="136" stroke="#7b8494" stroke-width="1.5" marker-end="url(#a1)" marker-start="url(#a1)"/>
+<rect x="30" y="220" width="220" height="70" rx="8" fill="#fff" stroke="#c9d1dc"/>
+<text x="140" y="245" text-anchor="middle" font-weight="600" fill="#1c2430">Transport</text>
+<text x="140" y="264" text-anchor="middle" fill="#4a5566">stdio (local process) or</text>
+<text x="140" y="281" text-anchor="middle" fill="#4a5566">Streamable HTTP (shared server)</text>
+<!-- mcp zone -->
+<rect x="300" y="20" width="280" height="290" rx="10" fill="#e8f0f9" stroke="#1c5d99" stroke-width="1.5"/>
+<text x="440" y="44" text-anchor="middle" font-weight="600" fill="#0f3d6b">Tableau MCP server (Node.js)</text>
+<g fill="#4a5566">
+<rect x="320" y="62" width="240" height="40" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="440" y="87" text-anchor="middle">Tool registry (list / query / search…)</text>
+<rect x="320" y="112" width="240" height="40" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="440" y="137" text-anchor="middle">Auth: PAT · Direct Trust · OAuth</text>
+<rect x="320" y="162" width="240" height="40" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="440" y="187" text-anchor="middle">Tool scoping · include / exclude</text>
+<rect x="320" y="212" width="240" height="40" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="440" y="237" text-anchor="middle">Logging · telemetry plugins</text>
+<rect x="320" y="262" width="240" height="36" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="440" y="285" text-anchor="middle">Embedded OAuth authorization server</text>
+</g>
+<!-- tableau zone -->
+<rect x="610" y="20" width="280" height="290" rx="10" fill="#fff" stroke="#dfe4ec"/>
+<text x="750" y="44" text-anchor="middle" font-weight="600" fill="#4a5566">Tableau Server (on-premise)</text>
+<g fill="#4a5566">
+<rect x="630" y="62" width="240" height="40" rx="8" fill="#f6f8fb" stroke="#c9d1dc"/><text x="750" y="87" text-anchor="middle">Gateway (80 / 443)</text>
+<rect x="630" y="112" width="240" height="40" rx="8" fill="#f6f8fb" stroke="#c9d1dc"/><text x="750" y="137" text-anchor="middle">REST API · Metadata API</text>
+<rect x="630" y="162" width="240" height="40" rx="8" fill="#f6f8fb" stroke="#c9d1dc"/><text x="750" y="187" text-anchor="middle">VizQL Data Service (queries)</text>
+<rect x="630" y="212" width="240" height="40" rx="8" fill="#f6f8fb" stroke="#c9d1dc"/><text x="750" y="237" text-anchor="middle">Published data sources · RLS</text>
+<rect x="630" y="262" width="240" height="36" rx="8" fill="#f6f8fb" stroke="#c9d1dc"/><text x="750" y="285" text-anchor="middle">Databases (SQL Server, Oracle…)</text>
+</g>
+<line x1="272" y1="165" x2="298" y2="165" stroke="#7b8494" stroke-width="2" marker-end="url(#a1)" marker-start="url(#a1)"/>
+<line x1="582" y1="165" x2="608" y2="165" stroke="#7b8494" stroke-width="2" marker-end="url(#a1)" marker-start="url(#a1)"/>
+</svg>
+<figcaption>รูปที่ 1 มุมมององค์ประกอบ (ป้ายในแผนภาพเป็นศัพท์เทคนิคภาษาอังกฤษ) LLM ไม่เคยเชื่อมต่อ Tableau Server โดยตรง ทุกการเข้าถึงข้อมูลคือการเรียก tool ผ่าน Tableau MCP</figcaption>
+</figure>
+
+<h3 id="_3">ข้อมูลไหลอย่างไร</h3>
+<ol>
+<li>ผู้ใช้พิมพ์คำถามใน AI client</li>
+<li>LLM อ่านรายการ tool ที่ MCP server ประกาศไว้ แล้วตัดสินใจ เช่น เรียก <code>list-datasources</code> ตามด้วย <code>query-datasource</code></li>
+<li>MCP server แปลงการเรียก tool แต่ละครั้งเป็นคำขอ REST API / VDS โดยลงนามด้วยข้อมูลรับรองที่ตั้งค่าไว้</li>
+<li>Tableau Server บังคับใช้สิทธิ์และ RLS รัน query แล้วส่งข้อมูลกลับ</li>
+<li>MCP server ส่งผลลัพธ์ของ tool กลับไปยัง client แล้ว LLM เขียนคำตอบ</li>
+</ol>
+<div class="callout warning" markdown="0"><div class="callout-title">ข้อมูลออกจากเครือข่ายที่ขั้นตอนที่ 5</div><p>ผลลัพธ์ของ tool (metadata และผล query) ถูกส่งไปยัง LLM ที่ client ใช้อยู่ หากโมเดลเป็น SaaS API สาธารณะ ข้อมูลนั้นออกจากเครือข่ายของคุณ ใช้ tool scoping, RLS และนโยบายจัดชั้นความลับข้อมูลเพื่อควบคุมว่าอะไร query ได้ ถ้าต้องการ on-premise ทั้งหมด ให้ชี้หน้าเว็บที่คุณสร้างเอง (ส่วนที่ 6) ไปยังโมเดลที่โฮสต์เอง</p></div>
+
+<h2 id="_4">ทางเลือกการยืนยันตัวตน</h2>
+<figure>
+<svg viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="12.5">
+<defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#7b8494"/></marker></defs>
+<g>
+<rect x="10" y="15" width="280" height="330" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="150" y="42" text-anchor="middle" font-weight="700" font-size="14" fill="#1c2430">A · Personal Access Token</text>
+<text x="150" y="62" text-anchor="middle" fill="#7b8494">Testing · single user · stdio</text>
+<rect x="30" y="80" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="150" y="99" text-anchor="middle">Admin creates PAT in</text><text x="150" y="116" text-anchor="middle">Account Settings</text>
+<line x1="150" y1="126" x2="150" y2="146" stroke="#7b8494" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="30" y="148" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="150" y="167" text-anchor="middle">MCP signs in with</text><text x="150" y="184" text-anchor="middle">PAT_NAME + PAT_VALUE</text>
+<line x1="150" y1="194" x2="150" y2="214" stroke="#7b8494" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="30" y="216" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="150" y="235" text-anchor="middle">Every request runs as the</text><text x="150" y="252" text-anchor="middle">PAT owner (one identity)</text>
+<text x="150" y="292" text-anchor="middle" fill="#a86a08" font-weight="600">Not concurrent-safe</text>
+<text x="150" y="312" text-anchor="middle" fill="#a86a08">Expires after 15 days unused</text>
+</g>
+<g>
+<rect x="310" y="15" width="280" height="330" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="450" y="42" text-anchor="middle" font-weight="700" font-size="14" fill="#1c2430">B · Connected App (Direct Trust)</text>
+<text x="450" y="62" text-anchor="middle" fill="#7b8494">Service account · embedding · UBL</text>
+<rect x="330" y="80" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="450" y="99" text-anchor="middle">Admin creates Connected App</text><text x="450" y="116" text-anchor="middle">→ client ID, secret ID, secret</text>
+<line x1="450" y1="126" x2="450" y2="146" stroke="#7b8494" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="330" y="148" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="450" y="167" text-anchor="middle">MCP mints a short-lived JWT</text><text x="450" y="184" text-anchor="middle">sub = JWT_SUB_CLAIM user</text>
+<line x1="450" y1="194" x2="450" y2="214" stroke="#7b8494" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="330" y="216" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="450" y="235" text-anchor="middle">REST API trusts the JWT and</text><text x="450" y="252" text-anchor="middle">runs as that user</text>
+<text x="450" y="292" text-anchor="middle" fill="#0f7c6b" font-weight="600">No stored user password</text>
+<text x="450" y="312" text-anchor="middle" fill="#a86a08">Fixed sub = shared identity</text>
+</g>
+<g>
+<rect x="610" y="15" width="280" height="330" rx="10" fill="#e8f0f9" stroke="#1c5d99" stroke-width="1.5"/>
+<text x="750" y="42" text-anchor="middle" font-weight="700" font-size="14" fill="#0f3d6b">C · OAuth (2025.3+)</text>
+<text x="750" y="62" text-anchor="middle" fill="#4a5566">Multi-user HTTP · recommended</text>
+<rect x="630" y="80" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="750" y="99" text-anchor="middle">Client connects → MCP replies</text><text x="750" y="116" text-anchor="middle">"authorization required"</text>
+<line x1="750" y1="126" x2="750" y2="146" stroke="#7b8494" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="630" y="148" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="750" y="167" text-anchor="middle">User signs in to Tableau site</text><text x="750" y="184" text-anchor="middle">(SAML / AD / local – unchanged)</text>
+<line x1="750" y1="194" x2="750" y2="214" stroke="#7b8494" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="630" y="216" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="750" y="235" text-anchor="middle">Embedded auth server issues</text><text x="750" y="252" text-anchor="middle">JWE access + refresh tokens</text>
+<line x1="750" y1="262" x2="750" y2="282" stroke="#7b8494" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="630" y="284" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="750" y="303" text-anchor="middle">Each tool call runs as the</text><text x="750" y="320" text-anchor="middle">signed-in user → RLS applies</text>
+</g>
+</svg>
+<figcaption>รูปที่ 2 สามวิธีที่ Tableau MCP ใช้เข้าสู่ระบบ Tableau Server หากมีคนใช้ร่วมกันมากกว่าหนึ่งคน ให้เลือก C</figcaption>
+</figure>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>A · PAT</th>
+<th>B · Connected App</th>
+<th>C · OAuth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>เหมาะกับ</td>
+<td>ทดสอบส่วนตัว, stdio</td>
+<td>service identity, portal แบบฝัง, UBL ที่มีสัญญารองรับ</td>
+<td>การติดตั้งแบบ HTTP ใช้ร่วมกัน</td>
+</tr>
+<tr>
+<td>ตัวตนที่ Tableau เห็น</td>
+<td>เจ้าของ PAT</td>
+<td>ค่าใน <code>JWT_SUB_CLAIM</code> (หรือผู้ใช้ OAuth เมื่อใช้ <code>{OAUTH_USERNAME}</code>)</td>
+<td>ผู้ใช้ที่ล็อกอิน</td>
+</tr>
+<tr>
+<td>ใช้พร้อมกันหลายคน</td>
+<td>ไม่ปลอดภัย</td>
+<td>ได้</td>
+<td>ได้</td>
+</tr>
+<tr>
+<td>เวอร์ชัน Tableau Server</td>
+<td>เวอร์ชันที่ยัง support</td>
+<td>เวอร์ชันที่ยัง support</td>
+<td>2025.3 ขึ้นไป</td>
+</tr>
+<tr>
+<td>ตั้งค่าเพิ่ม</td>
+<td>ไม่มี</td>
+<td>สร้างและเปิดใช้ Connected App</td>
+<td>RSA key + <code>tsm</code> ตั้ง redirect host</td>
+</tr>
+<tr>
+<td>Row-level security</td>
+<td>ตามเจ้าของ PAT</td>
+<td>ตามผู้ใช้ใน <code>sub</code></td>
+<td>รายบุคคล อัตโนมัติ</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_5">รูปแบบการติดตั้ง</h2>
+<figure>
+<svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="12.5">
+<g>
+<rect x="10" y="15" width="210" height="270" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="115" y="42" text-anchor="middle" font-weight="700" fill="#1c2430">1 · Local (stdio)</text>
+<rect x="30" y="60" width="170" height="90" rx="8" fill="#fff" stroke="#c9d1dc"/>
+<text x="115" y="84" text-anchor="middle" font-weight="600">Laptop</text>
+<text x="115" y="104" text-anchor="middle">AI client spawns</text><text x="115" y="121" text-anchor="middle">npx @tableau/mcp-server</text><text x="115" y="138" text-anchor="middle">as a child process</text>
+<text x="115" y="180" text-anchor="middle" fill="#4a5566">Auth: PAT</text>
+<text x="115" y="200" text-anchor="middle" fill="#4a5566">Users: 1</text>
+<text x="115" y="220" text-anchor="middle" fill="#4a5566">Setup: 5 minutes</text>
+<text x="115" y="258" text-anchor="middle" fill="#0f7c6b" font-weight="600">Start here</text>
+</g>
+<g>
+<rect x="235" y="15" width="210" height="270" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="340" y="42" text-anchor="middle" font-weight="700" fill="#1c2430">2 · Docker (HTTP)</text>
+<rect x="255" y="60" width="170" height="90" rx="8" fill="#fff" stroke="#c9d1dc"/>
+<text x="340" y="84" text-anchor="middle" font-weight="600">Any Docker host</text>
+<text x="340" y="104" text-anchor="middle">ghcr.io/tableau/</text><text x="340" y="121" text-anchor="middle">tableau-mcp container</text><text x="340" y="138" text-anchor="middle">port 3927</text>
+<text x="340" y="180" text-anchor="middle" fill="#4a5566">Auth: OAuth / Direct Trust</text>
+<text x="340" y="200" text-anchor="middle" fill="#4a5566">Users: team</text>
+<text x="340" y="220" text-anchor="middle" fill="#4a5566">Setup: 30 minutes</text>
+<text x="340" y="258" text-anchor="middle" fill="#0f7c6b" font-weight="600">Easiest to upgrade</text>
+</g>
+<g>
+<rect x="460" y="15" width="210" height="270" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="565" y="42" text-anchor="middle" font-weight="700" fill="#1c2430">3 · On the Tableau node</text>
+<rect x="480" y="60" width="170" height="90" rx="8" fill="#fff" stroke="#c9d1dc"/>
+<text x="565" y="84" text-anchor="middle" font-weight="600">Tableau Server host</text>
+<text x="565" y="104" text-anchor="middle">Node.js service or</text><text x="565" y="121" text-anchor="middle">container beside TSM</text><text x="565" y="138" text-anchor="middle">localhost REST calls</text>
+<text x="565" y="180" text-anchor="middle" fill="#4a5566">Auth: any</text>
+<text x="565" y="200" text-anchor="middle" fill="#4a5566">Users: team</text>
+<text x="565" y="220" text-anchor="middle" fill="#4a5566">Setup: 30 minutes</text>
+<text x="565" y="258" text-anchor="middle" fill="#a86a08" font-weight="600">Competes for CPU / RAM</text>
+</g>
+<g>
+<rect x="685" y="15" width="205" height="270" rx="10" fill="#e8f0f9" stroke="#1c5d99" stroke-width="1.5"/>
+<text x="787" y="42" text-anchor="middle" font-weight="700" fill="#0f3d6b">4 · Dedicated VM</text>
+<rect x="705" y="60" width="165" height="90" rx="8" fill="#fff" stroke="#c9d1dc"/>
+<text x="787" y="84" text-anchor="middle" font-weight="600">Small Linux VM</text>
+<text x="787" y="104" text-anchor="middle">systemd / Docker</text><text x="787" y="121" text-anchor="middle">+ nginx TLS proxy</text><text x="787" y="138" text-anchor="middle">+ firewall allow-list</text>
+<text x="787" y="180" text-anchor="middle" fill="#4a5566">Auth: OAuth</text>
+<text x="787" y="200" text-anchor="middle" fill="#4a5566">Users: organisation</text>
+<text x="787" y="220" text-anchor="middle" fill="#4a5566">Setup: half a day</text>
+<text x="787" y="258" text-anchor="middle" fill="#0f7c6b" font-weight="600">Production choice</text>
+</g>
+</svg>
+<figcaption>รูปที่ 3 สี่รูปแบบการติดตั้ง องค์กรส่วนใหญ่เริ่มจากแบบที่ 1 สำหรับเดโม แล้วย้ายไปแบบที่ 4 สำหรับ production</figcaption>
+</figure>
+
+<table>
+<thead>
+<tr>
+<th>แบบ</th>
+<th>คำอธิบาย</th>
+<th>Auth</th>
+<th>ผู้ใช้</th>
+<th>ข้อควรระวัง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 · Local (stdio)</td>
+<td>AI client บนโน้ตบุ๊กเปิดโปรเซส <code>npx @tableau/mcp-server</code> เอง</td>
+<td>PAT</td>
+<td>1 คน</td>
+<td>เริ่มตรงนี้ ใช้เวลา 5 นาที</td>
+</tr>
+<tr>
+<td>2 · Docker (HTTP)</td>
+<td>คอนเทนเนอร์ <code>ghcr.io/tableau/tableau-mcp</code> พอร์ต 3927 บน Docker host ใดก็ได้</td>
+<td>OAuth / Direct Trust</td>
+<td>ทีม</td>
+<td>อัปเกรดง่ายที่สุด</td>
+</tr>
+<tr>
+<td>3 · บนเครื่อง Tableau node</td>
+<td>Node.js service หรือคอนเทนเนอร์อยู่ข้าง TSM เรียก REST ผ่าน localhost</td>
+<td>ทุกแบบ</td>
+<td>ทีม</td>
+<td>แย่ง CPU / RAM กับ Tableau</td>
+</tr>
+<tr>
+<td>4 · VM แยก</td>
+<td>Linux VM ขนาดเล็ก + systemd หรือ Docker + nginx TLS + firewall allow-list</td>
+<td>OAuth</td>
+<td>ทั้งองค์กร</td>
+<td>ตัวเลือกสำหรับ production</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_6">ขอบเขตเครือข่ายและความปลอดภัย</h3>
+<ul>
+<li><strong>ขอบเขตที่ 1 – client ถึง MCP</strong> แบบ stdio ไม่มีเครือข่าย AI client เปิด server เป็นโปรเซสลูกบนเครื่องเดียวกัน แบบ HTTP ให้ bind server ไว้ที่ <code>127.0.0.1</code> แล้ววาง TLS reverse proxy พร้อม IP allow-list ไว้ข้างหน้า ห้ามเปิดสู่อินเทอร์เน็ต และห้ามเด็ดขาดหากปิด OAuth</li>
+<li><strong>ขอบเขตที่ 2 – MCP ถึง Tableau Server</strong> HTTPS มาตรฐานไปยัง gateway (443) เครื่องที่รัน MCP ต้องมีเส้นทางถึง Tableau Server และต้องเชื่อถือ TLS certificate ของมัน (หรือส่ง CA bundle ให้)</li>
+<li><strong>ขอบเขตที่ 3 – client ถึง LLM</strong> เป็นของผู้ให้บริการ AI (Anthropic, OpenAI, Google, Microsoft) หรือของคุณเองหากโฮสต์เอง ผลลัพธ์ของ tool ข้ามขอบเขตนี้</li>
+</ul>
+<div class="callout tip" markdown="0"><div class="callout-title">AI client ที่อยู่บนคลาวด์ต้องการ URL ที่เข้าถึงได้</div><p>ChatGPT และ Copilot Studio รันบนคลาวด์ของผู้ให้บริการ จึงเข้าถึง <code>127.0.0.1</code> ไม่ได้ สำหรับ client เหล่านี้ต้องใช้แบบที่ 2, 3 หรือ 4 ที่มี URL เข้าถึงได้จากอินเทอร์เน็ต (ผ่าน reverse proxy หรือ tunnel) และเปิด OAuth ส่วน Claude Desktop, Claude Code และ Gemini CLI รันบนเครื่องคุณ ใช้ stdio ได้เลย</p></div>
+    </article>
+    <nav class="pagernav"><a class="pager prev" href="01-overview.html"><small>ก่อนหน้า</small><span>ภาพรวม</span></a><a class="pager next" href="03-prerequisites.html"><small>ถัดไป</small><span>สิ่งที่ต้องเตรียม</span></a></nav>
+    <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">หน้าแรก</a></footer>
+  </main>
+  <aside class="onpage"><div class="onpage-title">ในหน้านี้</div><ul><li><a href="#_2">มุมมององค์ประกอบ</a><ul><li><a href="#_3">ข้อมูลไหลอย่างไร</a></li></ul></li><li><a href="#_4">ทางเลือกการยืนยันตัวตน</a></li><li><a href="#_5">รูปแบบการติดตั้ง</a><ul><li><a href="#_6">ขอบเขตเครือข่ายและความปลอดภัย</a></li></ul></li></ul></aside>
+</div>
+<button class="totop" title="กลับขึ้นบน" aria-label="กลับขึ้นบน">↑</button>
+<script src="../assets/app.js"></script>
+</body>
+</html>

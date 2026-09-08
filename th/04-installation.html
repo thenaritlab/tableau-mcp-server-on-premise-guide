@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>การติดตั้งและตั้งค่า · Tableau Server On-Premise + Tableau MCP + AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="doc">
+<div class="progress" aria-hidden="true"></div>
+<header class="topbar">
+  <button class="menu-btn" aria-label="เมนู" aria-expanded="false" data-menu>☰</button>
+  <a class="brand" href="../index.html">Tableau Server On-Premise + Tableau MCP + AI</a>
+  <nav class="lang-switch" aria-label="Language">
+    <a href="../index.html" title="หน้าแรก">หน้าแรก</a>
+    <a class="lang-other" href="../en/04-installation.html">English</a>
+    <button class="icon-btn" data-theme-toggle title="สลับโหมดมืด" aria-label="สลับโหมดมืด">☾</button>
+  </nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="สารบัญ">
+    <div class="side-title">สารบัญ</div>
+    <ol class="side-list"><li data-slug="01-overview"><a href="01-overview.html"><span class="n">1</span>ภาพรวม</a></li>
+<li data-slug="02-architecture"><a href="02-architecture.html"><span class="n">2</span>สถาปัตยกรรม</a></li>
+<li data-slug="03-prerequisites"><a href="03-prerequisites.html"><span class="n">3</span>สิ่งที่ต้องเตรียม</a></li>
+<li class="active" data-slug="04-installation"><a href="04-installation.html"><span class="n">4</span>การติดตั้งและตั้งค่า</a></li>
+<li data-slug="05-use-cases"><a href="05-use-cases.html"><span class="n">5</span>5 use case ยอดนิยม</a></li>
+<li data-slug="06-web-ui-wrapper"><a href="06-web-ui-wrapper.html"><span class="n">6</span>ขั้นสูง: สร้าง Web UI ครอบ Tableau Server</a></li>
+<li data-slug="07-best-practices"><a href="07-best-practices.html"><span class="n">7</span>แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย</a></li>
+<li data-slug="08-faq-glossary"><a href="08-faq-glossary.html"><span class="n">8</span>คำถามที่พบบ่อยและอภิธานศัพท์</a></li>
+<li data-slug="09-references"><a href="09-references.html"><span class="n">9</span>เอกสารอ้างอิง</a></li></ol>
+    <div class="side-progress" data-label="อ่านแล้ว {n} จาก {t} ส่วน"><span class="txt"></span><div class="bar"><i style="width:0"></i></div></div>
+  </nav>
+  <main class="content">
+    <article class="doc-body" data-copy="คัดลอก" data-copied="คัดลอกแล้ว" data-slug="04-installation">
+
+<h1 id="_1">การติดตั้งและตั้งค่า</h1><div class="doc-meta"><span class="chip">ส่วนที่ 4 จาก 9</span><span class="chip">อ่าน 8 นาที</span></div>
+<p class="lead">แบ่งเป็นสี่ส่วน: เตรียม Tableau Server, รัน Tableau MCP (เริ่มจาก stdio บนเครื่องตัวเอง แล้วค่อยเป็น HTTP server ใช้ร่วมกัน), เชื่อม AI client แต่ละตัว และตรวจสอบ ทุกคำสั่งใช้ชื่อตัวอย่าง ให้แทนด้วยค่าของคุณเอง</p>
+
+<h2 id="41-tableau-server">4.1 เตรียม Tableau Server</h2>
+<h3 id="personal-access-token">สร้าง Personal Access Token (สำหรับทดสอบบนเครื่องตัวเอง)</h3>
+<ol class="steps">
+<li><strong>เข้าสู่ระบบ Tableau Server</strong> ด้วยผู้ใช้ที่ MCP server จะทำงานแทน ทดสอบเร็วๆ ใช้บัญชีตัวเองได้ แต่ถ้าใช้ร่วมกันให้ใช้ผู้ใช้เฉพาะ เช่น <code>svc-mcp-reader</code></li>
+<li><strong>เปิดการตั้งค่าบัญชี</strong> คลิกรูปโปรไฟล์ (มุมขวาบน) › <em>My Account Settings</em> › เลื่อนไปที่ <em>Personal Access Tokens</em></li>
+<li><strong>สร้างโทเคน</strong> ตั้งชื่อ <code>mcp-demo-pat</code> › <em>Create Token</em> คัดลอก secret ทันที เพราะแสดงครั้งเดียว ค่าที่ใส่ใน <code>PAT_NAME</code> คือชื่อโทเคน ไม่ใช่ชื่อผู้ใช้</li>
+<li><strong>จด content URL ของ site</strong> คือส่วนหลัง <code>/#/site/</code> ใน URL ของเบราว์เซอร์ เช่น <code>DemoSite</code> ถ้าเป็น Default site ให้เว้น <code>SITE_NAME</code> ว่าง</li>
+<li><strong>พิสูจน์ว่า PAT ใช้ได้</strong> ก่อนเกี่ยวข้องกับ MCP:</li>
+</ol>
+
+<pre data-lang="bash" data-file="rest-signin-check.sh"><code># Proves the PAT works against Tableau Server REST API directly (bypasses MCP)
+curl -s -k -X POST https://demo-server.local/api/3.24/auth/signin \
+  -H &#x27;Content-Type: application/json&#x27; -H &#x27;Accept: application/json&#x27; \
+  -d &#x27;{&quot;credentials&quot;:{&quot;personalAccessTokenName&quot;:&quot;mcp-demo-pat&quot;,
+       &quot;personalAccessTokenSecret&quot;:&quot;&lt;YOUR_PAT_VALUE&gt;&quot;,
+       &quot;site&quot;:{&quot;contentUrl&quot;:&quot;DemoSite&quot;}}}&#x27;
+# success: {&quot;credentials&quot;:{&quot;site&quot;:{...},&quot;user&quot;:{...},&quot;token&quot;:&quot;...&quot;}}</code></pre>
+
+<div class="callout warning" markdown="0"><div class="callout-title">PAT หมดอายุได้</div><p>PAT ที่ไม่ได้ใช้ 15 วันจะถูกเพิกถอน (site admin ปรับช่วงเวลาได้) ถ้าระบบที่เคยใช้ได้กลับได้ 401 หลังหยุดยาว สาเหตุมักเป็นข้อนี้</p></div>
+
+<h3 id="connected-app-direct-trust-portal">สร้าง Connected App (สำหรับ Direct Trust หรือ portal)</h3>
+<ol class="steps">
+<li><strong>ไปที่</strong> <em>Settings › Connected Apps › New Connected App › Direct Trust</em> (ต้องเป็น site administrator)</li>
+<li><strong>ตั้งชื่อ</strong> <code>mcp-direct-trust</code> ระดับการเข้าถึง: <em>All projects</em> หรือระบุ project เดียวหากต้องการจำกัด AI ไว้ Domain allow-list ปล่อยค่าเริ่มต้นสำหรับการใช้ฝั่ง server</li>
+<li><strong>สร้าง secret</strong> แล้วบันทึก <em>Client ID</em>, <em>Secret ID</em> และ <em>Secret value</em></li>
+<li><strong>เปิดใช้งานแอป</strong> สวิตช์จะปิดอยู่หลังสร้าง Connected App ที่ปิดอยู่จะให้ 401 พร้อมข้อผิดพลาด JWT ใน log</li>
+</ol>
+
+<h3 id="oauth-redirect-oauth-20253">อนุญาต OAuth redirect (เฉพาะโหมด OAuth, 2025.3+)</h3>
+<p>รันบน Tableau Server node ในฐานะผู้ดูแล TSM:</p>
+<pre data-lang="bash" data-file="tsm-oauth.sh"><code># Run on a Tableau Server node as a TSM admin. Value = MCP host WITHOUT protocol or trailing slash.
+tsm configuration set -k oauth.allowed_redirect_uri_hosts -v tableau-mcp.demo-company.local
+tsm pending-changes apply</code></pre>
+
+<h2 id="42-tableau-mcp">4.2 ติดตั้งและรัน Tableau MCP</h2>
+<h3 id="a-stdio-5">ทางเลือก A – stdio บนเครื่องตัวเอง (5 นาที)</h3>
+<p>ไม่ต้องติดตั้งอะไร AI client จะรัน <code>npx -y @tableau/mcp-server@latest</code> และส่งตัวแปรสภาพแวดล้อมให้เอง ต้องการแค่ Node.js 18+ บน PATH ข้ามไป 4.3 แล้วใช้ config แบบ <em>stdio</em> ของ client ที่ใช้</p>
+<p>ตรวจ Node.js:</p>
+<pre data-lang="bash"><code>node -v      # v18 ขึ้นไป
+npx -y @tableau/mcp-server@latest --help
+</code></pre>
+<h3 id="b-http-server-docker-30">ทางเลือก B – HTTP server ใช้ร่วมกันด้วย Docker (30 นาที)</h3>
+<ol class="steps">
+<li><strong>เตรียมโฟลเดอร์</strong> บนเครื่องที่รัน MCP: <code>sudo mkdir -p /opt/tableau-mcp && cd /opt/tableau-mcp</code></li>
+<li><strong>เลือกโหมด auth แล้วเขียน <code>.env</code></strong> เลือกไฟล์ใดไฟล์หนึ่งด้านล่าง เริ่มจาก PAT บนเครื่องที่แยกเครือข่าย แล้วย้ายไป OAuth ก่อนให้คนอื่นเชื่อมต่อ</li>
+</ol>
+
+<details><summary>.env – PAT (ทดสอบเท่านั้น)</summary>
+
+
+<pre data-lang="text" data-file="http-pat.env"><code># Tableau MCP - HTTP transport, PAT auth (testing / single user only)
+SERVER=https://demo-server.local
+SITE_NAME=DemoSite
+TRANSPORT=http
+PORT=3927
+
+AUTH=pat
+PAT_NAME=mcp-demo-pat
+PAT_VALUE=&lt;YOUR_PAT_VALUE&gt;
+
+# With TRANSPORT=http, OAuth is required by default.
+# Only disable it on an isolated network for testing.
+DANGEROUSLY_DISABLE_OAUTH=true
+
+# Tableau Server has no Pulse - hide those tools
+EXCLUDE_TOOLS=pulse
+PRODUCT_TELEMETRY_ENABLED=false</code></pre>
+
+</details>
+
+<details><summary>.env – Connected App / Direct Trust</summary>
+
+
+<pre data-lang="text" data-file="http-direct-trust.env"><code># Tableau MCP - HTTP transport, Connected App (Direct Trust) auth
+SERVER=https://demo-server.local
+SITE_NAME=DemoSite
+TRANSPORT=http
+PORT=3927
+
+AUTH=direct-trust
+JWT_SUB_CLAIM=svc-mcp-reader
+CONNECTED_APP_CLIENT_ID=&lt;CONNECTED_APP_CLIENT_ID&gt;
+CONNECTED_APP_SECRET_ID=&lt;CONNECTED_APP_SECRET_ID&gt;
+CONNECTED_APP_SECRET_VALUE=&lt;CONNECTED_APP_SECRET_VALUE&gt;
+
+# Required when not using OAuth on HTTP transport (see warning in the guide)
+DANGEROUSLY_DISABLE_OAUTH=true
+
+EXCLUDE_TOOLS=pulse
+PRODUCT_TELEMETRY_ENABLED=false</code></pre>
+
+</details>
+
+<details><summary>.env – OAuth (แนะนำสำหรับทีม)</summary>
+
+สร้าง RSA key ก่อน:
+
+
+<pre data-lang="bash" data-file="openssl-key.sh"><code>sudo mkdir -p /etc/tableau-mcp
+sudo openssl genrsa -out /etc/tableau-mcp/private.pem 2048
+sudo chmod 600 /etc/tableau-mcp/private.pem</code></pre>
+
+
+<pre data-lang="text" data-file="http-oauth.env"><code># Tableau MCP - HTTP transport, OAuth (recommended for multi-user). Tableau Server 2025.3+
+SERVER=https://demo-server.local
+SITE_NAME=DemoSite
+TRANSPORT=http
+PORT=3927
+
+AUTH=oauth
+# Local testing:
+OAUTH_ISSUER=http://127.0.0.1:3927
+# Production (behind your reverse proxy / TLS):
+#OAUTH_ISSUER=https://tableau-mcp.demo-company.local
+#OAUTH_RESOURCE_URI=https://tableau-mcp.demo-company.local
+
+# RSA private key used to decrypt the access tokens it issues (one of the two)
+OAUTH_JWE_PRIVATE_KEY_PATH=/etc/tableau-mcp/private.pem
+#OAUTH_JWE_PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----\nMIIE...\n-----END RSA PRIVATE KEY-----
+
+# Optional: let users pick any site they can access
+#OAUTH_LOCK_SITE=false
+# Optional: access token lifetime (default 1 hour)
+#OAUTH_ACCESS_TOKEN_TIMEOUT_MS=86400000
+
+EXCLUDE_TOOLS=pulse
+PRODUCT_TELEMETRY_ENABLED=false
+ENABLED_LOGGERS=fileLogger
+FILE_LOGGER_DIRECTORY=/var/log/tableau-mcp</code></pre>
+
+</details>
+
+<div class="callout verify" markdown="0"><div class="callout-title">ตรวจสอบกับเอกสารล่าสุด</div><p>พอร์ตรับฟังเริ่มต้นคือ <code>3927</code> ตรวจชื่อตัวแปรสภาพแวดล้อมที่ใช้เปลี่ยนพอร์ตในหน้า Configuration › Environment variables ของเอกสาร Tableau MCP ฉบับปัจจุบันก่อนพึ่งพา <code>PORT</code></p></div>
+
+<ol class="steps" style="counter-reset:step 2">
+<li><strong>รันคอนเทนเนอร์</strong></li>
+</ol>
+
+<pre data-lang="bash" data-file="docker-run.sh"><code># Pin a real version tag instead of :latest in production
+docker run -d --name tableau-mcp \
+  --restart unless-stopped \
+  --env-file /opt/tableau-mcp/.env \
+  -p 3927:3927 \
+  ghcr.io/tableau/tableau-mcp:latest
+docker logs -f tableau-mcp</code></pre>
+
+<p>หรือใช้ Docker Compose (bind กับ localhost เพื่อให้เฉพาะ reverse proxy เข้าถึงได้):</p>
+<pre data-lang="yaml" data-file="docker-compose.yml"><code>services:
+  tableau-mcp:
+    image: ghcr.io/tableau/tableau-mcp:latest   # pin a version in production
+    container_name: tableau-mcp
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - &quot;127.0.0.1:3927:3927&quot;    # bind to localhost; expose via reverse proxy only
+    volumes:
+      - ./private.pem:/etc/tableau-mcp/private.pem:ro
+      - ./logs:/var/log/tableau-mcp</code></pre>
+
+<ol class="steps" style="counter-reset:step 3">
+<li><strong>มองหาบรรทัดพร้อมใช้งาน</strong> ใน log: <code>tableau-mcp v3.6.0 streamable HTTP server available at http://localhost:3927/tableau-mcp</code></li>
+</ol>
+
+<h3 id="c-http-server-nodejs-systemd">ทางเลือก C – HTTP server ใช้ร่วมกันด้วย Node.js และ systemd</h3>
+<p>ใช้ <code>.env</code> เดียวกับทางเลือก B</p>
+<pre data-lang="bash" data-file="run-npx.sh"><code># Runs in the folder that contains your .env file
+cd /opt/tableau-mcp
+npx -y @tableau/mcp-server@latest
+# expected: tableau-mcp vX.Y.Z streamable HTTP server available at http://localhost:3927/tableau-mcp</code></pre>
+
+<p>สำหรับรันเป็น service ถาวร:</p>
+<pre data-lang="text" data-file="tableau-mcp.service"><code># /etc/systemd/system/tableau-mcp.service
+[Unit]
+Description=Tableau MCP server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=tableaumcp
+WorkingDirectory=/opt/tableau-mcp
+EnvironmentFile=/opt/tableau-mcp/.env
+ExecStart=/usr/bin/npx -y @tableau/mcp-server@3.6.0
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+
+<pre data-lang="bash" data-file="systemd-enable.sh"><code>sudo useradd -r -s /usr/sbin/nologin tableaumcp
+sudo chown -R tableaumcp:tableaumcp /opt/tableau-mcp /etc/tableau-mcp
+sudo systemctl daemon-reload
+sudo systemctl enable --now tableau-mcp
+sudo systemctl status tableau-mcp</code></pre>
+
+<h3 id="tls-allow-list-b-c">วาง TLS และ allow-list ไว้ข้างหน้า (ทางเลือก B และ C)</h3>
+<pre data-lang="text" data-file="nginx-tableau-mcp.conf"><code># /etc/nginx/conf.d/tableau-mcp.conf
+server {
+    listen 443 ssl;
+    server_name tableau-mcp.demo-company.local;
+
+    ssl_certificate     /etc/ssl/certs/tableau-mcp.crt;
+    ssl_certificate_key /etc/ssl/private/tableau-mcp.key;
+
+    # Only allow your office / VPN ranges
+    allow 10.0.0.0/8;
+    allow 192.168.0.0/16;
+    deny  all;
+
+    location / {
+        proxy_pass         http://127.0.0.1:3927;
+        proxy_http_version 1.1;
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+        # Streamable HTTP uses SSE-style streaming - do not buffer
+        proxy_buffering    off;
+        proxy_read_timeout 300s;
+    }
+}</code></pre>
+
+<p>เมื่อตั้งค่านี้แล้ว URL ที่ผู้ใช้ตั้งค่าคือ <code>https://tableau-mcp.demo-company.local/tableau-mcp</code> และ <code>OAUTH_ISSUER</code> / <code>OAUTH_RESOURCE_URI</code> ใน <code>.env</code> ต้องตรงกับ <code>https://tableau-mcp.demo-company.local</code></p>
+<h3 id="ai">จำกัดสิ่งที่ AI มองเห็น (ไม่บังคับแต่แนะนำ)</h3>
+<pre data-lang="text" data-file="tool-scoping.env"><code># Limit what the AI can see. All values are comma-separated LUIDs / names.
+INCLUDE_PROJECT_IDS=&lt;PROJECT_LUID&gt;
+INCLUDE_TAGS=ai-ready
+# or lock to specific published data sources only:
+#INCLUDE_DATASOURCE_IDS=&lt;DATASOURCE_LUID_1&gt;,&lt;DATASOURCE_LUID_2&gt;
+# or expose only the data source tool group:
+#INCLUDE_TOOLS=datasource</code></pre>
+
+<p>tool group ที่ใช้บ่อย: <code>datasource</code> (metadata + query), <code>workbook</code>, <code>view</code>, <code>pulse</code> (ควร exclude บน Server), <code>admin</code> รายการเต็มอยู่ใน <code>src/tools/web/toolName.ts</code> ของ repo</p>
+<h2 id="43-ai-client">4.3 เชื่อม AI client แต่ละตัว</h2>
+<h3 id="claude-desktop">Claude Desktop</h3>
+<ol class="steps">
+<li><strong>เปิดไฟล์ config</strong> Claude Desktop › <em>Settings › Developer › Edit Config</em> ตำแหน่งไฟล์: Windows <code>%APPDATA%\Claude\claude_desktop_config.json</code>, macOS <code>~/Library/Application Support/Claude/claude_desktop_config.json</code></li>
+<li><strong>เพิ่ม server (stdio)</strong></li>
+</ol>
+
+<pre data-lang="json" data-file="claude-desktop.json"><code>{
+  &quot;mcpServers&quot;: {
+    &quot;tableau-demo&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;-y&quot;, &quot;@tableau/mcp-server@latest&quot;],
+      &quot;env&quot;: {
+        &quot;SERVER&quot;: &quot;https://demo-server.local&quot;,
+        &quot;SITE_NAME&quot;: &quot;DemoSite&quot;,
+        &quot;PAT_NAME&quot;: &quot;mcp-demo-pat&quot;,
+        &quot;PAT_VALUE&quot;: &quot;&lt;YOUR_PAT_VALUE&gt;&quot;,
+        &quot;EXCLUDE_TOOLS&quot;: &quot;pulse&quot;
+      }
+    }
+  }
+}</code></pre>
+
+<p>หรือชี้ Claude Desktop ไปยัง HTTP server ที่ใช้ร่วมกันผ่านตัวกลาง <code>mcp-remote</code> (จัดการหน้าต่างล็อกอิน OAuth ให้):</p>
+<pre data-lang="json" data-file="claude-desktop-http.json"><code>{
+  &quot;mcpServers&quot;: {
+    &quot;tableau-demo&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;-y&quot;, &quot;mcp-remote&quot;, &quot;http://127.0.0.1:3927/tableau-mcp&quot;]
+    }
+  }
+}</code></pre>
+
+<ol class="steps" style="counter-reset:step 2">
+<li><strong>ปิดแล้วเปิด Claude Desktop ใหม่ทั้งหมด</strong> (บน Windows ให้ Quit จาก tray) ไอคอน tools ใต้ช่องพิมพ์ควรแสดง <code>tableau-demo</code></li>
+<li><strong>ทดสอบ</strong> ด้วย <em>"List my Tableau data sources."</em></li>
+</ol>
+
+<h3 id="claude-code">Claude Code</h3>
+<pre data-lang="bash" data-file="claude-code.sh"><code># Option A: local stdio server (Claude Code starts it for you)
+claude mcp add tableau-demo \
+  -e SERVER=https://demo-server.local \
+  -e SITE_NAME=DemoSite \
+  -e PAT_NAME=mcp-demo-pat \
+  -e PAT_VALUE=&lt;YOUR_PAT_VALUE&gt; \
+  -e EXCLUDE_TOOLS=pulse \
+  -- npx -y @tableau/mcp-server@latest
+
+# Option B: shared HTTP server (already running on port 3927)
+claude mcp add --transport http tableau-demo http://127.0.0.1:3927/tableau-mcp
+
+# Check the connection
+claude mcp list</code></pre>
+
+<p>จากนั้นใน session ของ Claude Code พิมพ์ <code>/mcp</code> เพื่อดูสถานะการเชื่อมต่อ และล็อกอินหากเปิด OAuth ไว้</p>
+<h3 id="chatgpt">ChatGPT</h3>
+<p>ChatGPT รันบนคลาวด์ของ OpenAI จึงต้องใช้การติดตั้งแบบ HTTP ที่เข้าถึงได้ผ่าน HTTPS URL สาธารณะและเปิด OAuth (ทางเลือก B/C + reverse proxy หรือ tunnel สำหรับเดโม)</p>
+<ol class="steps">
+<li><strong>เปิด developer mode</strong> <em>Settings › Connectors › Advanced › Developer mode</em> (ชื่อและตำแหน่งต่างกันตามแผน)</li>
+<li><strong>สร้าง connector</strong> <em>Connectors › Create</em> ตั้งชื่อ <code>Tableau Demo</code>, MCP server URL <code>https://tableau-mcp.demo-company.local/tableau-mcp</code>, authentication <em>OAuth</em> ChatGPT จะค้นพบ authorization server ในตัวโดยอัตโนมัติ</li>
+<li><strong>อนุญาตสิทธิ์</strong> ระบบจะพาไปหน้าล็อกอินของ Tableau Server แล้วกลับมา</li>
+<li><strong>ใช้งาน</strong> ในแชทใหม่เปิด <em>Tools</em> › เปิด <code>Tableau Demo</code> แล้วถาม <em>"Which published data sources can I query?"</em></li>
+</ol>
+
+<div class="callout verify" markdown="0"><div class="callout-title">ตรวจสอบกับเอกสารล่าสุด</div><p>หน้าจอ connector และแผนที่รองรับใน ChatGPT เปลี่ยนบ่อย ตรวจขั้นตอนปัจจุบันใน Help Center ของ OpenAI ก่อนเดโมให้ลูกค้า</p></div>
+
+<h3 id="gemini-cli">Gemini CLI</h3>
+<p>แก้ไข <code>~/.gemini/settings.json</code> (หรือ <code>.gemini/settings.json</code> ในโปรเจกต์):</p>
+<pre data-lang="json" data-file="gemini-settings.json"><code>{
+  &quot;mcpServers&quot;: {
+    &quot;tableau-demo&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;-y&quot;, &quot;@tableau/mcp-server@latest&quot;],
+      &quot;env&quot;: {
+        &quot;SERVER&quot;: &quot;https://demo-server.local&quot;,
+        &quot;SITE_NAME&quot;: &quot;DemoSite&quot;,
+        &quot;PAT_NAME&quot;: &quot;mcp-demo-pat&quot;,
+        &quot;PAT_VALUE&quot;: &quot;&lt;YOUR_PAT_VALUE&gt;&quot;,
+        &quot;EXCLUDE_TOOLS&quot;: &quot;pulse&quot;
+      },
+      &quot;timeout&quot;: 60000
+    }
+  }
+}</code></pre>
+
+<p>สำหรับ server ที่ใช้ร่วมกันให้ใช้ <code>httpUrl</code> แทน:</p>
+<pre data-lang="json" data-file="gemini-settings-http.json"><code>{
+  &quot;mcpServers&quot;: {
+    &quot;tableau-demo&quot;: {
+      &quot;httpUrl&quot;: &quot;http://127.0.0.1:3927/tableau-mcp&quot;,
+      &quot;timeout&quot;: 60000
+    }
+  }
+}</code></pre>
+
+<p>เปิด <code>gemini</code> แล้วรัน <code>/mcp</code> เพื่อยืนยันว่าเชื่อมต่อแล้ว จากนั้นถามคำถาม</p>
+<h3 id="microsoft-copilot">Microsoft Copilot</h3>
+<p><strong>Copilot Studio (agent สำหรับ Teams / M365):</strong> Copilot Studio เรียก MCP server ผ่าน Streamable HTTP จากคลาวด์ของ Microsoft จึงต้องใช้ HTTPS URL สาธารณะพร้อม OAuth</p>
+<ol class="steps">
+<li><strong>เปิด agent ของคุณ</strong> › <em>Tools › Add a tool › Model Context Protocol</em></li>
+<li><strong>Server URL</strong> <code>https://tableau-mcp.demo-company.local/tableau-mcp</code>, authentication <em>OAuth 2.0</em> กรอก authorize / token endpoint ตามที่แสดงใน <code>https://tableau-mcp.demo-company.local/.well-known/oauth-authorization-server</code></li>
+<li><strong>เพิ่ม tool เข้า agent</strong> publish แล้วทดสอบใน test pane ด้วย <em>"Show me the list of Tableau workbooks."</em></li>
+</ol>
+
+<p><strong>GitHub Copilot ใน VS Code:</strong> สร้าง <code>.vscode/mcp.json</code> ใน workspace:</p>
+<pre data-lang="json" data-file="vscode-mcp.json"><code>{
+  &quot;servers&quot;: {
+    &quot;tableau-demo&quot;: {
+      &quot;type&quot;: &quot;http&quot;,
+      &quot;url&quot;: &quot;http://127.0.0.1:3927/tableau-mcp&quot;
+    }
+  }
+}</code></pre>
+
+<p>เปิด Copilot Chat ในโหมด <em>Agent</em> จะเห็น tool ของ Tableau ในตัวเลือก tools</p>
+<div class="callout verify" markdown="0"><div class="callout-title">ตรวจสอบกับเอกสารล่าสุด</div><p>การรองรับ MCP ของ Copilot Studio และช่องกรอก authentication ยังเปลี่ยนแปลงอยู่ ตรวจ Microsoft Learn › Copilot Studio › "Add an MCP server" สำหรับขั้นตอนปัจจุบัน</p></div>
+
+<h2 id="44">4.4 ตรวจสอบการเชื่อมต่อ</h2>
+<h3 id="mcp">จากเครื่องที่รัน MCP</h3>
+<pre data-lang="bash" data-file="curl-ping.sh"><code>curl -s -X POST http://127.0.0.1:3927/tableau-mcp \
+  -H &#x27;accept: application/json, text/event-stream&#x27; \
+  -H &#x27;content-type: application/json&#x27; \
+  -d &#x27;{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:&quot;1&quot;,&quot;method&quot;:&quot;ping&quot;}&#x27;
+# healthy: {&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:&quot;1&quot;,&quot;result&quot;:{}}</code></pre>
+
+<pre data-lang="bash" data-file="curl-init.sh"><code>curl -s -X POST http://127.0.0.1:3927/tableau-mcp \
+  -H &#x27;accept: application/json, text/event-stream&#x27; \
+  -H &#x27;content-type: application/json&#x27; \
+  -d &#x27;{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;id&quot;: 1, &quot;method&quot;: &quot;initialize&quot;,
+    &quot;params&quot;: {
+      &quot;protocolVersion&quot;: &quot;2025-11-25&quot;,
+      &quot;capabilities&quot;: {},
+      &quot;clientInfo&quot;: { &quot;name&quot;: &quot;curl-check&quot;, &quot;version&quot;: &quot;1.0.0&quot; }
+    }
+  }&#x27;
+# No OAuth  -&gt; {&quot;result&quot;:{&quot;serverInfo&quot;:{&quot;name&quot;:&quot;tableau-mcp&quot;,...}}}
+# With OAuth -&gt; {&quot;error&quot;:&quot;unauthorized&quot;,&quot;error_description&quot;:&quot;Authorization required. Use OAuth 2.1 flow.&quot;}</code></pre>
+
+<h3 id="ai-client">จาก AI client</h3>
+<p>ถามตามลำดับ:</p>
+<ol>
+<li><em>"List my Tableau data sources."</em> → client ควรเรียก <code>list-datasources</code> และแสดงชื่อ</li>
+<li><em>"What fields are in the Sales data source?"</em> → <code>list-fields</code> (หรือ <code>get-datasource-metadata</code>)</li>
+<li><em>"What were total sales by region last year?"</em> → <code>query-datasource</code> ด้วย query แบบ aggregate เล็กๆ</li>
+</ol>
+<p>ถ้าข้อ 1 ผ่าน แปลว่า authentication และเครือข่ายเรียบร้อย ถ้าข้อ 3 ล้มเหลวแต่ 1–2 ผ่าน เป็นปัญหาสิทธิ์ (API access) หรือชื่อฟิลด์</p>
+<h3 id="_2">ข้อผิดพลาดที่พบบ่อยและวิธีแก้</h3>
+<table>
+<thead>
+<tr>
+<th>อาการ</th>
+<th>สาเหตุที่น่าจะเป็น</th>
+<th>วิธีแก้</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401 Unauthorized</code> ทุก tool</td>
+<td><code>SERVER</code>/<code>SITE_NAME</code> ผิด, PAT หมดอายุ, ใส่ชื่อผู้ใช้ใน <code>PAT_NAME</code>, Connected App ปิดอยู่</td>
+<td>รัน curl sign-in REST ซ้ำ; สร้าง PAT ใหม่; ตรวจสวิตช์ Connected App</td>
+</tr>
+<tr>
+<td><code>403 Forbidden</code> เฉพาะ <code>query-datasource</code></td>
+<td>ผู้ใช้ไม่มี "API access" / "Connect" บน data source นั้น</td>
+<td>ให้สิทธิ์บน data source หรือ project</td>
+</tr>
+<tr>
+<td><code>Method not allowed</code> เมื่อเปิด URL ในเบราว์เซอร์</td>
+<td>ปกติ: GET ไม่ใช่ส่วนหนึ่งของ MCP</td>
+<td>ใช้ curl ทดสอบ <code>initialize</code></td>
+</tr>
+<tr>
+<td>Client บอก "authorization required" แต่ไม่เปิดเบราว์เซอร์</td>
+<td>client ไม่รองรับ OAuth flow หรือ <code>OAUTH_ISSUER</code> ไม่ตรงกับ URL สาธารณะ</td>
+<td>ใช้ <code>mcp-remote</code> กับ Claude Desktop; ปรับ <code>OAUTH_ISSUER</code>, <code>OAUTH_RESOURCE_URI</code> และ <code>server_name</code> ใน nginx ให้ตรงกัน</td>
+</tr>
+<tr>
+<td>ล็อกอิน OAuth วนซ้ำ หรือ "redirect URI not allowed"</td>
+<td>ยังไม่ตั้ง <code>tsm oauth.allowed_redirect_uri_hosts</code> หรือใส่ host ผิด</td>
+<td>ตั้งเป็นชื่อเครื่อง MCP แล้ว apply pending changes</td>
+</tr>
+<tr>
+<td>ผู้ใช้ต้องเชื่อมต่อใหม่ทุกครั้งที่ restart</td>
+<td>refresh token เก็บในหน่วยความจำของโปรเซส MCP</td>
+<td>ข้อจำกัดที่รู้อยู่แล้ว; เพิ่ม <code>OAUTH_ACCESS_TOKEN_TIMEOUT_MS</code>, หลีกเลี่ยง restart ที่ไม่จำเป็น</td>
+</tr>
+<tr>
+<td><code>self signed certificate</code> / TLS error</td>
+<td>Tableau Server ใช้ CA ภายใน</td>
+<td>export CA chain แล้วตั้ง <code>NODE_EXTRA_CA_CERTS=/path/ca.pem</code> ให้โปรเซส MCP (ใน Docker ให้ mount ไฟล์และตั้งตัวแปร)</td>
+</tr>
+<tr>
+<td>รายการ tool ใน client ว่างเปล่า</td>
+<td>server เริ่มด้วย <code>INCLUDE_TOOLS</code> ที่พิมพ์ผิด</td>
+<td>ดู log ตอนเริ่ม; ชื่อ tool แยกตัวพิมพ์เล็กใหญ่</td>
+</tr>
+<tr>
+<td>โมเดลไม่เรียก tool เลย ตอบจากความจำ</td>
+<td>client ไม่ได้อยู่ในโหมด agent/tools หรือโมเดลอ่อน</td>
+<td>เปิด tools ให้แชท; ใช้โมเดลที่รองรับ tool</td>
+</tr>
+<tr>
+<td>tool ของ Pulse ปรากฏและล้มเหลว</td>
+<td>Pulse มีเฉพาะ Tableau Cloud</td>
+<td><code>EXCLUDE_TOOLS=pulse</code></td>
+</tr>
+<tr>
+<td>ตอบช้ามาก</td>
+<td>data source ใหญ่มาก ทุก query ผ่าน VDS</td>
+<td>จำกัดด้วย <code>INCLUDE_DATASOURCE_IDS</code>; ขอ aggregate ไม่ใช่ข้อมูลระดับแถว</td>
+</tr>
+</tbody>
+</table>
+    </article>
+    <nav class="pagernav"><a class="pager prev" href="03-prerequisites.html"><small>ก่อนหน้า</small><span>สิ่งที่ต้องเตรียม</span></a><a class="pager next" href="05-use-cases.html"><small>ถัดไป</small><span>5 use case ยอดนิยม</span></a></nav>
+    <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">หน้าแรก</a></footer>
+  </main>
+  <aside class="onpage"><div class="onpage-title">ในหน้านี้</div><ul><li><a href="#41-tableau-server">4.1 เตรียม Tableau Server</a><ul><li><a href="#personal-access-token">สร้าง Personal Access Token (สำหรับทดสอบบนเครื่องตัวเอง)</a></li><li><a href="#connected-app-direct-trust-portal">สร้าง Connected App (สำหรับ Direct Trust หรือ portal)</a></li><li><a href="#oauth-redirect-oauth-20253">อนุญาต OAuth redirect (เฉพาะโหมด OAuth, 2025.3+)</a></li></ul></li><li><a href="#42-tableau-mcp">4.2 ติดตั้งและรัน Tableau MCP</a><ul><li><a href="#a-stdio-5">ทางเลือก A – stdio บนเครื่องตัวเอง (5 นาที)</a></li><li><a href="#b-http-server-docker-30">ทางเลือก B – HTTP server ใช้ร่วมกันด้วย Docker (30 นาที)</a></li><li><a href="#c-http-server-nodejs-systemd">ทางเลือก C – HTTP server ใช้ร่วมกันด้วย Node.js และ systemd</a></li><li><a href="#tls-allow-list-b-c">วาง TLS และ allow-list ไว้ข้างหน้า (ทางเลือก B และ C)</a></li><li><a href="#ai">จำกัดสิ่งที่ AI มองเห็น (ไม่บังคับแต่แนะนำ)</a></li></ul></li><li><a href="#43-ai-client">4.3 เชื่อม AI client แต่ละตัว</a><ul><li><a href="#claude-desktop">Claude Desktop</a></li><li><a href="#claude-code">Claude Code</a></li><li><a href="#chatgpt">ChatGPT</a></li><li><a href="#gemini-cli">Gemini CLI</a></li><li><a href="#microsoft-copilot">Microsoft Copilot</a></li></ul></li><li><a href="#44">4.4 ตรวจสอบการเชื่อมต่อ</a><ul><li><a href="#mcp">จากเครื่องที่รัน MCP</a></li><li><a href="#ai-client">จาก AI client</a></li><li><a href="#_2">ข้อผิดพลาดที่พบบ่อยและวิธีแก้</a></li></ul></li></ul></aside>
+</div>
+<button class="totop" title="กลับขึ้นบน" aria-label="กลับขึ้นบน">↑</button>
+<script src="../assets/app.js"></script>
+</body>
+</html>

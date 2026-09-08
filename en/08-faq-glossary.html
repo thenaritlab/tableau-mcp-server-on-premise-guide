@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ and glossary · Tableau Server On-Premise + Tableau MCP + AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="doc">
+<div class="progress" aria-hidden="true"></div>
+<header class="topbar">
+  <button class="menu-btn" aria-label="Menu" aria-expanded="false" data-menu>☰</button>
+  <a class="brand" href="../index.html">Tableau Server On-Premise + Tableau MCP + AI</a>
+  <nav class="lang-switch" aria-label="Language">
+    <a href="../index.html" title="Home">Home</a>
+    <a class="lang-other" href="../th/08-faq-glossary.html">ไทย</a>
+    <button class="icon-btn" data-theme-toggle title="Toggle dark mode" aria-label="Toggle dark mode">☾</button>
+  </nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Contents">
+    <div class="side-title">Contents</div>
+    <ol class="side-list"><li data-slug="01-overview"><a href="01-overview.html"><span class="n">1</span>Overview</a></li>
+<li data-slug="02-architecture"><a href="02-architecture.html"><span class="n">2</span>Architecture</a></li>
+<li data-slug="03-prerequisites"><a href="03-prerequisites.html"><span class="n">3</span>Prerequisites</a></li>
+<li data-slug="04-installation"><a href="04-installation.html"><span class="n">4</span>Installation and configuration</a></li>
+<li data-slug="05-use-cases"><a href="05-use-cases.html"><span class="n">5</span>Top 5 use cases</a></li>
+<li data-slug="06-web-ui-wrapper"><a href="06-web-ui-wrapper.html"><span class="n">6</span>Advanced: build a custom Web UI wrapper</a></li>
+<li data-slug="07-best-practices"><a href="07-best-practices.html"><span class="n">7</span>Best practices, governance and security checklist</a></li>
+<li class="active" data-slug="08-faq-glossary"><a href="08-faq-glossary.html"><span class="n">8</span>FAQ and glossary</a></li>
+<li data-slug="09-references"><a href="09-references.html"><span class="n">9</span>References</a></li></ol>
+    <div class="side-progress" data-label="Read {n} of {t} sections"><span class="txt"></span><div class="bar"><i style="width:0"></i></div></div>
+  </nav>
+  <main class="content">
+    <article class="doc-body" data-copy="Copy" data-copied="Copied" data-slug="08-faq-glossary">
+
+<h1 id="faq-and-glossary">FAQ and glossary</h1><div class="doc-meta"><span class="chip">Section 8 of 9</span><span class="chip">3 min read</span></div>
+<h2 id="faq">FAQ</h2>
+<details><summary>Does the AI vendor see my database?</summary>
+
+No. The model only receives what Tableau MCP returns from a tool call: metadata and aggregated query results for content the signed-in identity can access. Your database is never contacted by the model. The results do, however, leave your network unless you self-host the model.
+
+</details>
+
+<details><summary>Do I need Tableau Cloud or Tableau+ for this?</summary>
+
+No. Tableau MCP is open source and works with Tableau Server. Tableau Cloud gets an additional hosted MCP service and Pulse tools; on Server exclude the `pulse` group.
+
+</details>
+
+<details><summary>Which Tableau Server version do I need?</summary>
+
+Any supported version for PAT or Direct Trust. OAuth (per-user auth on the HTTP transport) needs 2025.3 or newer.
+
+</details>
+
+<details><summary>Can Viewers use it?</summary>
+
+Viewers can read views (`get-view-data`, `get-view-image`) if they have permission. Querying a published data source requires the "Connect" and "API access" capabilities, which are usually granted to Explorers and Creators.
+
+</details>
+
+<details><summary>Why does ChatGPT say it cannot reach my server?</summary>
+
+ChatGPT runs in OpenAI's cloud; it cannot see `127.0.0.1` or an internal host name. You need the HTTP deployment on a public HTTPS URL with OAuth. For a demo a tunnel works; for production use your DMZ reverse proxy.
+
+</details>
+
+<details><summary>Can two people share one PAT?</summary>
+
+Technically it runs, but PATs are not concurrency-safe and everyone becomes one identity, which breaks RLS and, depending on your contract, licensing. Use OAuth.
+
+</details>
+
+<details><summary>Does row-level security work?</summary>
+
+Yes, when Tableau sees the right user. With OAuth that is automatic. With Direct Trust, whatever you put in `JWT_SUB_CLAIM` is the user. With a PAT it is the PAT owner.
+
+</details>
+
+<details><summary>How much does a query cost in tokens?</summary>
+
+Listing fields for a wide data source can be 2–5k tokens; a small aggregate result is a few hundred. A five-step agentic analysis is typically 20–40k tokens. Scope tools and data sources to keep this down.
+
+</details>
+
+<details><summary>Can the AI change anything on the server?</summary>
+
+Some tools can trigger extract refreshes or produce admin reports. Exclude those groups for analyst-facing instances with `INCLUDE_TOOLS=datasource`.
+
+</details>
+
+<details><summary>What about Tableau Agent and Tableau Next?</summary>
+
+Tableau Agent is Tableau's built-in assistant inside the product (available on Server from 2025.3). Tableau MCP is for bringing Tableau data into *external* AI tools and custom apps. They complement each other.
+
+</details>
+
+<h2 id="glossary">Glossary</h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>English</th>
+<th>ไทย</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MCP</td>
+<td>Model Context Protocol – an open standard for AI clients to call external tools</td>
+<td>โปรโตคอลมาตรฐานเปิดให้ AI เรียกใช้เครื่องมือภายนอก</td>
+</tr>
+<tr>
+<td>MCP host / client</td>
+<td>The AI application that calls tools (Claude Desktop, ChatGPT…)</td>
+<td>แอป AI ที่เรียกเครื่องมือ</td>
+</tr>
+<tr>
+<td>MCP server</td>
+<td>The program exposing tools; here, Tableau MCP</td>
+<td>โปรแกรมที่เปิดเครื่องมือให้เรียก ในที่นี้คือ Tableau MCP</td>
+</tr>
+<tr>
+<td>Tool</td>
+<td>A named function with a JSON schema the model can call</td>
+<td>ฟังก์ชันที่มีชื่อและ schema ให้โมเดลเรียก</td>
+</tr>
+<tr>
+<td>stdio</td>
+<td>Transport where the client launches the server as a child process</td>
+<td>การเชื่อมต่อแบบ client เปิดโปรเซสเซิร์ฟเวอร์เอง</td>
+</tr>
+<tr>
+<td>Streamable HTTP</td>
+<td>Transport over HTTP for shared, remote MCP servers</td>
+<td>การเชื่อมต่อผ่าน HTTP สำหรับเซิร์ฟเวอร์ที่ใช้ร่วมกัน</td>
+</tr>
+<tr>
+<td>PAT</td>
+<td>Personal Access Token – long-lived token that signs in as one user</td>
+<td>โทเคนส่วนบุคคลสำหรับเข้าสู่ระบบแทนผู้ใช้หนึ่งคน</td>
+</tr>
+<tr>
+<td>Connected App</td>
+<td>Tableau feature that trusts JWTs signed with a shared secret (Direct Trust) or an external IdP (OAuth 2.0 Trust)</td>
+<td>ฟีเจอร์ของ Tableau ที่เชื่อถือ JWT ที่ลงนามด้วย secret</td>
+</tr>
+<tr>
+<td>Direct Trust</td>
+<td>Connected App mode where Tableau shares a secret with your app</td>
+<td>โหมด Connected App ที่ Tableau แชร์ secret กับแอปของคุณ</td>
+</tr>
+<tr>
+<td>JWT</td>
+<td>JSON Web Token – signed token carrying the user (<code>sub</code>) and scopes</td>
+<td>โทเคนที่ลงนามซึ่งระบุผู้ใช้และสิทธิ์</td>
+</tr>
+<tr>
+<td>JWE</td>
+<td>JSON Web Encryption – encrypted token used by the embedded OAuth server</td>
+<td>โทเคนที่เข้ารหัสซึ่งใช้โดยเซิร์ฟเวอร์ OAuth ในตัว</td>
+</tr>
+<tr>
+<td>OAuth 2.1</td>
+<td>Authorisation flow where the user signs in and the client gets access/refresh tokens</td>
+<td>กระบวนการอนุญาตที่ผู้ใช้ล็อกอินแล้ว client ได้รับโทเคน</td>
+</tr>
+<tr>
+<td>VDS</td>
+<td>VizQL Data Service – Tableau API that runs queries against published data sources</td>
+<td>API ของ Tableau สำหรับ query แหล่งข้อมูลที่เผยแพร่</td>
+</tr>
+<tr>
+<td>Published data source</td>
+<td>A data source on the server with its own permissions, calculations and RLS</td>
+<td>แหล่งข้อมูลบนเซิร์ฟเวอร์ที่มีสิทธิ์ สูตร และ RLS ของตัวเอง</td>
+</tr>
+<tr>
+<td>RLS</td>
+<td>Row-level security – filters rows by user</td>
+<td>การจำกัดข้อมูลระดับแถวตามผู้ใช้</td>
+</tr>
+<tr>
+<td>LUID</td>
+<td>Locally unique identifier – the GUID of a Tableau object</td>
+<td>รหัสประจำวัตถุใน Tableau</td>
+</tr>
+<tr>
+<td>Tool scoping</td>
+<td>Env vars that restrict which projects, tags, data sources or workbooks tools may touch</td>
+<td>การจำกัดขอบเขตเครื่องมือด้วยตัวแปรสภาพแวดล้อม</td>
+</tr>
+<tr>
+<td>Agentic loop</td>
+<td>Model calls tools repeatedly until it can answer</td>
+<td>วงจรที่โมเดลเรียกเครื่องมือซ้ำจนตอบได้</td>
+</tr>
+<tr>
+<td>UBL</td>
+<td>Usage-based licensing</td>
+<td>การคิดค่าลิขสิทธิ์ตามการใช้งาน</td>
+</tr>
+</tbody>
+</table>
+    </article>
+    <nav class="pagernav"><a class="pager prev" href="07-best-practices.html"><small>Previous</small><span>Best practices, governance and security checklist</span></a><a class="pager next" href="09-references.html"><small>Next</small><span>References</span></a></nav>
+    <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">Home</a></footer>
+  </main>
+  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#faq">FAQ</a></li><li><a href="#glossary">Glossary</a></li></ul></aside>
+</div>
+<button class="totop" title="Back to top" aria-label="Back to top">↑</button>
+<script src="../assets/app.js"></script>
+</body>
+</html>

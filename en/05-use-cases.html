@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Top 5 use cases · Tableau Server On-Premise + Tableau MCP + AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="doc">
+<div class="progress" aria-hidden="true"></div>
+<header class="topbar">
+  <button class="menu-btn" aria-label="Menu" aria-expanded="false" data-menu>☰</button>
+  <a class="brand" href="../index.html">Tableau Server On-Premise + Tableau MCP + AI</a>
+  <nav class="lang-switch" aria-label="Language">
+    <a href="../index.html" title="Home">Home</a>
+    <a class="lang-other" href="../th/05-use-cases.html">ไทย</a>
+    <button class="icon-btn" data-theme-toggle title="Toggle dark mode" aria-label="Toggle dark mode">☾</button>
+  </nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Contents">
+    <div class="side-title">Contents</div>
+    <ol class="side-list"><li data-slug="01-overview"><a href="01-overview.html"><span class="n">1</span>Overview</a></li>
+<li data-slug="02-architecture"><a href="02-architecture.html"><span class="n">2</span>Architecture</a></li>
+<li data-slug="03-prerequisites"><a href="03-prerequisites.html"><span class="n">3</span>Prerequisites</a></li>
+<li data-slug="04-installation"><a href="04-installation.html"><span class="n">4</span>Installation and configuration</a></li>
+<li class="active" data-slug="05-use-cases"><a href="05-use-cases.html"><span class="n">5</span>Top 5 use cases</a></li>
+<li data-slug="06-web-ui-wrapper"><a href="06-web-ui-wrapper.html"><span class="n">6</span>Advanced: build a custom Web UI wrapper</a></li>
+<li data-slug="07-best-practices"><a href="07-best-practices.html"><span class="n">7</span>Best practices, governance and security checklist</a></li>
+<li data-slug="08-faq-glossary"><a href="08-faq-glossary.html"><span class="n">8</span>FAQ and glossary</a></li>
+<li data-slug="09-references"><a href="09-references.html"><span class="n">9</span>References</a></li></ol>
+    <div class="side-progress" data-label="Read {n} of {t} sections"><span class="txt"></span><div class="bar"><i style="width:0"></i></div></div>
+  </nav>
+  <main class="content">
+    <article class="doc-body" data-copy="Copy" data-copied="Copied" data-slug="05-use-cases">
+
+<h1 id="top-5-use-cases">Top 5 use cases</h1><div class="doc-meta"><span class="chip">Section 5 of 9</span><span class="chip">5 min read</span></div>
+<p class="lead">Each use case builds on the previous one. Run them in order on a test site: by the fifth you will have a repeatable demo script and a clear picture of what the model can and cannot do with your data.</p>
+
+<p>All examples assume a published data source called <strong>Sales</strong> in a project called <strong>Demo Company</strong> with fields such as <code>Order Date</code>, <code>Region</code>, <code>Category</code>, <code>Sales</code>, <code>Profit</code>, <code>Quantity</code>.</p>
+<h2 id="1-find-and-understand-content-basic">1. Find and understand content <span class="level basic">Basic</span></h2>
+<p><strong>Business goal.</strong> Cut the time analysts spend hunting for the right workbook or data source.
+<strong>Who uses it.</strong> Everyone, especially new joiners.
+<strong>Tools involved.</strong> <code>search-content</code>, <code>list-workbooks</code>, <code>list-datasources</code>, <code>list-fields</code>.</p>
+<h3 id="sample-prompts">Sample prompts</h3>
+<ul>
+<li>"Which workbooks mention <em>inventory</em>?"</li>
+<li>"Show me the data sources in the Demo Company project and who owns them."</li>
+<li>"Explain the fields in the Sales data source in plain language."</li>
+</ul>
+<h3 id="walkthrough">Walkthrough</h3>
+<ol>
+<li>Ask <em>"What data sources do I have access to?"</em> The model calls <code>list-datasources</code>.</li>
+<li>Ask <em>"Describe the Sales data source."</em> The model calls <code>list-fields</code> and summarises dimensions, measures and any calculated fields.</li>
+<li>Ask <em>"Which workbooks use it?"</em> If the Metadata API is enabled the model can follow lineage.</li>
+</ol>
+<p><strong>Expected output.</strong> A short list with names, projects, owners and last-updated dates, plus a plain-language data dictionary.</p>
+<p><strong>Pitfalls.</strong> Field descriptions are only as good as what authors typed into Tableau: add descriptions and aliases to your published data sources or the AI will guess. Content search is scoped by permissions, so a "missing" workbook usually means the user cannot see it.</p>
+<h2 id="2-ask-a-question-of-a-data-source-basic">2. Ask a question of a data source <span class="level basic">Basic</span></h2>
+<p><strong>Business goal.</strong> Answer "what was X by Y" questions without opening a dashboard.
+<strong>Who uses it.</strong> Managers, sales, operations.
+<strong>Tools involved.</strong> <code>query-datasource</code> (VizQL Data Service).</p>
+<h3 id="sample-prompts_1">Sample prompts</h3>
+<ul>
+<li>"Total sales and profit by region for 2025."</li>
+<li>"Top 10 products by quantity sold in the West region last quarter."</li>
+<li>"Monthly sales trend for the Furniture category, 2024 vs 2025."</li>
+</ul>
+<h3 id="walkthrough_1">Walkthrough</h3>
+<ol>
+<li>The model reads field metadata (from use case 1) and builds a VDS query: fields, aggregations, filters.</li>
+<li>It calls <code>query-datasource</code> and receives a small table.</li>
+<li>It formats a table and one or two observations.</li>
+</ol>
+<p><strong>Expected output.</strong> A table of a few rows with the numbers, and the model stating which data source and filters it used.</p>
+<p><strong>Pitfalls.</strong> Always ask for aggregates. "Give me all orders" will try to pull row-level data and either time out or exhaust context. Date filters are the most common error: check that the model used the right fiscal calendar. Numbers should be spot-checked against a dashboard the first few times.</p>
+<div class="callout tip" markdown="0"><div class="callout-title">Set expectations in a system prompt</div><p>In your custom portal (Section 6) tell the model to always state the data source and filters. In Claude Desktop, use a project instruction. This makes every answer auditable.</p></div>
+
+<h2 id="3-executive-summary-of-a-dashboard-intermediate">3. Executive summary of a dashboard <span class="level mid">Intermediate</span></h2>
+<p><strong>Business goal.</strong> Turn a weekly dashboard into a written brief for leadership.
+<strong>Who uses it.</strong> Analysts who prepare management updates.
+<strong>Tools involved.</strong> <code>get-view-data</code>, <code>get-view-image</code>, <code>query-datasource</code>.</p>
+<h3 id="sample-prompts_2">Sample prompts</h3>
+<ul>
+<li>"Summarise the <em>Sales Overview</em> dashboard as five bullet points for the CEO."</li>
+<li>"Compare this month with last month and highlight anything that moved more than 10 percent."</li>
+<li>"Write the summary in Thai and English."</li>
+</ul>
+<h3 id="walkthrough_2">Walkthrough</h3>
+<ol>
+<li>Ask the model to fetch the view's data (<code>get-view-data</code>) rather than only the image: the image helps it describe layout, the data gives it real numbers.</li>
+<li>Ask for the comparison. The model may issue a follow-up <code>query-datasource</code> to get the prior period.</li>
+<li>Ask for the output format you need (bullets, email, slide notes).</li>
+</ol>
+<p><strong>Expected output.</strong> A short narrative with the actual figures, direction of change and a "what to watch" line.</p>
+<p><strong>Pitfalls.</strong> <code>get-view-data</code> returns the underlying summary data of the sheet; on dense dashboards pick a specific sheet. Images are useful for layout questions but cost many tokens. Do not let the model invent causes: ask it to separate "what changed" from "possible reasons".</p>
+<h2 id="4-admin-insights-and-housekeeping-intermediate">4. Admin insights and housekeeping <span class="level mid">Intermediate</span></h2>
+<p><strong>Business goal.</strong> Keep the server clean and licences well used without writing SQL against the repository.
+<strong>Who uses it.</strong> Tableau Server administrators.
+<strong>Tools involved.</strong> admin tool group (<code>get-stale-content-report</code>, <code>list-extract-refresh-tasks</code>, user and permission listing), <code>list-workbooks</code>.</p>
+<h3 id="sample-prompts_3">Sample prompts</h3>
+<ul>
+<li>"Which workbooks have not been viewed in 180 days? Group by project and owner."</li>
+<li>"List extract refresh tasks that failed this week and their data sources."</li>
+<li>"Draft an email to each owner of stale content asking them to archive or confirm."</li>
+</ul>
+<h3 id="walkthrough_3">Walkthrough</h3>
+<ol>
+<li>Run the stale content report through the AI; ask for a table grouped by owner.</li>
+<li>Ask for failed refresh tasks and correlate with the same owners.</li>
+<li>Ask the model to draft the outreach message. You send it: keep humans on the send button.</li>
+</ol>
+<p><strong>Expected output.</strong> Two tables and draft emails you can paste.</p>
+<p><strong>Pitfalls.</strong> Admin tools need a site or server administrator identity: with OAuth that means the signed-in admin; with Direct Trust set <code>JWT_SUB_CLAIM</code> to an admin only in a locked-down deployment. Consider <code>INCLUDE_TOOLS</code> to give admins the admin group and everyone else the <code>datasource</code> group by running two MCP instances on different ports.</p>
+<h2 id="5-multi-step-agentic-analysis-with-lineage-advanced">5. Multi-step agentic analysis with lineage <span class="level adv">Advanced</span></h2>
+<p><strong>Business goal.</strong> Investigate a business question end to end: find the right source, query it several ways, check where the numbers come from, and produce a recommendation.
+<strong>Who uses it.</strong> Senior analysts, consultants building a proof of concept.
+<strong>Tools involved.</strong> All of the above, plus lineage/metadata tools, run inside Claude Code, Gemini CLI or the custom portal where the model can take several tool steps per turn.</p>
+<h3 id="sample-prompt">Sample prompt</h3>
+<blockquote>
+<p>"Profit margin in the Central region dropped last quarter. Using the Sales data source, find which categories and sub-categories drove the drop, check whether discounts increased, confirm which database tables the Sales source is built on, and give me a one-page finding with a recommendation."</p>
+</blockquote>
+<h3 id="walkthrough_4">Walkthrough</h3>
+<ol>
+<li><strong>Discovery.</strong> The model lists fields and lineage (<code>get-datasource-metadata</code>, lineage tools) and reports the upstream tables.</li>
+<li><strong>Decomposition.</strong> It queries margin by category, then sub-category, then discount rate, each as a separate <code>query-datasource</code> call.</li>
+<li><strong>Validation.</strong> It cross-checks totals against the dashboard sheet via <code>get-view-data</code>.</li>
+<li><strong>Synthesis.</strong> It writes the finding with numbers, method and caveats.</li>
+</ol>
+<p><strong>Expected output.</strong> A structured finding: headline, evidence table, method (which queries), caveats, recommendation.</p>
+<p><strong>Pitfalls.</strong> Cap the number of tool rounds (the portal in Section 6 uses 8) or a confused model can loop. Provide a clear definition of "margin" if the data source does not have a calculated field for it. Keep humans reviewing: the model is good at arithmetic on returned data and bad at knowing your business exceptions.</p>
+<div class="callout tip" markdown="0"><div class="callout-title">Turn this into a repeatable demo</div><p>Save the five prompts as a Claude project instruction or a Gemini <code>GEMINI.md</code>, with the Demo Company field names. A 15-minute customer demo then runs the same path every time.</p></div>
+    </article>
+    <nav class="pagernav"><a class="pager prev" href="04-installation.html"><small>Previous</small><span>Installation and configuration</span></a><a class="pager next" href="06-web-ui-wrapper.html"><small>Next</small><span>Advanced: build a custom Web UI wrapper</span></a></nav>
+    <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">Home</a></footer>
+  </main>
+  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#1-find-and-understand-content-basic">1. Find and understand content Basic</a><ul><li><a href="#sample-prompts">Sample prompts</a></li><li><a href="#walkthrough">Walkthrough</a></li></ul></li><li><a href="#2-ask-a-question-of-a-data-source-basic">2. Ask a question of a data source Basic</a><ul><li><a href="#sample-prompts_1">Sample prompts</a></li><li><a href="#walkthrough_1">Walkthrough</a></li></ul></li><li><a href="#3-executive-summary-of-a-dashboard-intermediate">3. Executive summary of a dashboard Intermediate</a><ul><li><a href="#sample-prompts_2">Sample prompts</a></li><li><a href="#walkthrough_2">Walkthrough</a></li></ul></li><li><a href="#4-admin-insights-and-housekeeping-intermediate">4. Admin insights and housekeeping Intermediate</a><ul><li><a href="#sample-prompts_3">Sample prompts</a></li><li><a href="#walkthrough_3">Walkthrough</a></li></ul></li><li><a href="#5-multi-step-agentic-analysis-with-lineage-advanced">5. Multi-step agentic analysis with lineage Advanced</a><ul><li><a href="#sample-prompt">Sample prompt</a></li><li><a href="#walkthrough_4">Walkthrough</a></li></ul></li></ul></aside>
+</div>
+<button class="totop" title="Back to top" aria-label="Back to top">↑</button>
+<script src="../assets/app.js"></script>
+</body>
+</html>

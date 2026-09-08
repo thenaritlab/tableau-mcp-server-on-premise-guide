@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5 use case ยอดนิยม · Tableau Server On-Premise + Tableau MCP + AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="doc">
+<div class="progress" aria-hidden="true"></div>
+<header class="topbar">
+  <button class="menu-btn" aria-label="เมนู" aria-expanded="false" data-menu>☰</button>
+  <a class="brand" href="../index.html">Tableau Server On-Premise + Tableau MCP + AI</a>
+  <nav class="lang-switch" aria-label="Language">
+    <a href="../index.html" title="หน้าแรก">หน้าแรก</a>
+    <a class="lang-other" href="../en/05-use-cases.html">English</a>
+    <button class="icon-btn" data-theme-toggle title="สลับโหมดมืด" aria-label="สลับโหมดมืด">☾</button>
+  </nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="สารบัญ">
+    <div class="side-title">สารบัญ</div>
+    <ol class="side-list"><li data-slug="01-overview"><a href="01-overview.html"><span class="n">1</span>ภาพรวม</a></li>
+<li data-slug="02-architecture"><a href="02-architecture.html"><span class="n">2</span>สถาปัตยกรรม</a></li>
+<li data-slug="03-prerequisites"><a href="03-prerequisites.html"><span class="n">3</span>สิ่งที่ต้องเตรียม</a></li>
+<li data-slug="04-installation"><a href="04-installation.html"><span class="n">4</span>การติดตั้งและตั้งค่า</a></li>
+<li class="active" data-slug="05-use-cases"><a href="05-use-cases.html"><span class="n">5</span>5 use case ยอดนิยม</a></li>
+<li data-slug="06-web-ui-wrapper"><a href="06-web-ui-wrapper.html"><span class="n">6</span>ขั้นสูง: สร้าง Web UI ครอบ Tableau Server</a></li>
+<li data-slug="07-best-practices"><a href="07-best-practices.html"><span class="n">7</span>แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย</a></li>
+<li data-slug="08-faq-glossary"><a href="08-faq-glossary.html"><span class="n">8</span>คำถามที่พบบ่อยและอภิธานศัพท์</a></li>
+<li data-slug="09-references"><a href="09-references.html"><span class="n">9</span>เอกสารอ้างอิง</a></li></ol>
+    <div class="side-progress" data-label="อ่านแล้ว {n} จาก {t} ส่วน"><span class="txt"></span><div class="bar"><i style="width:0"></i></div></div>
+  </nav>
+  <main class="content">
+    <article class="doc-body" data-copy="คัดลอก" data-copied="คัดลอกแล้ว" data-slug="05-use-cases">
+
+<h1 id="5-use-case">5 use case ยอดนิยม</h1><div class="doc-meta"><span class="chip">ส่วนที่ 5 จาก 9</span><span class="chip">อ่าน 6 นาที</span></div>
+<p class="lead">แต่ละ use case ต่อยอดจากอันก่อนหน้า ลองทำตามลำดับบน site ทดสอบ พอถึงอันที่ห้าคุณจะได้สคริปต์เดโมที่ทำซ้ำได้ และเห็นชัดว่าโมเดลทำอะไรกับข้อมูลของคุณได้และไม่ได้</p>
+
+<p>ตัวอย่างทั้งหมดสมมติว่ามี published data source ชื่อ <strong>Sales</strong> ใน project ชื่อ <strong>Demo Company</strong> มีฟิลด์เช่น <code>Order Date</code>, <code>Region</code>, <code>Category</code>, <code>Sales</code>, <code>Profit</code>, <code>Quantity</code></p>
+<h2 id="1">1. ค้นหาและทำความเข้าใจเนื้อหา <span class="level basic">พื้นฐาน</span></h2>
+<p><strong>เป้าหมายทางธุรกิจ</strong> ลดเวลาที่นักวิเคราะห์ใช้ไล่หา workbook หรือ data source ที่ถูกต้อง
+<strong>ใครใช้</strong> ทุกคน โดยเฉพาะพนักงานใหม่
+<strong>tool ที่เกี่ยวข้อง</strong> <code>search-content</code>, <code>list-workbooks</code>, <code>list-datasources</code>, <code>list-fields</code></p>
+<h3 id="prompt">ตัวอย่าง prompt</h3>
+<ul>
+<li>"Workbook ไหนบ้างที่เกี่ยวกับ <em>inventory</em>"</li>
+<li>"แสดง data source ใน project Demo Company พร้อมชื่อเจ้าของ"</li>
+<li>"อธิบายฟิลด์ใน data source Sales เป็นภาษาง่ายๆ"</li>
+</ul>
+<h3 id="_1">ขั้นตอน</h3>
+<ol>
+<li>ถาม <em>"ฉันมีสิทธิ์เข้าถึง data source อะไรบ้าง"</em> โมเดลเรียก <code>list-datasources</code></li>
+<li>ถาม <em>"อธิบาย data source Sales"</em> โมเดลเรียก <code>list-fields</code> แล้วสรุป dimension, measure และ calculated field</li>
+<li>ถาม <em>"Workbook ไหนใช้ data source นี้"</em> ถ้าเปิด Metadata API ไว้ โมเดลจะตาม lineage ได้</li>
+</ol>
+<p><strong>ผลลัพธ์ที่คาดหวัง</strong> รายการสั้นๆ พร้อมชื่อ project เจ้าของ วันที่อัปเดตล่าสุด และ data dictionary ภาษาคน</p>
+<p><strong>ข้อควรระวัง</strong> คำอธิบายฟิลด์ดีได้เท่าที่ผู้สร้างพิมพ์ไว้ใน Tableau เท่านั้น ให้เพิ่ม description และ alias ใน published data source มิฉะนั้น AI จะเดา การค้นหาเนื้อหาถูกจำกัดด้วยสิทธิ์ ดังนั้น workbook ที่ "หายไป" มักหมายถึงผู้ใช้มองไม่เห็น</p>
+<h2 id="2-data-source">2. ถามคำถามกับ data source <span class="level basic">พื้นฐาน</span></h2>
+<p><strong>เป้าหมายทางธุรกิจ</strong> ตอบคำถามแบบ "X แยกตาม Y เท่าไร" โดยไม่ต้องเปิด dashboard
+<strong>ใครใช้</strong> ผู้จัดการ ฝ่ายขาย ฝ่ายปฏิบัติการ
+<strong>tool ที่เกี่ยวข้อง</strong> <code>query-datasource</code> (VizQL Data Service)</p>
+<h3 id="prompt_1">ตัวอย่าง prompt</h3>
+<ul>
+<li>"ยอดขายและกำไรรวมแยกตามภูมิภาค ปี 2025"</li>
+<li>"สินค้า 10 อันดับแรกตามจำนวนที่ขายได้ในภูมิภาค West ไตรมาสที่แล้ว"</li>
+<li>"แนวโน้มยอดขายรายเดือนของหมวด Furniture เทียบ 2024 กับ 2025"</li>
+</ul>
+<h3 id="_2">ขั้นตอน</h3>
+<ol>
+<li>โมเดลอ่าน metadata ของฟิลด์ (จาก use case 1) แล้วสร้าง VDS query: ฟิลด์ การรวมค่า ตัวกรอง</li>
+<li>เรียก <code>query-datasource</code> แล้วได้ตารางเล็กๆ กลับมา</li>
+<li>จัดรูปแบบตารางพร้อมข้อสังเกตหนึ่งหรือสองข้อ</li>
+</ol>
+<p><strong>ผลลัพธ์ที่คาดหวัง</strong> ตารางไม่กี่แถวพร้อมตัวเลข และโมเดลระบุว่าใช้ data source และตัวกรองอะไร</p>
+<p><strong>ข้อควรระวัง</strong> ขอ aggregate เสมอ "ขอ order ทั้งหมด" จะพยายามดึงข้อมูลระดับแถวจน timeout หรือ context เต็ม ตัวกรองวันที่ผิดพลาดบ่อยที่สุด ตรวจว่าโมเดลใช้ปฏิทินบัญชีที่ถูกต้อง ช่วงแรกควรเทียบตัวเลขกับ dashboard ทุกครั้ง</p>
+<div class="callout tip" markdown="0"><div class="callout-title">กำหนดความคาดหวังใน system prompt</div><p>ใน portal ที่สร้างเอง (ส่วนที่ 6) สั่งโมเดลให้ระบุ data source และตัวกรองเสมอ ใน Claude Desktop ใช้ project instruction ทำให้ทุกคำตอบตรวจสอบย้อนหลังได้</p></div>
+
+<h2 id="3-dashboard">3. สรุปผู้บริหารจาก dashboard <span class="level mid">ระดับกลาง</span></h2>
+<p><strong>เป้าหมายทางธุรกิจ</strong> เปลี่ยน dashboard รายสัปดาห์เป็นสรุปเขียนสำหรับผู้บริหาร
+<strong>ใครใช้</strong> นักวิเคราะห์ที่เตรียมรายงานให้ผู้บริหาร
+<strong>tool ที่เกี่ยวข้อง</strong> <code>get-view-data</code>, <code>get-view-image</code>, <code>query-datasource</code></p>
+<h3 id="prompt_2">ตัวอย่าง prompt</h3>
+<ul>
+<li>"สรุป dashboard <em>Sales Overview</em> เป็น 5 ข้อสำหรับ CEO"</li>
+<li>"เทียบเดือนนี้กับเดือนที่แล้ว และเน้นสิ่งที่เปลี่ยนเกิน 10 เปอร์เซ็นต์"</li>
+<li>"เขียนสรุปทั้งภาษาไทยและอังกฤษ"</li>
+</ul>
+<h3 id="_3">ขั้นตอน</h3>
+<ol>
+<li>ให้โมเดลดึงข้อมูลของ view (<code>get-view-data</code>) ไม่ใช่แค่ภาพ ภาพช่วยให้อธิบาย layout ได้ ข้อมูลให้ตัวเลขจริง</li>
+<li>ขอการเปรียบเทียบ โมเดลอาจเรียก <code>query-datasource</code> เพิ่มเพื่อดึงช่วงเวลาก่อนหน้า</li>
+<li>ขอรูปแบบผลลัพธ์ที่ต้องการ (bullet, อีเมล, โน้ตสไลด์)</li>
+</ol>
+<p><strong>ผลลัพธ์ที่คาดหวัง</strong> เรื่องเล่าสั้นๆ พร้อมตัวเลขจริง ทิศทางการเปลี่ยนแปลง และประโยค "สิ่งที่ต้องจับตา"</p>
+<p><strong>ข้อควรระวัง</strong> <code>get-view-data</code> คืนข้อมูลสรุปเบื้องหลังของ sheet บน dashboard ที่หนาแน่นให้เลือก sheet เฉพาะ ภาพมีประโยชน์กับคำถามเรื่อง layout แต่กิน token มาก อย่าปล่อยให้โมเดลแต่งสาเหตุ สั่งให้แยก "อะไรเปลี่ยน" ออกจาก "สาเหตุที่เป็นไปได้"</p>
+<h2 id="4-admin-insight">4. Admin insight และงานดูแลระบบ <span class="level mid">ระดับกลาง</span></h2>
+<p><strong>เป้าหมายทางธุรกิจ</strong> รักษา server ให้สะอาดและใช้ลิขสิทธิ์คุ้มค่า โดยไม่ต้องเขียน SQL กับ repository
+<strong>ใครใช้</strong> ผู้ดูแล Tableau Server
+<strong>tool ที่เกี่ยวข้อง</strong> tool group admin (<code>get-stale-content-report</code>, <code>list-extract-refresh-tasks</code>, รายการผู้ใช้และสิทธิ์), <code>list-workbooks</code></p>
+<h3 id="prompt_3">ตัวอย่าง prompt</h3>
+<ul>
+<li>"Workbook ไหนไม่มีคนดูใน 180 วัน จัดกลุ่มตาม project และเจ้าของ"</li>
+<li>"แสดง extract refresh task ที่ล้มเหลวสัปดาห์นี้พร้อม data source"</li>
+<li>"ร่างอีเมลถึงเจ้าของเนื้อหาที่ไม่ได้ใช้ ขอให้ archive หรือยืนยัน"</li>
+</ul>
+<h3 id="_4">ขั้นตอน</h3>
+<ol>
+<li>รันรายงาน stale content ผ่าน AI ขอเป็นตารางจัดกลุ่มตามเจ้าของ</li>
+<li>ขอ refresh task ที่ล้มเหลว แล้วเชื่อมโยงกับเจ้าของกลุ่มเดียวกัน</li>
+<li>ให้โมเดลร่างข้อความติดต่อ แต่คุณเป็นคนส่งเอง ให้มนุษย์อยู่ที่ปุ่มส่งเสมอ</li>
+</ol>
+<p><strong>ผลลัพธ์ที่คาดหวัง</strong> สองตารางและร่างอีเมลที่คัดลอกไปใช้ได้</p>
+<p><strong>ข้อควรระวัง</strong> tool ด้าน admin ต้องการตัวตนระดับ site หรือ server administrator เมื่อใช้ OAuth คือ admin ที่ล็อกอิน เมื่อใช้ Direct Trust ตั้ง <code>JWT_SUB_CLAIM</code> เป็น admin ได้เฉพาะในระบบที่ล็อกดาวน์แล้วเท่านั้น พิจารณาใช้ <code>INCLUDE_TOOLS</code> ให้ admin ได้ group admin ส่วนคนอื่นได้ group <code>datasource</code> โดยรัน MCP สองตัวคนละพอร์ต</p>
+<h2 id="5-agentic-lineage">5. การวิเคราะห์หลายขั้นแบบ agentic พร้อม lineage <span class="level adv">ขั้นสูง</span></h2>
+<p><strong>เป้าหมายทางธุรกิจ</strong> สืบค้นคำถามทางธุรกิจตั้งแต่ต้นจนจบ: หาแหล่งข้อมูลที่ถูกต้อง query หลายมุม ตรวจว่าตัวเลขมาจากไหน แล้วให้ข้อเสนอแนะ
+<strong>ใครใช้</strong> นักวิเคราะห์อาวุโส consultant ที่ทำ proof of concept
+<strong>tool ที่เกี่ยวข้อง</strong> ทั้งหมดข้างต้น บวก tool ด้าน lineage/metadata รันใน Claude Code, Gemini CLI หรือ portal ที่สร้างเอง ซึ่งโมเดลเรียก tool ได้หลายขั้นต่อหนึ่งรอบ</p>
+<h3 id="prompt_4">ตัวอย่าง prompt</h3>
+<blockquote>
+<p>"อัตรากำไรในภูมิภาค Central ลดลงไตรมาสที่แล้ว ใช้ data source Sales หาว่า category และ sub-category ไหนเป็นตัวฉุด ตรวจว่าส่วนลดเพิ่มขึ้นหรือไม่ ยืนยันว่า data source Sales สร้างจากตารางฐานข้อมูลใด แล้วสรุปเป็นรายงานหนึ่งหน้าพร้อมข้อเสนอแนะ"</p>
+</blockquote>
+<h3 id="_5">ขั้นตอน</h3>
+<ol>
+<li><strong>สำรวจ</strong> โมเดลแสดงรายการฟิลด์และ lineage (<code>get-datasource-metadata</code>, tool ด้าน lineage) และรายงานตารางต้นทาง</li>
+<li><strong>แยกส่วน</strong> query กำไรตาม category แล้ว sub-category แล้วอัตราส่วนลด แต่ละอันเป็น <code>query-datasource</code> แยกกัน</li>
+<li><strong>ตรวจสอบ</strong> เทียบยอดรวมกับ sheet ของ dashboard ผ่าน <code>get-view-data</code></li>
+<li><strong>สังเคราะห์</strong> เขียนข้อค้นพบพร้อมตัวเลข วิธีการ และข้อจำกัด</li>
+</ol>
+<p><strong>ผลลัพธ์ที่คาดหวัง</strong> ข้อค้นพบที่มีโครงสร้าง: หัวข้อหลัก ตารางหลักฐาน วิธีการ (query อะไรบ้าง) ข้อจำกัด ข้อเสนอแนะ</p>
+<p><strong>ข้อควรระวัง</strong> จำกัดจำนวนรอบการเรียก tool (portal ในส่วนที่ 6 ใช้ 8) มิฉะนั้นโมเดลที่สับสนอาจวนลูป ให้นิยาม "อัตรากำไร" ที่ชัดเจนหาก data source ไม่มี calculated field สำหรับมัน ให้มนุษย์ตรวจทานเสมอ โมเดลเก่งเลขคณิตกับข้อมูลที่ได้กลับมา แต่ไม่รู้ข้อยกเว้นทางธุรกิจของคุณ</p>
+<div class="callout tip" markdown="0"><div class="callout-title">เปลี่ยนเป็นเดโมที่ทำซ้ำได้</div><p>บันทึก prompt ทั้งห้าเป็น project instruction ของ Claude หรือ <code>GEMINI.md</code> ของ Gemini พร้อมชื่อฟิลด์ของ Demo Company เดโมลูกค้า 15 นาทีจะเดินเส้นทางเดิมได้ทุกครั้ง</p></div>
+    </article>
+    <nav class="pagernav"><a class="pager prev" href="04-installation.html"><small>ก่อนหน้า</small><span>การติดตั้งและตั้งค่า</span></a><a class="pager next" href="06-web-ui-wrapper.html"><small>ถัดไป</small><span>ขั้นสูง: สร้าง Web UI ครอบ Tableau Server</span></a></nav>
+    <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">หน้าแรก</a></footer>
+  </main>
+  <aside class="onpage"><div class="onpage-title">ในหน้านี้</div><ul><li><a href="#1">1. ค้นหาและทำความเข้าใจเนื้อหา พื้นฐาน</a><ul><li><a href="#prompt">ตัวอย่าง prompt</a></li><li><a href="#_1">ขั้นตอน</a></li></ul></li><li><a href="#2-data-source">2. ถามคำถามกับ data source พื้นฐาน</a><ul><li><a href="#prompt_1">ตัวอย่าง prompt</a></li><li><a href="#_2">ขั้นตอน</a></li></ul></li><li><a href="#3-dashboard">3. สรุปผู้บริหารจาก dashboard ระดับกลาง</a><ul><li><a href="#prompt_2">ตัวอย่าง prompt</a></li><li><a href="#_3">ขั้นตอน</a></li></ul></li><li><a href="#4-admin-insight">4. Admin insight และงานดูแลระบบ ระดับกลาง</a><ul><li><a href="#prompt_3">ตัวอย่าง prompt</a></li><li><a href="#_4">ขั้นตอน</a></li></ul></li><li><a href="#5-agentic-lineage">5. การวิเคราะห์หลายขั้นแบบ agentic พร้อม lineage ขั้นสูง</a><ul><li><a href="#prompt_4">ตัวอย่าง prompt</a></li><li><a href="#_5">ขั้นตอน</a></li></ul></li></ul></aside>
+</div>
+<button class="totop" title="กลับขึ้นบน" aria-label="กลับขึ้นบน">↑</button>
+<script src="../assets/app.js"></script>
+</body>
+</html>

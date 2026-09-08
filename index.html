@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tableau Server On-Premise + Tableau MCP + AI — The Narit Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="home">
+<header class="topbar">
+  <a class="brand" href="index.html">Tableau Server On-Premise + Tableau MCP + AI</a>
+  <nav class="lang-switch" aria-label="Language">
+    <a href="#en">English</a>
+    <a href="#th">ไทย</a>
+    <button class="icon-btn" data-theme-toggle title="Toggle dark mode" aria-label="Toggle dark mode">☾</button>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Connect Tableau Server On-Premise to Claude, ChatGPT, Gemini and Copilot with Tableau MCP</h1>
+  <p class="lead">A complete guide, basic to advanced: architecture, installation, five worked use cases, and a custom web front end with an AI chat box that hides the raw server connection. English first, Thai second.</p>
+  <figure class="hero-diagram" aria-label="Architecture: AI clients connect through Tableau MCP to Tableau Server on-premise">
+<svg viewBox="0 0 1100 250" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, IBM Plex Sans Thai, Segoe UI, sans-serif">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#7b8494"/></marker>
+    </defs>
+    <!-- AI clients -->
+    <g>
+      <rect x="20" y="25" width="250" height="200" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+      <text x="145" y="52" text-anchor="middle" font-size="14" font-weight="600" fill="#1c2430">AI clients (MCP hosts)</text>
+      <g font-size="13" fill="#4a5566">
+        <rect x="40" y="66" width="210" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="145" y="86" text-anchor="middle">Claude Desktop / Claude Code</text>
+        <rect x="40" y="102" width="210" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="145" y="122" text-anchor="middle">ChatGPT</text>
+        <rect x="40" y="138" width="210" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="145" y="158" text-anchor="middle">Gemini CLI</text>
+        <rect x="40" y="174" width="210" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="145" y="194" text-anchor="middle">Microsoft Copilot Studio</text>
+      </g>
+    </g>
+    <!-- arrow 1 -->
+    <line x1="272" y1="125" x2="388" y2="125" stroke="#7b8494" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr)"/>
+    <text x="330" y="112" text-anchor="middle" font-size="12" fill="#7b8494">MCP · stdio or HTTP</text>
+    <!-- MCP -->
+    <g>
+      <rect x="392" y="60" width="240" height="130" rx="10" fill="#e8f0f9" stroke="#1c5d99" stroke-width="1.5"/>
+      <text x="512" y="92" text-anchor="middle" font-size="16" font-weight="700" fill="#0f3d6b">Tableau MCP server</text>
+      <text x="512" y="116" text-anchor="middle" font-size="12.5" fill="#4a5566">Node.js · @tableau/mcp-server</text>
+      <text x="512" y="140" text-anchor="middle" font-size="12.5" fill="#4a5566">tools → REST API calls</text>
+      <text x="512" y="164" text-anchor="middle" font-size="12.5" fill="#4a5566">auth: PAT · Connected App · OAuth</text>
+    </g>
+    <!-- arrow 2 -->
+    <line x1="636" y1="125" x2="752" y2="125" stroke="#7b8494" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr)"/>
+    <text x="694" y="112" text-anchor="middle" font-size="12" fill="#7b8494">HTTPS · REST API</text>
+    <!-- Tableau Server -->
+    <g>
+      <rect x="756" y="25" width="324" height="200" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+      <text x="918" y="52" text-anchor="middle" font-size="14" font-weight="600" fill="#1c2430">Tableau Server (on-premise)</text>
+      <g font-size="13" fill="#4a5566">
+        <rect x="776" y="66" width="284" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="918" y="86" text-anchor="middle">REST API · VizQL Data Service</text>
+        <rect x="776" y="102" width="284" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="918" y="122" text-anchor="middle">Published data sources · workbooks · views</text>
+        <rect x="776" y="138" width="284" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="918" y="158" text-anchor="middle">Permissions · row-level security</text>
+        <rect x="776" y="174" width="284" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="918" y="194" text-anchor="middle">Your databases behind the firewall</text>
+      </g>
+    </g>
+  </svg>
+  </figure>
+</section>
+
+<section class="home-grid">
+  <div class="home-col" id="en">
+    <header><span class="flag">EN</span><h2>English guide</h2><span class="meta">9 sections · about 32 min</span></header>
+    <ol>
+<li><a href="en/01-overview.html"><span class="n">1</span><span><span class="t">Overview</span><span class="d">What Tableau MCP is, why on-premise, who this is for</span></span><span class="rt">3 min read</span></a></li>
+<li><a href="en/02-architecture.html"><span class="n">2</span><span><span class="t">Architecture</span><span class="d">Components, three auth options, four deployment patterns</span></span><span class="rt">3 min read</span></a></li>
+<li><a href="en/03-prerequisites.html"><span class="n">3</span><span><span class="t">Prerequisites</span><span class="d">Versions, licences, ports, permissions, OS</span></span><span class="rt">4 min read</span></a></li>
+<li><a href="en/04-installation.html"><span class="n">4</span><span><span class="t">Installation and configuration</span><span class="d">Prepare the server, run MCP, connect every AI client, troubleshoot</span></span><span class="rt">6 min read</span></a></li>
+<li><a href="en/05-use-cases.html"><span class="n">5</span><span><span class="t">Top 5 use cases</span><span class="d">Five worked examples from basic to agentic analysis</span></span><span class="rt">5 min read</span></a></li>
+<li><a href="en/06-web-ui-wrapper.html"><span class="n">6</span><span><span class="t">Advanced: build a custom Web UI wrapper</span><span class="d">Node + Express + React portal with an AI chat box</span></span><span class="rt">4 min read</span></a></li>
+<li><a href="en/07-best-practices.html"><span class="n">7</span><span><span class="t">Best practices, governance and security checklist</span><span class="d">Governance rules and a 14-point security checklist</span></span><span class="rt">3 min read</span></a></li>
+<li><a href="en/08-faq-glossary.html"><span class="n">8</span><span><span class="t">FAQ and glossary</span><span class="d">Common questions and EN/TH terms</span></span><span class="rt">3 min read</span></a></li>
+<li><a href="en/09-references.html"><span class="n">9</span><span><span class="t">References</span><span class="d">Official documentation links</span></span><span class="rt">1 min read</span></a></li>
+    </ol>
+    <a class="start" href="en/01-overview.html">Start reading in English</a>
+  </div>
+  <div class="home-col" id="th">
+    <header><span class="flag">TH</span><h2>คู่มือภาษาไทย</h2><span class="meta">9 ส่วน · ประมาณ 36 นาที</span></header>
+    <ol>
+<li><a href="th/01-overview.html"><span class="n">1</span><span><span class="t">ภาพรวม</span><span class="d">Tableau MCP คืออะไร ทำไมต้อง on-premise เหมาะกับใคร</span></span><span class="rt">อ่าน 3 นาที</span></a></li>
+<li><a href="th/02-architecture.html"><span class="n">2</span><span><span class="t">สถาปัตยกรรม</span><span class="d">องค์ประกอบ ทางเลือก auth 3 แบบ รูปแบบติดตั้ง 4 แบบ</span></span><span class="rt">อ่าน 3 นาที</span></a></li>
+<li><a href="th/03-prerequisites.html"><span class="n">3</span><span><span class="t">สิ่งที่ต้องเตรียม</span><span class="d">เวอร์ชัน ลิขสิทธิ์ พอร์ต สิทธิ์ OS</span></span><span class="rt">อ่าน 4 นาที</span></a></li>
+<li><a href="th/04-installation.html"><span class="n">4</span><span><span class="t">การติดตั้งและตั้งค่า</span><span class="d">เตรียม server รัน MCP เชื่อม AI client ทุกตัว แก้ปัญหา</span></span><span class="rt">อ่าน 8 นาที</span></a></li>
+<li><a href="th/05-use-cases.html"><span class="n">5</span><span><span class="t">5 use case ยอดนิยม</span><span class="d">ตัวอย่างใช้งาน 5 แบบ จากพื้นฐานถึง agentic</span></span><span class="rt">อ่าน 6 นาที</span></a></li>
+<li><a href="th/06-web-ui-wrapper.html"><span class="n">6</span><span><span class="t">ขั้นสูง: สร้าง Web UI ครอบ Tableau Server</span><span class="d">portal Node + Express + React พร้อมช่องแชท AI</span></span><span class="rt">อ่าน 4 นาที</span></a></li>
+<li><a href="th/07-best-practices.html"><span class="n">7</span><span><span class="t">แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย</span><span class="d">กฎการกำกับดูแลและ checklist ความปลอดภัย 14 ข้อ</span></span><span class="rt">อ่าน 3 นาที</span></a></li>
+<li><a href="th/08-faq-glossary.html"><span class="n">8</span><span><span class="t">คำถามที่พบบ่อยและอภิธานศัพท์</span><span class="d">คำถามพบบ่อยและศัพท์ EN/TH</span></span><span class="rt">อ่าน 4 นาที</span></a></li>
+<li><a href="th/09-references.html"><span class="n">9</span><span><span class="t">เอกสารอ้างอิง</span><span class="d">ลิงก์เอกสารทางการ</span></span><span class="rt">อ่าน 1 นาที</span></a></li>
+    </ol>
+    <a class="start" href="th/01-overview.html">เริ่มอ่านภาษาไทย</a>
+  </div>
+</section>
+
+<footer class="home-footer">Created by The Narit Lab · All server names, tokens and company names in this guide are placeholders.</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

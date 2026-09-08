@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ภาพรวม · Tableau Server On-Premise + Tableau MCP + AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="doc">
+<div class="progress" aria-hidden="true"></div>
+<header class="topbar">
+  <button class="menu-btn" aria-label="เมนู" aria-expanded="false" data-menu>☰</button>
+  <a class="brand" href="../index.html">Tableau Server On-Premise + Tableau MCP + AI</a>
+  <nav class="lang-switch" aria-label="Language">
+    <a href="../index.html" title="หน้าแรก">หน้าแรก</a>
+    <a class="lang-other" href="../en/01-overview.html">English</a>
+    <button class="icon-btn" data-theme-toggle title="สลับโหมดมืด" aria-label="สลับโหมดมืด">☾</button>
+  </nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="สารบัญ">
+    <div class="side-title">สารบัญ</div>
+    <ol class="side-list"><li class="active" data-slug="01-overview"><a href="01-overview.html"><span class="n">1</span>ภาพรวม</a></li>
+<li data-slug="02-architecture"><a href="02-architecture.html"><span class="n">2</span>สถาปัตยกรรม</a></li>
+<li data-slug="03-prerequisites"><a href="03-prerequisites.html"><span class="n">3</span>สิ่งที่ต้องเตรียม</a></li>
+<li data-slug="04-installation"><a href="04-installation.html"><span class="n">4</span>การติดตั้งและตั้งค่า</a></li>
+<li data-slug="05-use-cases"><a href="05-use-cases.html"><span class="n">5</span>5 use case ยอดนิยม</a></li>
+<li data-slug="06-web-ui-wrapper"><a href="06-web-ui-wrapper.html"><span class="n">6</span>ขั้นสูง: สร้าง Web UI ครอบ Tableau Server</a></li>
+<li data-slug="07-best-practices"><a href="07-best-practices.html"><span class="n">7</span>แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย</a></li>
+<li data-slug="08-faq-glossary"><a href="08-faq-glossary.html"><span class="n">8</span>คำถามที่พบบ่อยและอภิธานศัพท์</a></li>
+<li data-slug="09-references"><a href="09-references.html"><span class="n">9</span>เอกสารอ้างอิง</a></li></ol>
+    <div class="side-progress" data-label="อ่านแล้ว {n} จาก {t} ส่วน"><span class="txt"></span><div class="bar"><i style="width:0"></i></div></div>
+  </nav>
+  <main class="content">
+    <article class="doc-body" data-copy="คัดลอก" data-copied="คัดลอกแล้ว" data-slug="01-overview">
+
+<h1 id="_1">ภาพรวม</h1><div class="doc-meta"><span class="chip">ส่วนที่ 1 จาก 9</span><span class="chip">อ่าน 3 นาที</span></div>
+<p class="lead">Tableau MCP ทำให้ผู้ช่วย AI อย่าง Claude, ChatGPT, Gemini หรือ Microsoft Copilot อ่านเนื้อหาบน Tableau Server และ query แหล่งข้อมูลที่เผยแพร่ (published data source) ของคุณได้ ผ่านช่องทางที่มีการกำกับดูแลและเคารพสิทธิ์ผู้ใช้ คู่มือนี้พาคุณตั้งแต่ทดสอบครั้งแรกบนเครื่องตัวเอง ไปจนถึงการติดตั้งแบบหลายผู้ใช้ที่ปลอดภัย และการสร้างหน้าเว็บของคุณเองครอบไว้อีกชั้น</p>
+
+<h2 id="tableau-mcp">Tableau MCP คืออะไร</h2>
+<p>Model Context Protocol (MCP) คือมาตรฐานเปิดที่ให้แอปพลิเคชัน AI (เรียกว่า "MCP host" หรือ "client") เรียกใช้ <strong>tool</strong> ที่โปรแกรมภายนอก ("MCP server") เปิดให้ Tableau MCP คือ MCP server อย่างเป็นทางการของ Tableau เป็นแอป Node.js ขนาดเล็กที่:</p>
+<ul>
+<li>เปิด tool ชุดหนึ่งให้ AI เรียก เช่น <em>แสดงรายการ data source</em>, <em>ดู metadata ของฟิลด์</em>, <em>query data source</em>, <em>ค้นหาเนื้อหา</em>, <em>ดึงภาพ view</em>, <em>แสดงรายการ workbook</em>, <em>สั่ง refresh extract</em> และ tool ด้าน admin insight</li>
+<li>แปลงการเรียก tool แต่ละครั้งเป็นการเรียก <strong>REST API</strong> และ <strong>VizQL Data Service (VDS)</strong> ของ Tableau Server</li>
+<li>เข้าสู่ระบบ Tableau Server ด้วยข้อมูลรับรองที่คุณควบคุมเอง ได้แก่ Personal Access Token (PAT), Connected App (Direct Trust JWT) หรือบน Tableau Server 2025.3 ขึ้นไปใช้ OAuth ให้ผู้ใช้แต่ละคนทำงานในนามตัวเอง</li>
+</ul>
+<p>โมเดล AI ไม่เคยคุยกับฐานข้อมูลของคุณโดยตรง มันเห็นเฉพาะสิ่งที่ Tableau อนุญาตให้ผู้ใช้ที่ล็อกอินอยู่เห็น ซึ่งถูกกรองด้วยสิทธิ์ระดับ project สิทธิ์ของ data source และ row-level security</p>
+<h2 id="tableau-server-on-premise">ทำไมต้องใช้กับ Tableau Server on-premise</h2>
+<table>
+<thead>
+<tr>
+<th>เหตุผล</th>
+<th>ความหมายสำหรับคุณ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ข้อมูลอยู่หลัง firewall เหมือนเดิม</td>
+<td>MCP server รันบนเครือข่ายของคุณ มีเพียง <em>ผลลัพธ์</em> ของ query ที่ผ่านการกำกับแล้วเท่านั้นที่ส่งไปยังโมเดล และคุณเป็นผู้เลือกว่าใช้โมเดลไหน</td>
+</tr>
+<tr>
+<td>ใช้ semantic layer ที่สร้างไว้แล้วซ้ำได้</td>
+<td>published data source ที่มี calculated field, alias และ RLS กลายเป็น "คลังคำศัพท์" ที่ AI ใช้ query ไม่ต้องสร้าง business logic ซ้ำอีกชุด</td>
+</tr>
+<tr>
+<td>การกำกับดูแลติดไปกับทุกคำขอ</td>
+<td>เมื่อใช้ OAuth ทุกการเรียก tool ทำงานในนามผู้ใช้จริง สิทธิ์ของ Tableau และ RLS จึงมีผลอัตโนมัติ</td>
+</tr>
+<tr>
+<td>ใช้ได้กับ client ที่รองรับ MCP ทุกตัว</td>
+<td>Claude Desktop, Claude Code, ChatGPT, Gemini CLI, Copilot Studio, VS Code, Cursor และแอปที่เขียนเอง ใช้ server ตัวเดียวกัน</td>
+</tr>
+<tr>
+<td>ต่อยอดสู่ conversational analytics แบบฝังตัว</td>
+<td>เมื่อ server ทำงานได้แล้ว การเชื่อมต่อเดียวกันนี้ใช้ขับเคลื่อนหน้าเว็บ portal พร้อมช่องแชท (ส่วนที่ 6) ได้ทันที</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_2">คู่มือนี้เหมาะกับใคร</h2>
+<ul>
+<li><strong>ผู้ดูแล Tableau Server</strong> ที่ต้องติดตั้งและทำให้ MCP server ปลอดภัย</li>
+<li><strong>Solution consultant และนักพัฒนา BI</strong> ที่จะสร้าง use case, prompt และเดโมบนนั้น</li>
+<li><strong>นักพัฒนา</strong> ที่ต้องการทำหน้าเว็บของตัวเองครอบ Tableau Server พร้อมช่องแชท AI</li>
+</ul>
+<p>คุณควรรู้พื้นฐาน Tableau Server อยู่แล้ว (site, project, published data source, permission) ไม่จำเป็นต้องมีประสบการณ์ MCP หรือการเชื่อมต่อ LLM มาก่อน</p>
+<h2 id="_3">โครงสร้างของคู่มือ</h2>
+<ol>
+<li><strong>สถาปัตยกรรม</strong> แสดงองค์ประกอบทั้งหมดและทางเลือกการยืนยันตัวตนสามแบบ</li>
+<li><strong>สิ่งที่ต้องเตรียม</strong> รายการเวอร์ชัน พอร์ต และสิทธิ์</li>
+<li><strong>การติดตั้งและตั้งค่า</strong> พาเตรียม Tableau Server รัน Tableau MCP เชื่อม AI client แต่ละตัว และแก้ปัญหา</li>
+<li><strong>5 use case</strong> ตั้งแต่ "หาเนื้อหาของฉัน" ไปจนถึงการวิเคราะห์หลายขั้นแบบ agentic</li>
+<li><strong>Web UI wrapper</strong> สร้าง portal ด้วย Node.js + Express + React พร้อมช่องแชท AI</li>
+<li><strong>แนวปฏิบัติที่ดี, FAQ และเอกสารอ้างอิง</strong> ปิดท้าย</li>
+</ol>
+<div class="callout verify" markdown="0"><div class="callout-title">ตรวจสอบกับเอกสารล่าสุด</div><p>Tableau MCP ออกเวอร์ชันใหม่บ่อย และ Tableau Server เพิ่มความสามารถทุกไตรมาส เนื้อหาที่มีกล่องสีม่วงแบบนี้อาจเปลี่ยนไปแล้ว คู่มือนี้เขียนอิงจาก Tableau MCP <strong>3.6.x</strong> และ Tableau Server <strong>2025.3+</strong> (กันยายน 2569)</p></div>
+
+<div class="callout note" markdown="0"><div class="callout-title">ชื่อตัวอย่างที่ใช้ตลอดคู่มือ</div><p><code>demo-server.local</code> คือ Tableau Server ของคุณ, <code>DemoSite</code> คือ content URL ของ site, <code>&lt;YOUR_PAT_VALUE&gt;</code> และค่าที่อยู่ในวงเล็บแหลมทั้งหมดต้องแทนด้วยค่าของคุณเอง "Demo Company" คือองค์กรสมมติ</p></div>
+    </article>
+    <nav class="pagernav"><span></span><a class="pager next" href="02-architecture.html"><small>ถัดไป</small><span>สถาปัตยกรรม</span></a></nav>
+    <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">หน้าแรก</a></footer>
+  </main>
+  <aside class="onpage"><div class="onpage-title">ในหน้านี้</div><ul><li><a href="#tableau-mcp">Tableau MCP คืออะไร</a></li><li><a href="#tableau-server-on-premise">ทำไมต้องใช้กับ Tableau Server on-premise</a></li><li><a href="#_2">คู่มือนี้เหมาะกับใคร</a></li><li><a href="#_3">โครงสร้างของคู่มือ</a></li></ul></aside>
+</div>
+<button class="totop" title="กลับขึ้นบน" aria-label="กลับขึ้นบน">↑</button>
+<script src="../assets/app.js"></script>
+</body>
+</html>

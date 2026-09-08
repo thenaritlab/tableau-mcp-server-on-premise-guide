@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>สิ่งที่ต้องเตรียม · Tableau Server On-Premise + Tableau MCP + AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="doc">
+<div class="progress" aria-hidden="true"></div>
+<header class="topbar">
+  <button class="menu-btn" aria-label="เมนู" aria-expanded="false" data-menu>☰</button>
+  <a class="brand" href="../index.html">Tableau Server On-Premise + Tableau MCP + AI</a>
+  <nav class="lang-switch" aria-label="Language">
+    <a href="../index.html" title="หน้าแรก">หน้าแรก</a>
+    <a class="lang-other" href="../en/03-prerequisites.html">English</a>
+    <button class="icon-btn" data-theme-toggle title="สลับโหมดมืด" aria-label="สลับโหมดมืด">☾</button>
+  </nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="สารบัญ">
+    <div class="side-title">สารบัญ</div>
+    <ol class="side-list"><li data-slug="01-overview"><a href="01-overview.html"><span class="n">1</span>ภาพรวม</a></li>
+<li data-slug="02-architecture"><a href="02-architecture.html"><span class="n">2</span>สถาปัตยกรรม</a></li>
+<li class="active" data-slug="03-prerequisites"><a href="03-prerequisites.html"><span class="n">3</span>สิ่งที่ต้องเตรียม</a></li>
+<li data-slug="04-installation"><a href="04-installation.html"><span class="n">4</span>การติดตั้งและตั้งค่า</a></li>
+<li data-slug="05-use-cases"><a href="05-use-cases.html"><span class="n">5</span>5 use case ยอดนิยม</a></li>
+<li data-slug="06-web-ui-wrapper"><a href="06-web-ui-wrapper.html"><span class="n">6</span>ขั้นสูง: สร้าง Web UI ครอบ Tableau Server</a></li>
+<li data-slug="07-best-practices"><a href="07-best-practices.html"><span class="n">7</span>แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย</a></li>
+<li data-slug="08-faq-glossary"><a href="08-faq-glossary.html"><span class="n">8</span>คำถามที่พบบ่อยและอภิธานศัพท์</a></li>
+<li data-slug="09-references"><a href="09-references.html"><span class="n">9</span>เอกสารอ้างอิง</a></li></ol>
+    <div class="side-progress" data-label="อ่านแล้ว {n} จาก {t} ส่วน"><span class="txt"></span><div class="bar"><i style="width:0"></i></div></div>
+  </nav>
+  <main class="content">
+    <article class="doc-body" data-copy="คัดลอก" data-copied="คัดลอกแล้ว" data-slug="03-prerequisites">
+
+<h1 id="_1">สิ่งที่ต้องเตรียม</h1><div class="doc-meta"><span class="chip">ส่วนที่ 3 จาก 9</span><span class="chip">อ่าน 4 นาที</span></div>
+<p class="lead">ตรวจสอบรายการเหล่านี้ก่อนติดตั้งอะไรทั้งสิ้น ความล้มเหลวครั้งแรกส่วนใหญ่มาจาก PAT หมดอายุ ขาดสิทธิ์ API access หรือ client เข้าถึง server ไม่ได้</p>
+
+<h2 id="_2">ตารางเวอร์ชัน</h2>
+<table>
+<thead>
+<tr>
+<th>องค์ประกอบ</th>
+<th>ขั้นต่ำ</th>
+<th>แนะนำ</th>
+<th>หมายเหตุ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tableau Server</td>
+<td>เวอร์ชันที่ยังอยู่ในการ support</td>
+<td>2025.3 ขึ้นไป</td>
+<td>2025.3+ จำเป็นสำหรับ OAuth (ยืนยันตัวตนรายบุคคลบน HTTP) Tableau Agent สำหรับ Server ก็มาใน 2025.3</td>
+</tr>
+<tr>
+<td>Tableau MCP</td>
+<td>1.x</td>
+<td>3.6.x (ล่าสุด)</td>
+<td>ใน production ให้ระบุเวอร์ชันตายตัว (<code>@tableau/mcp-server@3.6.0</code>, image tag <code>3.6.0</code>)</td>
+</tr>
+<tr>
+<td>Node.js</td>
+<td>18 (stdio ผ่าน npx)</td>
+<td>22.7.5 ขึ้นไป</td>
+<td>จำเป็นสำหรับการติดตั้งแบบ HTTP/enterprise ไม่จำเป็นหากใช้ Docker หรือ single-executable</td>
+</tr>
+<tr>
+<td>Docker</td>
+<td>20+</td>
+<td>เวอร์ชัน stable ล่าสุด</td>
+<td>ไม่บังคับ image: <code>ghcr.io/tableau/tableau-mcp</code></td>
+</tr>
+<tr>
+<td>REST API version</td>
+<td>3.x</td>
+<td>ล่าสุดของ server คุณ</td>
+<td>Tableau MCP เจรจาเวอร์ชันให้อัตโนมัติ</td>
+</tr>
+</tbody>
+</table>
+<div class="callout verify" markdown="0"><div class="callout-title">ตรวจสอบกับเอกสารล่าสุด</div><p>ขั้นต่ำของ Node.js และ Tableau MCP เปลี่ยนทุกครั้งที่ออกเวอร์ชันใหม่ ตรวจฟิลด์ <code>engines</code> ในแพ็กเกจและคู่มือ enterprise deployment ก่อนกำหนดเวอร์ชัน</p></div>
+
+<h2 id="_3">ลิขสิทธิ์</h2>
+<ul>
+<li><strong>ลิขสิทธิ์ Tableau Server</strong> Tableau MCP เป็น open source (Apache 2.0) ใช้ฟรี แต่ผู้ใช้ที่ query ผ่านมันใช้ลิขสิทธิ์ Tableau ตามปกติ (Creator, Explorer หรือ Viewer) Viewer อ่าน view ได้ ส่วนการ query published data source ต้องมีสิทธิ์ "Connect" บน data source</li>
+<li><strong>Usage-based licensing (UBL)</strong> การใช้ตัวตนเดียว (PAT หรือ <code>JWT_SUB_CLAIM</code> คงที่) ให้คนจำนวนมากใช้ร่วมกัน เหมาะสมเฉพาะเมื่อสัญญาของคุณครอบคลุม UBL มิฉะนั้นให้ใช้ OAuth เพื่อให้ทุกคนเป็น named user</li>
+<li><strong>ค่าใช้จ่าย LLM</strong> ผู้ให้บริการ AI แต่ละรายคิดเงินแยก เตรียมงบสำหรับ token: การ "query data source" หนึ่งรอบอาจใช้ metadata หลายพัน token</li>
+</ul>
+<h2 id="_4">พอร์ต</h2>
+<table>
+<thead>
+<tr>
+<th>จาก</th>
+<th>ไป</th>
+<th>พอร์ต</th>
+<th>วัตถุประสงค์</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>เครื่องที่รัน MCP</td>
+<td>Tableau Server gateway</td>
+<td>443 (หรือ 80)</td>
+<td>REST API, VDS</td>
+</tr>
+<tr>
+<td>AI client (โหมด HTTP)</td>
+<td>Reverse proxy</td>
+<td>443</td>
+<td>Streamable HTTP MCP</td>
+</tr>
+<tr>
+<td>Reverse proxy</td>
+<td>Tableau MCP</td>
+<td>3927</td>
+<td>พอร์ตรับฟังเริ่มต้น bind ไว้ที่ localhost</td>
+</tr>
+<tr>
+<td>Tableau Server</td>
+<td>เครื่องที่รัน MCP</td>
+<td>443</td>
+<td>OAuth redirect กลับมายัง authorization server ในตัว</td>
+</tr>
+<tr>
+<td>Portal (ส่วนที่ 6)</td>
+<td>Tableau MCP</td>
+<td>3927</td>
+<td>server-to-server ภายในเท่านั้น</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tableau-server">การตั้งค่าและสิทธิ์บน Tableau Server</h2>
+<ol class="steps">
+<li><strong>เปิดใช้ REST API</strong> เปิดอยู่โดยปริยาย ตรวจด้วย <code>tsm configuration get -k api.server.enabled</code> หากองค์กรปิดไว้ ให้ตั้งเป็น <code>true</code> แล้ว apply pending changes</li>
+<li><strong>อนุญาต Personal Access Token</strong> ที่ site setting <em>Settings › General › Personal Access Tokens</em> ระดับ server: <code>tsm configuration get -k features.PersonalAccessTokensEnabled</code></li>
+<li><strong>สร้างผู้ใช้ Tableau เฉพาะสำหรับ MCP server</strong> สำหรับทดสอบ PAT หรือ Direct Trust ให้สร้าง <code>svc-mcp-reader</code> (site role Explorer หรือ Viewer หากต้องการแค่ดู view) ห้ามใช้บัญชี Server Administrator</li>
+<li><strong>สิทธิ์ "Connect" บน data source</strong> และสำหรับการ query ต้องมี <strong>"API access"</strong> บน published data source ทุกตัวที่ AI ควร query ได้ หากขาด API access จะเห็น HTTP 403 ใน log ของ MCP</li>
+<li><strong>Connected Apps (สำหรับ Direct Trust หรือ portal)</strong> ที่ site setting <em>Settings › Connected Apps</em> ต้องเป็น site administrator จึงสร้างได้</li>
+<li><strong>Metadata API (ไม่บังคับ)</strong> ช่วยให้ tool ด้าน lineage และค้นหาทำงานดีขึ้น เปิดด้วย <code>tsm maintenance metadata-services enable</code></li>
+<li><strong>OAuth redirect host (เฉพาะโหมด OAuth)</strong> <code>tsm configuration set -k oauth.allowed_redirect_uri_hosts -v tableau-mcp.demo-company.local</code> แล้ว <code>tsm pending-changes apply</code></li>
+</ol>
+
+<h2 id="mcp">ระบบปฏิบัติการของเครื่องที่รัน MCP</h2>
+<table>
+<thead>
+<tr>
+<th>สถานการณ์</th>
+<th>OS</th>
+<th>หมายเหตุ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>stdio บนเครื่องตัวเอง</td>
+<td>Windows 10/11, macOS, Linux</td>
+<td>ที่ไหนก็ได้ที่ AI client รันอยู่ ต้องมี Node.js 18+ บน PATH</td>
+</tr>
+<tr>
+<td>HTTP ใช้ร่วมกัน</td>
+<td>Linux (Rocky, Ubuntu, RHEL)</td>
+<td>1 vCPU / 1 GB RAM เพียงพอสำหรับทีม ใช้ Docker หรือ Node 22 + systemd</td>
+</tr>
+<tr>
+<td>บนเครื่อง Tableau node</td>
+<td>OS เดียวกับ Tableau Server</td>
+<td>เฉพาะเมื่อขอ VM แยกไม่ได้ ระวังการแย่งทรัพยากร</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ai-client">AI client</h2>
+<table>
+<thead>
+<tr>
+<th>Client</th>
+<th>รันที่ไหน</th>
+<th>Transport ที่ใช้ได้</th>
+<th>ต้องมี</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claude Desktop</td>
+<td>เครื่องคุณ</td>
+<td>stdio (หรือ HTTP ผ่าน <code>mcp-remote</code>)</td>
+<td>แผนฟรีหรือเสียเงินที่เปิด MCP</td>
+</tr>
+<tr>
+<td>Claude Code</td>
+<td>เครื่องคุณ / server</td>
+<td>stdio หรือ HTTP</td>
+<td>Claude Code CLI</td>
+</tr>
+<tr>
+<td>ChatGPT</td>
+<td>คลาวด์ OpenAI</td>
+<td>HTTP บน HTTPS สาธารณะพร้อม OAuth</td>
+<td>แผนที่รองรับ custom connector / Developer mode</td>
+</tr>
+<tr>
+<td>Gemini CLI</td>
+<td>เครื่องคุณ</td>
+<td>stdio หรือ HTTP</td>
+<td>Gemini CLI + บัญชี Google</td>
+</tr>
+<tr>
+<td>Microsoft Copilot Studio</td>
+<td>คลาวด์ Microsoft</td>
+<td>HTTP บน HTTPS สาธารณะ</td>
+<td>ลิขสิทธิ์ Copilot Studio</td>
+</tr>
+<tr>
+<td>VS Code (Copilot / Claude), Cursor</td>
+<td>เครื่องคุณ</td>
+<td>stdio หรือ HTTP</td>
+<td>editor ที่รองรับ MCP</td>
+</tr>
+</tbody>
+</table>
+<div class="callout verify" markdown="0"><div class="callout-title">ตรวจสอบกับเอกสารล่าสุด</div><p>แผนของ ChatGPT และ Copilot ที่อนุญาต custom MCP connector เปลี่ยนบ่อย ตรวจเอกสารปัจจุบันของผู้ให้บริการก่อนรับปากลูกค้า</p></div>
+    </article>
+    <nav class="pagernav"><a class="pager prev" href="02-architecture.html"><small>ก่อนหน้า</small><span>สถาปัตยกรรม</span></a><a class="pager next" href="04-installation.html"><small>ถัดไป</small><span>การติดตั้งและตั้งค่า</span></a></nav>
+    <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">หน้าแรก</a></footer>
+  </main>
+  <aside class="onpage"><div class="onpage-title">ในหน้านี้</div><ul><li><a href="#_2">ตารางเวอร์ชัน</a></li><li><a href="#_3">ลิขสิทธิ์</a></li><li><a href="#_4">พอร์ต</a></li><li><a href="#tableau-server">การตั้งค่าและสิทธิ์บน Tableau Server</a></li><li><a href="#mcp">ระบบปฏิบัติการของเครื่องที่รัน MCP</a></li><li><a href="#ai-client">AI client</a></li></ul></aside>
+</div>
+<button class="totop" title="กลับขึ้นบน" aria-label="กลับขึ้นบน">↑</button>
+<script src="../assets/app.js"></script>
+</body>
+</html>
