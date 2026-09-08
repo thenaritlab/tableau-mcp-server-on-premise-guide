@@ -29,6 +29,25 @@ Official sources first. All links were valid in September 2026; documentation mo
 - tsm configuration set — <https://help.tableau.com/current/server/en-us/cli_configuration-set_tsm.htm>
 - Basic product data (telemetry) — <https://help.tableau.com/current/server/en-us/usage_data_basic_product_data.htm>
 
+## Permissions, site roles and APIs (sources for Chapter 7)
+
+- Permission Capabilities and Templates (API Access, Full Data Query, data source capabilities) — <https://help.tableau.com/current/server/en-us/permissions_capabilities.htm>
+- Permissions overview and site-role limits (Cloud) — <https://help.tableau.com/current/online/en-us/permissions.htm>
+- Site roles and licences — <https://help.tableau.com/current/server/en-us/users_site_roles.htm>
+- VizQL Data Service: Setup (permissions, PAT/JWT) — <https://help.tableau.com/current/api/vizql-data-service/en-us/docs/vds_setup.html>
+- VizQL Data Service: Configuration (API Access, workbook data sources, FDQ) — <https://help.tableau.com/current/api/vizql-data-service/en-us/docs/vds_configuration.html>
+- VizQL Data Service: What's new — <https://help.tableau.com/current/api/vizql-data-service/en-us/docs/vds_whats_new.html>
+- Tableau blog: API Access permissions for VDS on Tableau Cloud (2024.3) — <https://www.tableau.com/blog/use-vizql-data-service-tableau-cloud-site>
+- Metadata API — <https://help.tableau.com/current/api/metadata_api/en-us/>
+- Connected Apps overview — <https://help.tableau.com/current/server/en-us/connected_apps.htm>
+- Embedding API v3 reference — <https://help.tableau.com/current/api/embedding_api/en-us/reference/index.html>
+- Extensions API — <https://tableau.github.io/extensions-api/>
+- Hyper API — <https://tableau.github.io/hyper-db/>
+- Tableau Server Client (Python) — <https://tableau.github.io/server-client-python/>
+- Webhooks — <https://help.tableau.com/current/developer/webhooks/en-us/>
+- Tableau MCP tool docs, incl. admin-insight tools and role gate — <https://tableau.github.io/tableau-mcp/docs/category/tools>
+- Tableau licence types (Creator / Explorer / Viewer capabilities) — <https://www.tableau.com/pricing/teams-orgs>
+
 ## 📐 MCP specification and clients
 
 - Model Context Protocol specification — <https://modelcontextprotocol.io/specification/>

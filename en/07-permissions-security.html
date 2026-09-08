@@ -38,7 +38,7 @@
   <main class="content">
     <article class="doc-body" data-copy="Copy" data-copied="Copied" data-slug="07-permissions-security">
 
-<h1 id="permissions-roles-and-licences">Permissions, roles and licences</h1><div class="doc-meta"><span class="chip">Section 7 of 11</span><span class="chip">9 min read</span></div>
+<h1 id="permissions-roles-and-licences">Permissions, roles and licences</h1><div class="doc-meta"><span class="chip">Section 7 of 11</span><span class="chip">15 min read</span></div>
 <p class="lead">Tableau MCP does not add a security model of its own: it inherits Tableau's. That is its biggest strength, but only if you understand how licences, site roles, project permissions, content capabilities and row-level security stack up — and which capability each MCP tool actually needs.</p>
 
 <h2 id="the-five-layers">🧱 The five layers</h2>
@@ -98,7 +98,7 @@
 <th>Site role</th>
 <th>Licence</th>
 <th>Can view content</th>
-<th>Can query a published data source (Connect)</th>
+<th>Can query a published data source via AI (View + Connect + API Access)</th>
 <th>Can download full data</th>
 <th>Can publish / web edit</th>
 <th>Typical AI persona</th>
@@ -170,7 +170,8 @@
 </tr>
 </tbody>
 </table>
-<div class="callout note" markdown="0"><div class="callout-title">Viewer and &quot;Connect&quot;</div><p>A Viewer can hold the <em>Connect</em> capability on a published data source. Tableau uses it so Viewers can open workbooks built on that source; it also lets VizQL Data Service (and therefore <code>query-datasource</code>) run for them. What Viewers cannot do is connect from Tableau Desktop or download full data. Check your licence agreement before relying on Viewers for heavy ad-hoc AI querying.</p></div>
+<div class="callout note" markdown="0"><div class="callout-title">Viewer is the minimum role — API Access is the usual blocker</div><p>A Viewer can hold <em>View</em>, <em>Connect</em> and <em>API Access</em> on a published data source, which is everything <code>query-datasource</code> needs. <em>API Access</em> is a separate capability that is <strong>off by default</strong>; the owner or project leader must allow it. What Viewers cannot do is download full data, web edit, or connect from Tableau Desktop. Check your licence agreement before relying on Viewers for heavy ad-hoc AI querying.</p>
+<p>Source: Tableau Help › VizQL Data Service › Configuration ("To query a data source with VDS, you must first assign the API Access capability"); Permission Capabilities and Templates.</p></div>
 
 <div class="callout verify" markdown="0"><div class="callout-title">Verify with current docs</div><p>Site-role names and what they allow are stable but not frozen: Tableau has adjusted Viewer capabilities in the past. Confirm against the "Site roles and permissions" page for your server version.</p></div>
 
@@ -227,6 +228,11 @@
 <td><code>get-view-data</code> when the model asks for underlying rows</td>
 </tr>
 <tr>
+<td>API Access + Full Data Query (FDQ)</td>
+<td>Let an API or agent query the workbook's data on the user's behalf; FDQ enforces user filters only when they are data-source filters</td>
+<td>Querying a <em>workbook</em> data source via VDS; Tableau Agent in dashboards</td>
+</tr>
+<tr>
 <td>Web Edit, Download Workbook, Overwrite, Move, Delete, Set Permissions</td>
 <td>Editing and administration</td>
 <td>Not used by read-only AI instances — deny for AI groups</td>
@@ -250,8 +256,18 @@
 </tr>
 <tr>
 <td>Connect</td>
-<td>Query it (Desktop, web authoring, <strong>VizQL Data Service</strong>)</td>
+<td>Connect to it (Desktop, web authoring, and as the upstream source of a workbook queried by VDS)</td>
 <td><code>list-fields</code>, <code>get-datasource-metadata</code>, <code>query-datasource</code></td>
+</tr>
+<tr>
+<td><strong>API Access</strong></td>
+<td>Query it programmatically with <strong>VizQL Data Service</strong> — off by default</td>
+<td><code>query-datasource</code> (required), <code>get-datasource-metadata</code> via VDS</td>
+</tr>
+<tr>
+<td>Create Metric Definitions</td>
+<td>Build Tableau Pulse metrics on it (Cloud)</td>
+<td>Pulse tools (Cloud only)</td>
 </tr>
 <tr>
 <td>Download Data Source / Save a Copy</td>
@@ -286,14 +302,14 @@
 <td><code>ai-viewers</code></td>
 <td>Ask questions through the portal</td>
 <td>View, Filter, Download Summary Data</td>
-<td>View, Connect</td>
+<td>View, Connect, API Access</td>
 <td>Viewer</td>
 </tr>
 <tr>
 <td><code>ai-analysts</code></td>
 <td>Explore with Claude / Gemini / VS Code</td>
 <td>+ Download Full Data, Download Image</td>
-<td>View, Connect</td>
+<td>View, Connect, API Access</td>
 <td>Explorer</td>
 </tr>
 <tr>
@@ -307,7 +323,7 @@
 <td><code>svc-mcp-portal</code> (service)</td>
 <td>Portal's Direct Trust identity</td>
 <td>View, Filter, Download Summary Data</td>
-<td>View, Connect</td>
+<td>View, Connect, API Access</td>
 <td>Viewer or Explorer</td>
 </tr>
 </tbody>
@@ -388,6 +404,317 @@
 </tr>
 </tbody>
 </table>
+<h2 id="tableau-apis-behind-tableau-mcp-developer-reference">🧩 Tableau APIs behind Tableau MCP (developer reference)</h2>
+<p>Tableau MCP is a thin layer over Tableau's public APIs. Knowing which API each tool calls tells you which permission applies, which logs to read, and what you could call directly from your own code.</p>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>What it does</th>
+<th>Auth</th>
+<th>Used by these MCP tools</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>REST API</strong></td>
+<td>Sign-in, list / search / manage sites, projects, users, groups, workbooks, data sources, views, permissions, extract refresh tasks, view images and view data</td>
+<td>PAT, JWT (Connected App), username/password</td>
+<td><code>list-datasources</code>, <code>list-workbooks</code>, <code>list-views</code>, <code>get-view-image</code>, <code>get-view-data</code>, <code>search-content</code>, <code>list-extract-refresh-tasks</code>, <code>start-extract-refresh</code>, admin tools</td>
+<td>Versioned (3.x); Tableau MCP negotiates the version. Every call is logged in <code>http_requests</code>.</td>
+</tr>
+<tr>
+<td><strong>VizQL Data Service (VDS)</strong></td>
+<td>Programmatic query of a published data source or a workbook's data source: read metadata (fields, types, default aggregation) and run aggregated queries with filters, sorts, TOP N</td>
+<td>Session from REST sign-in (PAT / JWT)</td>
+<td><code>get-datasource-metadata</code>, <code>list-fields</code>, <code>query-datasource</code>, admin-insight queries</td>
+<td>Requires <strong>API Access</strong> on the data source; on Cloud since 2024.3, on Server 2025.1+. 30 s timeout on interactive workbook sources.</td>
+</tr>
+<tr>
+<td><strong>Metadata API (GraphQL)</strong></td>
+<td>Lineage and catalog: which tables feed which data sources, which workbooks use them, field lineage, certifications, data quality warnings</td>
+<td>Same REST session</td>
+<td>Lineage / search tools when enabled</td>
+<td>Must be enabled on Server (<code>tsm maintenance metadata-services enable</code>). Richer with Data Management.</td>
+</tr>
+<tr>
+<td><strong>Tableau Pulse API</strong></td>
+<td>Metric definitions, metrics, insights, digests</td>
+<td>REST session</td>
+<td><code>pulse</code> tool group</td>
+<td>Tableau Cloud only — exclude on Server.</td>
+</tr>
+<tr>
+<td><strong>Connected Apps (JWT)</strong></td>
+<td>Trust framework: Direct Trust (shared secret) or OAuth 2.0 Trust (external IdP) lets an app mint a JWT that signs in as any user without a password</td>
+<td>JWT with <code>sub</code>, <code>aud</code>, <code>jti</code>, scopes</td>
+<td>MCP <code>AUTH=direct-trust</code>; the portal's embed token</td>
+<td>Scopes such as <code>tableau:views:embed</code>, <code>tableau:content:read</code>.</td>
+</tr>
+<tr>
+<td><strong>Embedding API v3</strong></td>
+<td>Embed views and dashboards in a web page (<code>&lt;tableau-viz&gt;</code>), pass filters and parameters, listen to events, get the VDS session for the embedded viz</td>
+<td>Connected App JWT or SSO</td>
+<td>Not used by MCP; used by the portal in Section 6</td>
+<td><code>getVizQLDataServiceSessionInfo()</code> links an embedded viz to VDS queries.</td>
+</tr>
+<tr>
+<td><strong>Extensions API</strong></td>
+<td>Dashboard / viz extensions running inside Tableau, can read worksheet data and react to selections</td>
+<td>Runs inside the user's session</td>
+<td>Not used by MCP</td>
+<td>Alternative to an external portal when the chat should live <em>inside</em> a dashboard.</td>
+</tr>
+<tr>
+<td><strong>Hyper API</strong></td>
+<td>Create and update <code>.hyper</code> extract files programmatically</td>
+<td>Local library</td>
+<td>Not used by MCP</td>
+<td>Data preparation pipelines feeding published sources.</td>
+</tr>
+<tr>
+<td><strong>Tableau Server Client (TSC)</strong></td>
+<td>Python library wrapping the REST API</td>
+<td>PAT / JWT</td>
+<td>Not used by MCP</td>
+<td>Handy for scripting the permission templates in this chapter.</td>
+</tr>
+<tr>
+<td><strong>Webhooks</strong></td>
+<td>Server pushes events (workbook published, refresh failed) to your endpoint</td>
+<td>Configured via REST</td>
+<td>Not used by MCP</td>
+<td>Trigger an agentic check (use case 5) when a refresh completes.</td>
+</tr>
+</tbody>
+</table>
+<div class="callout verify" markdown="0"><div class="callout-title">Verify with current docs</div><p>API availability differs between Tableau Cloud and Tableau Server versions (VDS, Pulse, Tableau Agent). Check the "What's new" page of each API for your release. Tool names in Tableau MCP change between minor versions — confirm against <code>src/tools/web/toolName.ts</code>.</p></div>
+
+<p>Sources: Tableau REST API reference; VizQL Data Service docs (Setup, Configuration, What's new); Metadata API docs; Connected Apps (Direct Trust) docs; Embedding API v3 docs; Tableau MCP tool docs. Links in the References chapter.</p>
+<h2 id="site-role-capability-matrix-for-developers">📊 Site role capability matrix for developers</h2>
+<p>Use this to pick the lowest role that satisfies a use case. ✅ = allowed by the role (if content permission is also granted) · ⚙️ = only if the capability is granted · ❌ = the role can never do it.</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Viewer</th>
+<th>Explorer</th>
+<th>Explorer (can publish)</th>
+<th>Creator</th>
+<th>Site Admin Explorer</th>
+<th>Site Admin Creator</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create a Personal Access Token</td>
+<td>✅ *</td>
+<td>✅ *</td>
+<td>✅ *</td>
+<td>✅ *</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>View workbooks / views, filter, comment, subscribe</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Download image / PDF, summary data</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Download <strong>full</strong> data from a view</td>
+<td>❌</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Connect to a published data source (web authoring / VDS upstream)</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Query a published data source with VDS / <code>query-datasource</code></strong> (needs API Access)</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Query a workbook's data source with VDS (API Access + Full Data Query)</td>
+<td>❌ **</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Web edit an existing workbook</td>
+<td>❌</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Save / publish workbooks (Overwrite, Save a Copy)</td>
+<td>❌</td>
+<td>❌</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Publish or download data sources</td>
+<td>❌</td>
+<td>❌</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Connect to external data / create new data sources, use Desktop and Prep</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Trigger extract refresh (<code>start-extract-refresh</code>)</td>
+<td>❌</td>
+<td>⚙️ owner / project leader</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Set permissions, project leader duties</td>
+<td>❌</td>
+<td>⚙️ if project leader</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Manage users and groups on the site</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Run Tableau MCP <strong>admin</strong> tools (stale content, admin insights)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Tableau Pulse: view metrics / digests (Cloud)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Tableau Pulse: create metric definitions (Cloud)</td>
+<td>❌</td>
+<td>❌</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Server Administrator tasks (TSM, all sites)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌ (Server Admin only)</td>
+</tr>
+</tbody>
+</table>
+<p>* unless the site administrator has disabled PATs for the site or the user. &nbsp; ** Full Data Query is a full-data capability, which Viewers cannot hold.</p>
+<p><strong>Recommended minimum role per AI scenario</strong></p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Minimum role</th>
+<th>Content capabilities to grant</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ask questions of certified data sources through Claude Desktop / portal</td>
+<td><strong>Viewer</strong></td>
+<td>Data source: View, Connect, API Access</td>
+</tr>
+<tr>
+<td>Also summarise dashboards (<code>get-view-data</code>, <code>get-view-image</code>)</td>
+<td>Viewer</td>
+<td>+ Workbook: View, Filter, Download Image, Download Summary Data</td>
+</tr>
+<tr>
+<td>Row-level exploration, export underlying rows</td>
+<td>Explorer</td>
+<td>+ Download Full Data (workbook)</td>
+</tr>
+<tr>
+<td>Build and certify the <code>ai-ready</code> data sources the AI uses</td>
+<td>Explorer (can publish) or Creator</td>
+<td>Publish on the Certified project</td>
+</tr>
+<tr>
+<td>Housekeeping with admin tools, admin insights</td>
+<td>Site Administrator Explorer</td>
+<td>(site role is sufficient)</td>
+</tr>
+<tr>
+<td>MCP service identity for the portal (Direct Trust)</td>
+<td>Viewer or Explorer, never admin</td>
+<td>Same as scenario 1–2</td>
+</tr>
+</tbody>
+</table>
+<p>Sources: Tableau Help › Permissions ("Explorer or Viewer site roles can't publish, overwrite, or save a copy"); Permission Capabilities and Templates; Tableau pricing page (Viewer: download summary data; Explorer: download full data); VizQL Data Service Configuration; Tableau MCP admin-insight tool docs (admin gate rejects roles below Site Administrator). Links in the References chapter.</p>
 <h2 id="security-design-best-practices">🛡️ Security design best practices</h2>
 <h3 id="identity">Identity</h3>
 <ul>
@@ -443,7 +770,7 @@
 </tr>
 <tr>
 <td>3</td>
-<td>Every AI-exposed data source has View + Connect for the right group and nothing more</td>
+<td>Every AI-exposed data source has View + Connect + API Access for the right group and nothing more</td>
 <td>☐</td>
 </tr>
 <tr>
@@ -487,7 +814,7 @@
     <nav class="pagernav"><a class="pager prev" href="06-web-ui-wrapper.html"><small>Previous</small><span>Advanced: build a custom Web UI wrapper</span></a><a class="pager next" href="08-enterprise-proposal.html"><small>Next</small><span>Enterprise proposal: a BI + AI chat platform on Tableau MCP</span></a></nav>
     <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">Home</a></footer>
   </main>
-  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#the-five-layers">🧱 The five layers</a></li><li><a href="#layer-1-licences-and-site-roles">🪪 Layer 1 – Licences and site roles</a></li><li><a href="#layer-2-projects">📁 Layer 2 – Projects</a></li><li><a href="#layer-3-content-capabilities">🔑 Layer 3 – Content capabilities</a><ul><li><a href="#workbook-capabilities">Workbook capabilities</a></li><li><a href="#data-source-capabilities">Data source capabilities</a></li><li><a href="#permission-templates-for-ai-groups">Permission templates for AI groups</a></li></ul></li><li><a href="#layer-4-row-level-security">🔒 Layer 4 – Row-level security</a></li><li><a href="#layer-5-tableau-mcp-scoping">🧭 Layer 5 – Tableau MCP scoping</a></li><li><a href="#security-design-best-practices">🛡️ Security design best practices</a><ul><li><a href="#identity">Identity</a></li><li><a href="#data">Data</a></li><li><a href="#network-and-platform">Network and platform</a></li><li><a href="#ai-specific-controls">AI-specific controls</a></li><li><a href="#audit-and-monitoring">Audit and monitoring</a></li><li><a href="#go-live-checklist-security-team">Go-live checklist (security team)</a></li></ul></li></ul></aside>
+  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#the-five-layers">🧱 The five layers</a></li><li><a href="#layer-1-licences-and-site-roles">🪪 Layer 1 – Licences and site roles</a></li><li><a href="#layer-2-projects">📁 Layer 2 – Projects</a></li><li><a href="#layer-3-content-capabilities">🔑 Layer 3 – Content capabilities</a><ul><li><a href="#workbook-capabilities">Workbook capabilities</a></li><li><a href="#data-source-capabilities">Data source capabilities</a></li><li><a href="#permission-templates-for-ai-groups">Permission templates for AI groups</a></li></ul></li><li><a href="#layer-4-row-level-security">🔒 Layer 4 – Row-level security</a></li><li><a href="#layer-5-tableau-mcp-scoping">🧭 Layer 5 – Tableau MCP scoping</a></li><li><a href="#tableau-apis-behind-tableau-mcp-developer-reference">🧩 Tableau APIs behind Tableau MCP (developer reference)</a></li><li><a href="#site-role-capability-matrix-for-developers">📊 Site role capability matrix for developers</a></li><li><a href="#security-design-best-practices">🛡️ Security design best practices</a><ul><li><a href="#identity">Identity</a></li><li><a href="#data">Data</a></li><li><a href="#network-and-platform">Network and platform</a></li><li><a href="#ai-specific-controls">AI-specific controls</a></li><li><a href="#audit-and-monitoring">Audit and monitoring</a></li><li><a href="#go-live-checklist-security-team">Go-live checklist (security team)</a></li></ul></li></ul></aside>
 </div>
 <button class="totop" title="Back to top" aria-label="Back to top">↑</button>
 <script src="../assets/app.js"></script>

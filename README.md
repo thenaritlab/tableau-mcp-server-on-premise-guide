@@ -30,7 +30,7 @@
 | 4 | ⚙️ **Installation & configuration** | Prepare Tableau Server → run MCP (stdio / Docker / systemd / nginx) → connect Claude, ChatGPT, Gemini, Copilot → verify + troubleshooting table | [Read](docs/en/04-installation.md) | [อ่าน](docs/th/04-installation.md) | 6 min |
 | 5 | 💡 **Top 5 use cases** | Find content → query data → executive summary → admin insights → agentic analysis | [Read](docs/en/05-use-cases.md) | [อ่าน](docs/th/05-use-cases.md) | 5 min |
 | 6 | 🖥️ **Web UI wrapper** (advanced) | Node.js + Express + React portal that hides the server connection, with an AI chat box, embedded viz and audit log — full code | [Read](docs/en/06-web-ui-wrapper.md) | [อ่าน](docs/th/06-web-ui-wrapper.md) | 5 min |
-| 7 | 🔐 **Permissions, roles & licences** | Site roles vs licences, project locking, workbook / data source capabilities each MCP tool needs, RLS options, MCP scoping, security design + go-live checklist | [Read](docs/en/07-permissions-security.md) | [อ่าน](docs/th/07-permissions-security.md) | 6 min |
+| 7 | 🔐 **Permissions, roles, licences & APIs** | Site roles vs licences, capabilities each MCP tool needs (incl. **API Access**), RLS options, **Tableau API reference** (REST, VDS, Metadata, Connected Apps, Embedding…), **role capability matrix** for developers, security design + checklist | [Read](docs/en/07-permissions-security.md) | [อ่าน](docs/th/07-permissions-security.md) | 6 min |
 | 8 | 📈 **Enterprise proposal** | Ready-to-adapt plan for IT: problem, vision, use cases by department with impact metrics, target architecture, 4-phase roadmap, team, cost structure, risks, decision | [Read](docs/en/08-enterprise-proposal.md) | [อ่าน](docs/th/08-enterprise-proposal.md) | 6 min |
 | 9 | 🛡️ **Best practices & security** | Governance rules and a 14-point go-live checklist | [Read](docs/en/09-best-practices.md) | [อ่าน](docs/th/09-best-practices.md) | 3 min |
 | 10 | ❓ **FAQ & glossary** | 10 common questions, EN/TH glossary | [Read](docs/en/10-faq-glossary.md) | [อ่าน](docs/th/10-faq-glossary.md) | 2 min |
@@ -125,11 +125,11 @@ The model never touches your database. Every data access is a tool call brokered
 |---|---|---|
 | 1 · Licence / site role | Viewer · Explorer · Creator | The ceiling — a Viewer can never download full data |
 | 2 · Project | View project, 🔒 locked permissions | Invisible projects are never listed or queried |
-| 3 · Content capabilities | Workbook: View, Filter, Download Summary/Full Data · Data source: View, **Connect** | `query-datasource` needs Connect; `get-view-data` needs Download Summary Data |
+| 3 · Content capabilities | Workbook: View, Filter, Download Summary/Full Data · Data source: View, Connect, **API Access** | `query-datasource` needs Connect + API Access (off by default); `get-view-data` needs Download Summary Data |
 | 4 · Row-level security | Data-source filter, entitlement table, virtual connection policy | Same question, different rows per user — only if the MCP auth passes the real user |
 | 5 · MCP scoping | `INCLUDE_TOOLS`, `INCLUDE_PROJECT_IDS`, `INCLUDE_TAGS` | An extra fence, never a substitute |
 
-Full detail, permission templates for `ai-viewers` / `ai-analysts` / `ai-admins` and a security checklist in [Section 7](docs/en/07-permissions-security.md).
+**Minimum role to query through the AI: Viewer** (with View + Connect + API Access on the data source). Full detail, the Tableau API reference table, a site-role capability matrix, permission templates for `ai-viewers` / `ai-analysts` / `ai-admins` and a security checklist in [Section 7](docs/en/07-permissions-security.md).
 
 ---
 

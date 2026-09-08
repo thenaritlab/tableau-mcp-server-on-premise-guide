@@ -44,7 +44,7 @@
 1. **เปิดใช้ REST API** — เปิดอยู่โดยปริยาย ตรวจด้วย `tsm configuration get -k api.server.enabled` หากองค์กรปิดไว้ ให้ตั้งเป็น `true` แล้ว apply pending changes
 2. **อนุญาต Personal Access Token** — ที่ site setting *Settings › General › Personal Access Tokens* ระดับ server: `tsm configuration get -k features.PersonalAccessTokensEnabled`
 3. **สร้างผู้ใช้ Tableau เฉพาะสำหรับ MCP server** — สำหรับทดสอบ PAT หรือ Direct Trust ให้สร้าง `svc-mcp-reader` (site role Explorer หรือ Viewer หากต้องการแค่ดู view) ห้ามใช้บัญชี Server Administrator
-4. **สิทธิ์ "View" และ "Connect" บน data source** — ทุกตัวที่ AI ควร query ได้ (VizQL Data Service ต้องการทั้งสองอย่าง) หากขาด "Connect" จะเห็น HTTP 403 ใน log ของ MCP รายละเอียดอยู่ในบทเรื่องสิทธิ์
+4. **สิทธิ์ "View", "Connect" และ "API Access" บน data source** — ทุกตัวที่ AI ควร query ได้ VizQL Data Service ต้องการ capability *API Access* ซึ่งปิดอยู่โดยปริยาย หากขาดจะเห็น HTTP 403 ใน log ของ MCP รายละเอียดและแหล่งอ้างอิงอยู่ในบทเรื่องสิทธิ์
 5. **Connected Apps (สำหรับ Direct Trust หรือ portal)** — ที่ site setting *Settings › Connected Apps* ต้องเป็น site administrator จึงสร้างได้
 6. **Metadata API (ไม่บังคับ)** — ช่วยให้ tool ด้าน lineage และค้นหาทำงานดีขึ้น เปิดด้วย `tsm maintenance metadata-services enable`
 7. **OAuth redirect host (เฉพาะโหมด OAuth)** — `tsm configuration set -k oauth.allowed_redirect_uri_hosts -v tableau-mcp.demo-company.local` แล้ว `tsm pending-changes apply`

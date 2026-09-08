@@ -419,7 +419,7 @@ claude mcp list</code></pre>
 <li><em>"What fields are in the Sales data source?"</em> → <code>list-fields</code> (หรือ <code>get-datasource-metadata</code>)</li>
 <li><em>"What were total sales by region last year?"</em> → <code>query-datasource</code> ด้วย query แบบ aggregate เล็กๆ</li>
 </ol>
-<p>ถ้าข้อ 1 ผ่าน แปลว่า authentication และเครือข่ายเรียบร้อย ถ้าข้อ 3 ล้มเหลวแต่ 1–2 ผ่าน เป็นปัญหาสิทธิ์ (Connect) หรือชื่อฟิลด์</p>
+<p>ถ้าข้อ 1 ผ่าน แปลว่า authentication และเครือข่ายเรียบร้อย ถ้าข้อ 3 ล้มเหลวแต่ 1–2 ผ่าน เป็นปัญหาสิทธิ์ (API Access / Connect) หรือชื่อฟิลด์</p>
 <h3 id="_2">ข้อผิดพลาดที่พบบ่อยและวิธีแก้</h3>
 <table>
 <thead>
@@ -437,8 +437,8 @@ claude mcp list</code></pre>
 </tr>
 <tr>
 <td><code>403 Forbidden</code> เฉพาะ <code>query-datasource</code></td>
-<td>ผู้ใช้ไม่มี "Connect" (หรือ "View") บน data source นั้น</td>
-<td>ให้สิทธิ์บน data source หรือ project</td>
+<td>ผู้ใช้ไม่มี "API Access" (หรือ "Connect" / "View") บน data source นั้น</td>
+<td>ให้สิทธิ์บน data source หรือ project — API Access ปิดอยู่โดยปริยาย</td>
 </tr>
 <tr>
 <td><code>Method not allowed</code> เมื่อเปิด URL ในเบราว์เซอร์</td>

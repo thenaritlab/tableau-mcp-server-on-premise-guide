@@ -28,7 +28,7 @@ Any supported version for PAT or Direct Trust. OAuth (per-user auth on the HTTP 
 
 <details><summary>Can Viewers use it?</summary>
 
-Viewers can read views (`get-view-data`, `get-view-image`) if they have permission. Querying a published data source requires the "Connect" capability on that data source, which is usually granted to Explorers and Creators (a Viewer can hold it too, but Viewers cannot connect from Desktop).
+Viewers can read views (`get-view-data`, `get-view-image`) if they have permission. Querying a published data source through the AI requires the "View", "Connect" and "API Access" capabilities on that data source. A Viewer can hold all three, so Viewer is the minimum site role; API Access is off by default and must be granted by the owner or project leader. Viewers cannot download full data or connect from Desktop.
 
 </details>
 

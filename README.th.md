@@ -30,7 +30,7 @@
 | 4 | ⚙️ **การติดตั้งและตั้งค่า** | เตรียม Tableau Server → รัน MCP (stdio / Docker / systemd / nginx) → เชื่อม Claude, ChatGPT, Gemini, Copilot → ตรวจสอบ + ตารางแก้ปัญหา | [อ่าน](docs/th/04-installation.md) | [Read](docs/en/04-installation.md) | 6 นาที |
 | 5 | 💡 **5 use case ยอดนิยม** | ค้นหาเนื้อหา → query ข้อมูล → สรุปผู้บริหาร → admin insight → วิเคราะห์แบบ agentic | [อ่าน](docs/th/05-use-cases.md) | [Read](docs/en/05-use-cases.md) | 5 นาที |
 | 6 | 🖥️ **Web UI ครอบ Tableau Server** (ขั้นสูง) | portal Node.js + Express + React ที่ซ่อนการเชื่อมต่อ server พร้อมช่องแชท AI, dashboard ฝัง และ audit log — โค้ดครบ | [อ่าน](docs/th/06-web-ui-wrapper.md) | [Read](docs/en/06-web-ui-wrapper.md) | 5 นาที |
-| 7 | 🔐 **สิทธิ์ บทบาท และลิขสิทธิ์** | site role กับลิขสิทธิ์, การล็อก project, capability ของ workbook / data source ที่ MCP tool แต่ละตัวต้องใช้, ทางเลือก RLS, ขอบเขต MCP, การออกแบบความปลอดภัย + checklist go-live | [อ่าน](docs/th/07-permissions-security.md) | [Read](docs/en/07-permissions-security.md) | 6 นาที |
+| 7 | 🔐 **สิทธิ์ บทบาท ลิขสิทธิ์ และ API** | site role กับลิขสิทธิ์, capability ที่ MCP tool แต่ละตัวต้องใช้ (รวม **API Access**), ทางเลือก RLS, **ตาราง API ของ Tableau** (REST, VDS, Metadata, Connected Apps, Embedding…), **ตารางเทียบ role** สำหรับนักพัฒนา, การออกแบบความปลอดภัย + checklist | [อ่าน](docs/th/07-permissions-security.md) | [Read](docs/en/07-permissions-security.md) | 6 นาที |
 | 8 | 📈 **ข้อเสนอโครงการสำหรับองค์กร** | แผนสำหรับ IT ปรับใช้ได้ทันที: ปัญหา วิสัยทัศน์ use case รายแผนกพร้อมตัวชี้วัด สถาปัตยกรรมเป้าหมาย roadmap 4 เฟส ทีม โครงสร้างต้นทุน ความเสี่ยง การตัดสินใจ | [อ่าน](docs/th/08-enterprise-proposal.md) | [Read](docs/en/08-enterprise-proposal.md) | 6 นาที |
 | 9 | 🛡️ **แนวปฏิบัติที่ดีและความปลอดภัย** | กฎการกำกับดูแลและ checklist ก่อน go-live 14 ข้อ | [อ่าน](docs/th/09-best-practices.md) | [Read](docs/en/09-best-practices.md) | 3 นาที |
 | 10 | ❓ **คำถามที่พบบ่อยและอภิธานศัพท์** | คำถาม 10 ข้อ ศัพท์ ไทย/อังกฤษ | [อ่าน](docs/th/10-faq-glossary.md) | [Read](docs/en/10-faq-glossary.md) | 2 นาที |
@@ -125,11 +125,11 @@ flowchart LR
 |---|---|---|
 | 1 · ลิขสิทธิ์ / site role | Viewer · Explorer · Creator | เพดาน — Viewer ดาวน์โหลดข้อมูลเต็มไม่ได้เด็ดขาด |
 | 2 · Project | View project, 🔒 locked permissions | project ที่มองไม่เห็นจะไม่ถูกแสดงหรือ query |
-| 3 · Capability ของเนื้อหา | Workbook: View, Filter, Download Summary/Full Data · Data source: View, **Connect** | `query-datasource` ต้องมี Connect; `get-view-data` ต้องมี Download Summary Data |
+| 3 · Capability ของเนื้อหา | Workbook: View, Filter, Download Summary/Full Data · Data source: View, Connect, **API Access** | `query-datasource` ต้องมี Connect + API Access (ปิดโดยปริยาย); `get-view-data` ต้องมี Download Summary Data |
 | 4 · Row-level security | filter ใน data source, ตาราง entitlement, virtual connection policy | คำถามเดียวกัน แถวต่างกันตามผู้ใช้ — เฉพาะเมื่อ MCP auth ส่งผู้ใช้จริง |
 | 5 · ขอบเขต MCP | `INCLUDE_TOOLS`, `INCLUDE_PROJECT_IDS`, `INCLUDE_TAGS` | รั้วเพิ่มอีกชั้น ไม่ใช่สิ่งทดแทน |
 
-รายละเอียดเต็ม แม่แบบสิทธิ์ `ai-viewers` / `ai-analysts` / `ai-admins` และ checklist ความปลอดภัย อยู่ใน[ส่วนที่ 7](docs/th/07-permissions-security.md)
+**role ขั้นต่ำสำหรับ query ผ่าน AI: Viewer** (ต้องมี View + Connect + API Access บน data source) รายละเอียดเต็ม ตาราง API ของ Tableau ตารางเทียบ site role แม่แบบสิทธิ์ `ai-viewers` / `ai-analysts` / `ai-admins` และ checklist ความปลอดภัย อยู่ใน[ส่วนที่ 7](docs/th/07-permissions-security.md)
 
 ---
 

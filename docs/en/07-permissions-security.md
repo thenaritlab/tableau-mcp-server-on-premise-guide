@@ -18,7 +18,7 @@
 
 A licence type is what you buy; a **site role** is what an administrator assigns to a user on a site, bounded by the licence. The site role is the *ceiling*: permissions can never grant more than the role allows.
 
-| Site role | Licence | Can view content | Can query a published data source (Connect) | Can download full data | Can publish / web edit | Typical AI persona |
+| Site role | Licence | Can view content | Can query a published data source via AI (View + Connect + API Access) | Can download full data | Can publish / web edit | Typical AI persona |
 |---|---|---|---|---|---|---|
 | Viewer | Viewer | ✅ | ✅ if granted | ❌ (summary only) | ❌ | Manager asking questions through the portal |
 | Explorer | Explorer | ✅ | ✅ | ✅ if granted | Web edit, no publish | Analyst using Claude / Gemini for exploration |
@@ -29,9 +29,11 @@ A licence type is what you buy; a **site role** is what an administrator assigns
 | Unlicensed | — | ❌ | ❌ | ❌ | ❌ | AI gets nothing; sign-in fails |
 
 > [!NOTE]
-> **Viewer and "Connect"**
+> **Viewer is the minimum role — API Access is the usual blocker**
 >
-> A Viewer can hold the *Connect* capability on a published data source. Tableau uses it so Viewers can open workbooks built on that source; it also lets VizQL Data Service (and therefore `query-datasource`) run for them. What Viewers cannot do is connect from Tableau Desktop or download full data. Check your licence agreement before relying on Viewers for heavy ad-hoc AI querying.
+> A Viewer can hold *View*, *Connect* and *API Access* on a published data source, which is everything `query-datasource` needs. *API Access* is a separate capability that is **off by default**; the owner or project leader must allow it. What Viewers cannot do is download full data, web edit, or connect from Tableau Desktop. Check your licence agreement before relying on Viewers for heavy ad-hoc AI querying.
+>
+> Source: Tableau Help › VizQL Data Service › Configuration ("To query a data source with VDS, you must first assign the API Access capability"); Permission Capabilities and Templates.
 
 > [!IMPORTANT]
 > **Verify with current docs**
@@ -70,6 +72,7 @@ Permissions are granted to **groups** (preferably) or users as *Allowed / Denied
 | Download Image/PDF | Export view image | `get-view-image` |
 | Download Summary Data | Aggregated data behind a view | `get-view-data` (summary) |
 | Download Full Data | Row-level data behind a view | `get-view-data` when the model asks for underlying rows |
+| API Access + Full Data Query (FDQ) | Let an API or agent query the workbook's data on the user's behalf; FDQ enforces user filters only when they are data-source filters | Querying a *workbook* data source via VDS; Tableau Agent in dashboards |
 | Web Edit, Download Workbook, Overwrite, Move, Delete, Set Permissions | Editing and administration | Not used by read-only AI instances — deny for AI groups |
 
 ### Data source capabilities
@@ -77,7 +80,9 @@ Permissions are granted to **groups** (preferably) or users as *Allowed / Denied
 | Capability | What it allows | MCP tools that need it |
 |---|---|---|
 | View | See the data source in lists | `list-datasources`, `search-content` |
-| Connect | Query it (Desktop, web authoring, **VizQL Data Service**) | `list-fields`, `get-datasource-metadata`, `query-datasource` |
+| Connect | Connect to it (Desktop, web authoring, and as the upstream source of a workbook queried by VDS) | `list-fields`, `get-datasource-metadata`, `query-datasource` |
+| **API Access** | Query it programmatically with **VizQL Data Service** — off by default | `query-datasource` (required), `get-datasource-metadata` via VDS |
+| Create Metric Definitions | Build Tableau Pulse metrics on it (Cloud) | Pulse tools (Cloud only) |
 | Download Data Source / Save a Copy | Get the .tdsx | Not needed — deny for AI groups |
 | Overwrite, Delete, Set Permissions | Administration | Deny for AI groups |
 | (Extract refresh: owner or project leader) | Trigger / schedule refresh | `list-extract-refresh-tasks`, refresh tools — admin instance only |
@@ -86,10 +91,10 @@ Permissions are granted to **groups** (preferably) or users as *Allowed / Denied
 
 | Group | Purpose | Workbook | Data source | Site role |
 |---|---|---|---|---|
-| `ai-viewers` | Ask questions through the portal | View, Filter, Download Summary Data | View, Connect | Viewer |
-| `ai-analysts` | Explore with Claude / Gemini / VS Code | + Download Full Data, Download Image | View, Connect | Explorer |
+| `ai-viewers` | Ask questions through the portal | View, Filter, Download Summary Data | View, Connect, API Access | Viewer |
+| `ai-analysts` | Explore with Claude / Gemini / VS Code | + Download Full Data, Download Image | View, Connect, API Access | Explorer |
 | `ai-admins` | Housekeeping with the admin tool group | All | All | Site Administrator Explorer |
-| `svc-mcp-portal` (service) | Portal's Direct Trust identity | View, Filter, Download Summary Data | View, Connect | Viewer or Explorer |
+| `svc-mcp-portal` (service) | Portal's Direct Trust identity | View, Filter, Download Summary Data | View, Connect, API Access | Viewer or Explorer |
 
 Set these on the *Certified* project with permissions locked, and the whole tree follows.
 
@@ -127,6 +132,70 @@ Typical mapping:
 | `mcp-analysts` (port 3927) | `datasource,workbook,view` | Certified project · tag `ai-ready` | ai-analysts, ai-viewers via OAuth |
 | `mcp-portal` (port 3928, localhost only) | `datasource` | Certified project | Portal service identity |
 | `mcp-admin` (port 3929) | `admin,workbook,datasource` | (all) | ai-admins via OAuth |
+
+## 🧩 Tableau APIs behind Tableau MCP (developer reference)
+
+Tableau MCP is a thin layer over Tableau's public APIs. Knowing which API each tool calls tells you which permission applies, which logs to read, and what you could call directly from your own code.
+
+| API | What it does | Auth | Used by these MCP tools | Notes |
+|---|---|---|---|---|
+| **REST API** | Sign-in, list / search / manage sites, projects, users, groups, workbooks, data sources, views, permissions, extract refresh tasks, view images and view data | PAT, JWT (Connected App), username/password | `list-datasources`, `list-workbooks`, `list-views`, `get-view-image`, `get-view-data`, `search-content`, `list-extract-refresh-tasks`, `start-extract-refresh`, admin tools | Versioned (3.x); Tableau MCP negotiates the version. Every call is logged in `http_requests`. |
+| **VizQL Data Service (VDS)** | Programmatic query of a published data source or a workbook's data source: read metadata (fields, types, default aggregation) and run aggregated queries with filters, sorts, TOP N | Session from REST sign-in (PAT / JWT) | `get-datasource-metadata`, `list-fields`, `query-datasource`, admin-insight queries | Requires **API Access** on the data source; on Cloud since 2024.3, on Server 2025.1+. 30 s timeout on interactive workbook sources. |
+| **Metadata API (GraphQL)** | Lineage and catalog: which tables feed which data sources, which workbooks use them, field lineage, certifications, data quality warnings | Same REST session | Lineage / search tools when enabled | Must be enabled on Server (`tsm maintenance metadata-services enable`). Richer with Data Management. |
+| **Tableau Pulse API** | Metric definitions, metrics, insights, digests | REST session | `pulse` tool group | Tableau Cloud only — exclude on Server. |
+| **Connected Apps (JWT)** | Trust framework: Direct Trust (shared secret) or OAuth 2.0 Trust (external IdP) lets an app mint a JWT that signs in as any user without a password | JWT with `sub`, `aud`, `jti`, scopes | MCP `AUTH=direct-trust`; the portal's embed token | Scopes such as `tableau:views:embed`, `tableau:content:read`. |
+| **Embedding API v3** | Embed views and dashboards in a web page (`<tableau-viz>`), pass filters and parameters, listen to events, get the VDS session for the embedded viz | Connected App JWT or SSO | Not used by MCP; used by the portal in Section 6 | `getVizQLDataServiceSessionInfo()` links an embedded viz to VDS queries. |
+| **Extensions API** | Dashboard / viz extensions running inside Tableau, can read worksheet data and react to selections | Runs inside the user's session | Not used by MCP | Alternative to an external portal when the chat should live *inside* a dashboard. |
+| **Hyper API** | Create and update `.hyper` extract files programmatically | Local library | Not used by MCP | Data preparation pipelines feeding published sources. |
+| **Tableau Server Client (TSC)** | Python library wrapping the REST API | PAT / JWT | Not used by MCP | Handy for scripting the permission templates in this chapter. |
+| **Webhooks** | Server pushes events (workbook published, refresh failed) to your endpoint | Configured via REST | Not used by MCP | Trigger an agentic check (use case 5) when a refresh completes. |
+
+> [!IMPORTANT]
+> **Verify with current docs**
+>
+> API availability differs between Tableau Cloud and Tableau Server versions (VDS, Pulse, Tableau Agent). Check the "What's new" page of each API for your release. Tool names in Tableau MCP change between minor versions — confirm against `src/tools/web/toolName.ts`.
+
+Sources: Tableau REST API reference; VizQL Data Service docs (Setup, Configuration, What's new); Metadata API docs; Connected Apps (Direct Trust) docs; Embedding API v3 docs; Tableau MCP tool docs. Links in the References chapter.
+
+## 📊 Site role capability matrix for developers
+
+Use this to pick the lowest role that satisfies a use case. ✅ = allowed by the role (if content permission is also granted) · ⚙️ = only if the capability is granted · ❌ = the role can never do it.
+
+| Action | Viewer | Explorer | Explorer (can publish) | Creator | Site Admin Explorer | Site Admin Creator |
+|---|---|---|---|---|---|---|
+| Create a Personal Access Token | ✅ * | ✅ * | ✅ * | ✅ * | ✅ | ✅ |
+| View workbooks / views, filter, comment, subscribe | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Download image / PDF, summary data | ⚙️ | ⚙️ | ⚙️ | ⚙️ | ✅ | ✅ |
+| Download **full** data from a view | ❌ | ⚙️ | ⚙️ | ⚙️ | ✅ | ✅ |
+| Connect to a published data source (web authoring / VDS upstream) | ⚙️ | ⚙️ | ⚙️ | ⚙️ | ✅ | ✅ |
+| **Query a published data source with VDS / `query-datasource`** (needs API Access) | ⚙️ | ⚙️ | ⚙️ | ⚙️ | ✅ | ✅ |
+| Query a workbook's data source with VDS (API Access + Full Data Query) | ❌ ** | ⚙️ | ⚙️ | ⚙️ | ✅ | ✅ |
+| Web edit an existing workbook | ❌ | ⚙️ | ⚙️ | ⚙️ | ✅ | ✅ |
+| Save / publish workbooks (Overwrite, Save a Copy) | ❌ | ❌ | ⚙️ | ⚙️ | ✅ | ✅ |
+| Publish or download data sources | ❌ | ❌ | ⚙️ | ⚙️ | ✅ | ✅ |
+| Connect to external data / create new data sources, use Desktop and Prep | ❌ | ❌ | ❌ | ✅ | ❌ | ✅ |
+| Trigger extract refresh (`start-extract-refresh`) | ❌ | ⚙️ owner / project leader | ⚙️ | ⚙️ | ✅ | ✅ |
+| Set permissions, project leader duties | ❌ | ⚙️ if project leader | ⚙️ | ⚙️ | ✅ | ✅ |
+| Manage users and groups on the site | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Run Tableau MCP **admin** tools (stale content, admin insights) | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Tableau Pulse: view metrics / digests (Cloud) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Tableau Pulse: create metric definitions (Cloud) | ❌ | ❌ | ⚙️ | ⚙️ | ⚙️ | ✅ |
+| Server Administrator tasks (TSM, all sites) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ (Server Admin only) |
+
+\* unless the site administrator has disabled PATs for the site or the user. &nbsp; \*\* Full Data Query is a full-data capability, which Viewers cannot hold.
+
+**Recommended minimum role per AI scenario**
+
+| Scenario | Minimum role | Content capabilities to grant |
+|---|---|---|
+| Ask questions of certified data sources through Claude Desktop / portal | **Viewer** | Data source: View, Connect, API Access |
+| Also summarise dashboards (`get-view-data`, `get-view-image`) | Viewer | + Workbook: View, Filter, Download Image, Download Summary Data |
+| Row-level exploration, export underlying rows | Explorer | + Download Full Data (workbook) |
+| Build and certify the `ai-ready` data sources the AI uses | Explorer (can publish) or Creator | Publish on the Certified project |
+| Housekeeping with admin tools, admin insights | Site Administrator Explorer | (site role is sufficient) |
+| MCP service identity for the portal (Direct Trust) | Viewer or Explorer, never admin | Same as scenario 1–2 |
+
+Sources: Tableau Help › Permissions ("Explorer or Viewer site roles can't publish, overwrite, or save a copy"); Permission Capabilities and Templates; Tableau pricing page (Viewer: download summary data; Explorer: download full data); VizQL Data Service Configuration; Tableau MCP admin-insight tool docs (admin gate rejects roles below Site Administrator). Links in the References chapter.
 
 ## 🛡️ Security design best practices
 
@@ -168,7 +237,7 @@ Typical mapping:
 |---|---|---|
 | 1 | Certified project locked; only data team can publish | ☐ |
 | 2 | `ai-*` groups exist, synced from directory, permission templates applied | ☐ |
-| 3 | Every AI-exposed data source has View + Connect for the right group and nothing more | ☐ |
+| 3 | Every AI-exposed data source has View + Connect + API Access for the right group and nothing more | ☐ |
 | 4 | RLS implemented in data source or virtual connection; two-user test passed | ☐ |
 | 5 | Auth mode gives Tableau the real user (OAuth or `{OAUTH_USERNAME}`) | ☐ |
 | 6 | Restricted data not in any `INCLUDE_*` scope; verified by listing data sources through the AI | ☐ |

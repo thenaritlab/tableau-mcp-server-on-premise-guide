@@ -38,7 +38,7 @@
   <main class="content">
     <article class="doc-body" data-copy="Copy" data-copied="Copied" data-slug="04-installation">
 
-<h1 id="installation-and-configuration">Installation and configuration</h1><div class="doc-meta"><span class="chip">Section 4 of 11</span><span class="chip">6 min read</span></div>
+<h1 id="installation-and-configuration">Installation and configuration</h1><div class="doc-meta"><span class="chip">Section 4 of 11</span><span class="chip">7 min read</span></div>
 <p class="lead">Four parts: prepare Tableau Server, run Tableau MCP (local stdio first, then a shared HTTP server), connect each AI client, and verify. Every command uses placeholder names; replace them with your own.</p>
 
 <h2 id="41-prepare-tableau-server">🛠️ 4.1 Prepare Tableau Server</h2>
@@ -419,7 +419,7 @@ claude mcp list</code></pre>
 <li><em>"What fields are in the Sales data source?"</em> → <code>list-fields</code> (or <code>get-datasource-metadata</code>).</li>
 <li><em>"What were total sales by region last year?"</em> → <code>query-datasource</code> with a small aggregate query.</li>
 </ol>
-<p>If step 1 works, authentication and networking are fine. If step 3 fails but 1–2 work, it is a permission (Connect) or a field-name problem.</p>
+<p>If step 1 works, authentication and networking are fine. If step 3 fails but 1–2 work, it is a permission (API Access / Connect) or a field-name problem.</p>
 <h3 id="common-errors-and-fixes">Common errors and fixes</h3>
 <table>
 <thead>
@@ -437,8 +437,8 @@ claude mcp list</code></pre>
 </tr>
 <tr>
 <td><code>403 Forbidden</code> on <code>query-datasource</code> only</td>
-<td>User lacks "Connect" (or "View") on that data source</td>
-<td>Grant the capability on the data source or project</td>
+<td>User lacks "API Access" (or "Connect" / "View") on that data source</td>
+<td>Grant the capability on the data source or project — API Access is off by default</td>
 </tr>
 <tr>
 <td><code>Method not allowed</code> when opening the URL in a browser</td>

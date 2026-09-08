@@ -38,7 +38,7 @@
   <main class="content">
     <article class="doc-body" data-copy="คัดลอก" data-copied="คัดลอกแล้ว" data-slug="07-permissions-security">
 
-<h1 id="_1">สิทธิ์ บทบาท และลิขสิทธิ์</h1><div class="doc-meta"><span class="chip">ส่วนที่ 7 จาก 11</span><span class="chip">อ่าน 10 นาที</span></div>
+<h1 id="_1">สิทธิ์ บทบาท และลิขสิทธิ์</h1><div class="doc-meta"><span class="chip">ส่วนที่ 7 จาก 11</span><span class="chip">อ่าน 16 นาที</span></div>
 <p class="lead">Tableau MCP ไม่มีระบบความปลอดภัยของตัวเอง แต่สืบทอดจาก Tableau ทั้งหมด นี่คือจุดแข็งที่สุด แต่จะได้ประโยชน์ก็ต่อเมื่อคุณเข้าใจว่าลิขสิทธิ์ site role สิทธิ์ระดับ project ความสามารถ (capability) ระดับเนื้อหา และ row-level security ซ้อนกันอย่างไร และ MCP tool แต่ละตัวต้องใช้ capability อะไรจริงๆ</p>
 
 <h2 id="_2">🧱 ห้าชั้นของการควบคุม</h2>
@@ -98,7 +98,7 @@
 <th>Site role</th>
 <th>ลิขสิทธิ์</th>
 <th>ดูเนื้อหา</th>
-<th>query published data source (Connect)</th>
+<th>query published data source ผ่าน AI (View + Connect + API Access)</th>
 <th>ดาวน์โหลดข้อมูลเต็ม</th>
 <th>publish / web edit</th>
 <th>ตัวตน AI ที่มักใช้</th>
@@ -170,7 +170,8 @@
 </tr>
 </tbody>
 </table>
-<div class="callout note" markdown="0"><div class="callout-title">Viewer กับสิทธิ์ &quot;Connect&quot;</div><p>Viewer ถือ capability <em>Connect</em> บน published data source ได้ Tableau ใช้สิทธิ์นี้เพื่อให้ Viewer เปิด workbook ที่สร้างบน source นั้น และมันทำให้ VizQL Data Service (จึงรวมถึง <code>query-datasource</code>) รันให้ Viewer ได้ด้วย สิ่งที่ Viewer ทำไม่ได้คือเชื่อมจาก Tableau Desktop และดาวน์โหลดข้อมูลเต็ม ตรวจสัญญาลิขสิทธิ์ก่อนพึ่งพา Viewer สำหรับการ query ผ่าน AI แบบหนัก</p></div>
+<div class="callout note" markdown="0"><div class="callout-title">Viewer คือ role ขั้นต่ำ — สิ่งที่มักติดคือ API Access</div><p>Viewer ถือ <em>View</em>, <em>Connect</em> และ <em>API Access</em> บน published data source ได้ ซึ่งครบทุกอย่างที่ <code>query-datasource</code> ต้องการ <em>API Access</em> เป็น capability แยกที่<strong>ปิดอยู่โดยปริยาย</strong> เจ้าของหรือ project leader ต้องเปิดให้ สิ่งที่ Viewer ทำไม่ได้คือดาวน์โหลดข้อมูลเต็ม web edit และเชื่อมจาก Tableau Desktop ตรวจสัญญาลิขสิทธิ์ก่อนพึ่งพา Viewer สำหรับการ query ผ่าน AI แบบหนัก</p>
+<p>แหล่งอ้างอิง: Tableau Help › VizQL Data Service › Configuration ("To query a data source with VDS, you must first assign the API Access capability"); Permission Capabilities and Templates</p></div>
 
 <div class="callout verify" markdown="0"><div class="callout-title">ตรวจสอบกับเอกสารล่าสุด</div><p>ชื่อ site role และสิ่งที่อนุญาตค่อนข้างนิ่งแต่ไม่ตายตัว Tableau เคยปรับความสามารถของ Viewer มาแล้ว ตรวจกับหน้า "Site roles and permissions" ของเวอร์ชัน server ที่ใช้</p></div>
 
@@ -227,6 +228,11 @@
 <td><code>get-view-data</code> เมื่อโมเดลขอข้อมูลดิบ</td>
 </tr>
 <tr>
+<td>API Access + Full Data Query (FDQ)</td>
+<td>ให้ API หรือ agent query ข้อมูลของ workbook แทนผู้ใช้; FDQ บังคับ user filter เฉพาะเมื่อเป็น data source filter</td>
+<td>query data source ของ <em>workbook</em> ผ่าน VDS; Tableau Agent ใน dashboard</td>
+</tr>
+<tr>
 <td>Web Edit, Download Workbook, Overwrite, Move, Delete, Set Permissions</td>
 <td>แก้ไขและดูแล</td>
 <td>AI แบบอ่านอย่างเดียวไม่ใช้ — deny ให้กลุ่ม AI</td>
@@ -250,8 +256,18 @@
 </tr>
 <tr>
 <td>Connect</td>
-<td>query ได้ (Desktop, web authoring, <strong>VizQL Data Service</strong>)</td>
+<td>เชื่อมต่อได้ (Desktop, web authoring และเป็น source ต้นทางของ workbook ที่ VDS query)</td>
 <td><code>list-fields</code>, <code>get-datasource-metadata</code>, <code>query-datasource</code></td>
+</tr>
+<tr>
+<td><strong>API Access</strong></td>
+<td>query แบบ programmatic ผ่าน <strong>VizQL Data Service</strong> — ปิดโดยปริยาย</td>
+<td><code>query-datasource</code> (จำเป็น), <code>get-datasource-metadata</code> ผ่าน VDS</td>
+</tr>
+<tr>
+<td>Create Metric Definitions</td>
+<td>สร้าง Tableau Pulse metric บนมัน (Cloud)</td>
+<td>tool ของ Pulse (Cloud เท่านั้น)</td>
 </tr>
 <tr>
 <td>Download Data Source / Save a Copy</td>
@@ -286,14 +302,14 @@
 <td><code>ai-viewers</code></td>
 <td>ถามคำถามผ่าน portal</td>
 <td>View, Filter, Download Summary Data</td>
-<td>View, Connect</td>
+<td>View, Connect, API Access</td>
 <td>Viewer</td>
 </tr>
 <tr>
 <td><code>ai-analysts</code></td>
 <td>สำรวจด้วย Claude / Gemini / VS Code</td>
 <td>+ Download Full Data, Download Image</td>
-<td>View, Connect</td>
+<td>View, Connect, API Access</td>
 <td>Explorer</td>
 </tr>
 <tr>
@@ -307,7 +323,7 @@
 <td><code>svc-mcp-portal</code> (service)</td>
 <td>ตัวตน Direct Trust ของ portal</td>
 <td>View, Filter, Download Summary Data</td>
-<td>View, Connect</td>
+<td>View, Connect, API Access</td>
 <td>Viewer หรือ Explorer</td>
 </tr>
 </tbody>
@@ -388,6 +404,317 @@
 </tr>
 </tbody>
 </table>
+<h2 id="tableau-api-tableau-mcp">🧩 Tableau API ที่อยู่เบื้องหลัง Tableau MCP (อ้างอิงสำหรับนักพัฒนา)</h2>
+<p>Tableau MCP เป็นชั้นบางๆ บน public API ของ Tableau การรู้ว่า tool แต่ละตัวเรียก API ใด ทำให้รู้ว่าสิทธิ์ใดมีผล ต้องอ่าน log ไหน และคุณเรียกอะไรตรงๆ จากโค้ดของตัวเองได้บ้าง</p>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>ทำอะไร</th>
+<th>Auth</th>
+<th>MCP tool ที่ใช้</th>
+<th>หมายเหตุ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>REST API</strong></td>
+<td>sign-in, แสดง / ค้นหา / จัดการ site, project, ผู้ใช้, กลุ่ม, workbook, data source, view, สิทธิ์, extract refresh task, ภาพ view และข้อมูล view</td>
+<td>PAT, JWT (Connected App), username/password</td>
+<td><code>list-datasources</code>, <code>list-workbooks</code>, <code>list-views</code>, <code>get-view-image</code>, <code>get-view-data</code>, <code>search-content</code>, <code>list-extract-refresh-tasks</code>, <code>start-extract-refresh</code>, admin tool</td>
+<td>มีเวอร์ชัน (3.x) Tableau MCP เจรจาให้ ทุกการเรียกถูกบันทึกใน <code>http_requests</code></td>
+</tr>
+<tr>
+<td><strong>VizQL Data Service (VDS)</strong></td>
+<td>query published data source หรือ data source ของ workbook แบบ programmatic: อ่าน metadata (ฟิลด์ ชนิด aggregation เริ่มต้น) และรัน query แบบ aggregate พร้อม filter, sort, TOP N</td>
+<td>session จาก REST sign-in (PAT / JWT)</td>
+<td><code>get-datasource-metadata</code>, <code>list-fields</code>, <code>query-datasource</code>, query ของ admin insight</td>
+<td>ต้องมี <strong>API Access</strong> บน data source; Cloud ตั้งแต่ 2024.3, Server 2025.1+; timeout 30 วินาทีบน source ของ workbook แบบ interactive</td>
+</tr>
+<tr>
+<td><strong>Metadata API (GraphQL)</strong></td>
+<td>lineage และ catalog: ตารางไหนป้อน data source ใด workbook ไหนใช้ field lineage การ certify คำเตือนคุณภาพข้อมูล</td>
+<td>session REST เดียวกัน</td>
+<td>tool ด้าน lineage / search เมื่อเปิด</td>
+<td>ต้องเปิดบน Server (<code>tsm maintenance metadata-services enable</code>) ครบกว่าเมื่อมี Data Management</td>
+</tr>
+<tr>
+<td><strong>Tableau Pulse API</strong></td>
+<td>metric definition, metric, insight, digest</td>
+<td>session REST</td>
+<td>tool group <code>pulse</code></td>
+<td>Tableau Cloud เท่านั้น — exclude บน Server</td>
+</tr>
+<tr>
+<td><strong>Connected Apps (JWT)</strong></td>
+<td>กรอบความเชื่อถือ: Direct Trust (secret ร่วม) หรือ OAuth 2.0 Trust (IdP ภายนอก) ให้แอปสร้าง JWT เพื่อ sign-in เป็นผู้ใช้ใดก็ได้โดยไม่ต้องใช้รหัสผ่าน</td>
+<td>JWT ที่มี <code>sub</code>, <code>aud</code>, <code>jti</code>, scope</td>
+<td>MCP <code>AUTH=direct-trust</code>; embed token ของ portal</td>
+<td>scope เช่น <code>tableau:views:embed</code>, <code>tableau:content:read</code></td>
+</tr>
+<tr>
+<td><strong>Embedding API v3</strong></td>
+<td>ฝัง view และ dashboard ในหน้าเว็บ (<code>&lt;tableau-viz&gt;</code>), ส่ง filter และ parameter, รับ event, ขอ VDS session ของ viz ที่ฝัง</td>
+<td>Connected App JWT หรือ SSO</td>
+<td>MCP ไม่ใช้; portal ในบทที่ 6 ใช้</td>
+<td><code>getVizQLDataServiceSessionInfo()</code> เชื่อม viz ที่ฝังกับ VDS query</td>
+</tr>
+<tr>
+<td><strong>Extensions API</strong></td>
+<td>dashboard / viz extension ที่รันใน Tableau อ่านข้อมูล worksheet และตอบสนองการเลือกได้</td>
+<td>รันใน session ของผู้ใช้</td>
+<td>MCP ไม่ใช้</td>
+<td>ทางเลือกแทน portal ภายนอก เมื่ออยากให้แชทอยู่<em>ใน</em> dashboard</td>
+</tr>
+<tr>
+<td><strong>Hyper API</strong></td>
+<td>สร้างและอัปเดตไฟล์ extract <code>.hyper</code> แบบ programmatic</td>
+<td>ไลบรารีในเครื่อง</td>
+<td>MCP ไม่ใช้</td>
+<td>pipeline เตรียมข้อมูลป้อน published source</td>
+</tr>
+<tr>
+<td><strong>Tableau Server Client (TSC)</strong></td>
+<td>ไลบรารี Python ครอบ REST API</td>
+<td>PAT / JWT</td>
+<td>MCP ไม่ใช้</td>
+<td>สะดวกสำหรับ script แม่แบบสิทธิ์ในบทนี้</td>
+</tr>
+<tr>
+<td><strong>Webhooks</strong></td>
+<td>server ส่ง event (workbook publish, refresh ล้มเหลว) ไปยัง endpoint ของคุณ</td>
+<td>ตั้งค่าผ่าน REST</td>
+<td>MCP ไม่ใช้</td>
+<td>trigger การตรวจแบบ agentic (use case 5) เมื่อ refresh เสร็จ</td>
+</tr>
+</tbody>
+</table>
+<div class="callout verify" markdown="0"><div class="callout-title">ตรวจสอบกับเอกสารล่าสุด</div><p>ความพร้อมของ API ต่างกันระหว่าง Tableau Cloud และเวอร์ชัน Tableau Server (VDS, Pulse, Tableau Agent) ตรวจหน้า "What's new" ของแต่ละ API สำหรับ release ที่ใช้ ชื่อ tool ใน Tableau MCP เปลี่ยนระหว่างเวอร์ชันย่อย — ยืนยันกับ <code>src/tools/web/toolName.ts</code></p></div>
+
+<p>แหล่งอ้างอิง: Tableau REST API reference; เอกสาร VizQL Data Service (Setup, Configuration, What's new); เอกสาร Metadata API; เอกสาร Connected Apps (Direct Trust); เอกสาร Embedding API v3; เอกสาร tool ของ Tableau MCP ลิงก์อยู่ในบทเอกสารอ้างอิง</p>
+<h2 id="site-role">📊 ตารางเปรียบเทียบ site role สำหรับนักพัฒนา</h2>
+<p>ใช้เลือก role ต่ำสุดที่ตอบโจทย์ use case ✅ = role อนุญาต (เมื่อได้รับสิทธิ์บนเนื้อหาด้วย) · ⚙️ = ได้เฉพาะเมื่อได้รับ capability · ❌ = role นี้ทำไม่ได้เลย</p>
+<table>
+<thead>
+<tr>
+<th>การกระทำ</th>
+<th>Viewer</th>
+<th>Explorer</th>
+<th>Explorer (can publish)</th>
+<th>Creator</th>
+<th>Site Admin Explorer</th>
+<th>Site Admin Creator</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>สร้าง Personal Access Token</td>
+<td>✅ *</td>
+<td>✅ *</td>
+<td>✅ *</td>
+<td>✅ *</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>ดู workbook / view, filter, comment, subscribe</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>ดาวน์โหลดภาพ / PDF, summary data</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>ดาวน์โหลดข้อมูล<strong>เต็ม</strong>จาก view</td>
+<td>❌</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>เชื่อม published data source (web authoring / ต้นทางของ VDS)</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>query published data source ด้วย VDS / <code>query-datasource</code></strong> (ต้องมี API Access)</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>query data source ของ workbook ด้วย VDS (API Access + Full Data Query)</td>
+<td>❌ **</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>web edit workbook ที่มีอยู่</td>
+<td>❌</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>บันทึก / publish workbook (Overwrite, Save a Copy)</td>
+<td>❌</td>
+<td>❌</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>publish หรือดาวน์โหลด data source</td>
+<td>❌</td>
+<td>❌</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>เชื่อมข้อมูลภายนอก / สร้าง data source ใหม่, ใช้ Desktop และ Prep</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>สั่ง extract refresh (<code>start-extract-refresh</code>)</td>
+<td>❌</td>
+<td>⚙️ เจ้าของ / project leader</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>ตั้งสิทธิ์, หน้าที่ project leader</td>
+<td>❌</td>
+<td>⚙️ ถ้าเป็น project leader</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>จัดการผู้ใช้และกลุ่มบน site</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>รัน tool <strong>admin</strong> ของ Tableau MCP (stale content, admin insight)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Tableau Pulse: ดู metric / digest (Cloud)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Tableau Pulse: สร้าง metric definition (Cloud)</td>
+<td>❌</td>
+<td>❌</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>⚙️</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>งาน Server Administrator (TSM, ทุก site)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌ (เฉพาะ Server Admin)</td>
+</tr>
+</tbody>
+</table>
+<p>* เว้นแต่ site administrator ปิด PAT สำหรับ site หรือผู้ใช้นั้น &nbsp; ** Full Data Query เป็น capability ระดับข้อมูลเต็ม ซึ่ง Viewer ถือไม่ได้</p>
+<p><strong>role ขั้นต่ำที่แนะนำต่อสถานการณ์ AI</strong></p>
+<table>
+<thead>
+<tr>
+<th>สถานการณ์</th>
+<th>role ขั้นต่ำ</th>
+<th>capability บนเนื้อหาที่ต้องให้</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ถามคำถามกับ certified data source ผ่าน Claude Desktop / portal</td>
+<td><strong>Viewer</strong></td>
+<td>Data source: View, Connect, API Access</td>
+</tr>
+<tr>
+<td>สรุป dashboard ด้วย (<code>get-view-data</code>, <code>get-view-image</code>)</td>
+<td>Viewer</td>
+<td>+ Workbook: View, Filter, Download Image, Download Summary Data</td>
+</tr>
+<tr>
+<td>สำรวจระดับแถว export ข้อมูลดิบ</td>
+<td>Explorer</td>
+<td>+ Download Full Data (workbook)</td>
+</tr>
+<tr>
+<td>สร้างและ certify data source <code>ai-ready</code> ที่ AI ใช้</td>
+<td>Explorer (can publish) หรือ Creator</td>
+<td>Publish บน project Certified</td>
+</tr>
+<tr>
+<td>งานดูแลระบบด้วย admin tool, admin insight</td>
+<td>Site Administrator Explorer</td>
+<td>(site role เพียงพอ)</td>
+</tr>
+<tr>
+<td>service identity ของ MCP สำหรับ portal (Direct Trust)</td>
+<td>Viewer หรือ Explorer ห้าม admin</td>
+<td>เหมือนสถานการณ์ 1–2</td>
+</tr>
+</tbody>
+</table>
+<p>แหล่งอ้างอิง: Tableau Help › Permissions ("Explorer or Viewer site roles can't publish, overwrite, or save a copy"); Permission Capabilities and Templates; หน้า pricing ของ Tableau (Viewer: download summary data; Explorer: download full data); VizQL Data Service Configuration; เอกสาร admin-insight tool ของ Tableau MCP (admin gate ปฏิเสธ role ต่ำกว่า Site Administrator) ลิงก์อยู่ในบทเอกสารอ้างอิง</p>
 <h2 id="_3">🛡️ แนวปฏิบัติที่ดีในการออกแบบความปลอดภัย</h2>
 <h3 id="_4">ตัวตน</h3>
 <ul>
@@ -443,7 +770,7 @@
 </tr>
 <tr>
 <td>3</td>
-<td>data source ที่เปิดให้ AI ทุกตัวมี View + Connect สำหรับกลุ่มที่ถูกต้องและไม่มีอย่างอื่น</td>
+<td>data source ที่เปิดให้ AI ทุกตัวมี View + Connect + API Access สำหรับกลุ่มที่ถูกต้องและไม่มีอย่างอื่น</td>
 <td>☐</td>
 </tr>
 <tr>
@@ -487,7 +814,7 @@
     <nav class="pagernav"><a class="pager prev" href="06-web-ui-wrapper.html"><small>ก่อนหน้า</small><span>ขั้นสูง: สร้าง Web UI ครอบ Tableau Server</span></a><a class="pager next" href="08-enterprise-proposal.html"><small>ถัดไป</small><span>ข้อเสนอโครงการ: แพลตฟอร์ม BI + AI Chat สำหรับองค์กรบน Tableau MCP</span></a></nav>
     <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">หน้าแรก</a></footer>
   </main>
-  <aside class="onpage"><div class="onpage-title">ในหน้านี้</div><ul><li><a href="#_2">🧱 ห้าชั้นของการควบคุม</a></li><li><a href="#1-site-role">🪪 ชั้นที่ 1 – ลิขสิทธิ์และ site role</a></li><li><a href="#2-project">📁 ชั้นที่ 2 – Project</a></li><li><a href="#3-capability">🔑 ชั้นที่ 3 – Capability ระดับเนื้อหา</a><ul><li><a href="#capability-workbook">Capability ของ workbook</a></li><li><a href="#capability-data-source">Capability ของ data source</a></li><li><a href="#ai">แม่แบบสิทธิ์สำหรับกลุ่ม AI</a></li></ul></li><li><a href="#4-row-level-security">🔒 ชั้นที่ 4 – Row-level security</a></li><li><a href="#5-tableau-mcp">🧭 ชั้นที่ 5 – การจำกัดขอบเขตของ Tableau MCP</a></li><li><a href="#_3">🛡️ แนวปฏิบัติที่ดีในการออกแบบความปลอดภัย</a><ul><li><a href="#_4">ตัวตน</a></li><li><a href="#_5">ข้อมูล</a></li><li><a href="#_6">เครือข่ายและแพลตฟอร์ม</a></li><li><a href="#ai_1">การควบคุมเฉพาะ AI</a></li><li><a href="#audit">Audit และการเฝ้าระวัง</a></li><li><a href="#checklist-go-live">Checklist ก่อน go-live (ทีมความปลอดภัย)</a></li></ul></li></ul></aside>
+  <aside class="onpage"><div class="onpage-title">ในหน้านี้</div><ul><li><a href="#_2">🧱 ห้าชั้นของการควบคุม</a></li><li><a href="#1-site-role">🪪 ชั้นที่ 1 – ลิขสิทธิ์และ site role</a></li><li><a href="#2-project">📁 ชั้นที่ 2 – Project</a></li><li><a href="#3-capability">🔑 ชั้นที่ 3 – Capability ระดับเนื้อหา</a><ul><li><a href="#capability-workbook">Capability ของ workbook</a></li><li><a href="#capability-data-source">Capability ของ data source</a></li><li><a href="#ai">แม่แบบสิทธิ์สำหรับกลุ่ม AI</a></li></ul></li><li><a href="#4-row-level-security">🔒 ชั้นที่ 4 – Row-level security</a></li><li><a href="#5-tableau-mcp">🧭 ชั้นที่ 5 – การจำกัดขอบเขตของ Tableau MCP</a></li><li><a href="#tableau-api-tableau-mcp">🧩 Tableau API ที่อยู่เบื้องหลัง Tableau MCP (อ้างอิงสำหรับนักพัฒนา)</a></li><li><a href="#site-role">📊 ตารางเปรียบเทียบ site role สำหรับนักพัฒนา</a></li><li><a href="#_3">🛡️ แนวปฏิบัติที่ดีในการออกแบบความปลอดภัย</a><ul><li><a href="#_4">ตัวตน</a></li><li><a href="#_5">ข้อมูล</a></li><li><a href="#_6">เครือข่ายและแพลตฟอร์ม</a></li><li><a href="#ai_1">การควบคุมเฉพาะ AI</a></li><li><a href="#audit">Audit และการเฝ้าระวัง</a></li><li><a href="#checklist-go-live">Checklist ก่อน go-live (ทีมความปลอดภัย)</a></li></ul></li></ul></aside>
 </div>
 <button class="totop" title="กลับขึ้นบน" aria-label="กลับขึ้นบน">↑</button>
 <script src="../assets/app.js"></script>

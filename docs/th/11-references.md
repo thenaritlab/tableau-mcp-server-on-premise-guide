@@ -29,6 +29,25 @@
 - tsm configuration set — <https://help.tableau.com/current/server/en-us/cli_configuration-set_tsm.htm>
 - Basic product data (telemetry) — <https://help.tableau.com/current/server/en-us/usage_data_basic_product_data.htm>
 
+## สิทธิ์ site role และ API (แหล่งอ้างอิงของบทที่ 7)
+
+- Permission Capabilities and Templates (API Access, Full Data Query, capability ของ data source) — <https://help.tableau.com/current/server/en-us/permissions_capabilities.htm>
+- ภาพรวมสิทธิ์และข้อจำกัดของ site role (Cloud) — <https://help.tableau.com/current/online/en-us/permissions.htm>
+- Site role และลิขสิทธิ์ — <https://help.tableau.com/current/server/en-us/users_site_roles.htm>
+- VizQL Data Service: Setup (สิทธิ์, PAT/JWT) — <https://help.tableau.com/current/api/vizql-data-service/en-us/docs/vds_setup.html>
+- VizQL Data Service: Configuration (API Access, data source ของ workbook, FDQ) — <https://help.tableau.com/current/api/vizql-data-service/en-us/docs/vds_configuration.html>
+- VizQL Data Service: What's new — <https://help.tableau.com/current/api/vizql-data-service/en-us/docs/vds_whats_new.html>
+- บล็อก Tableau: สิทธิ์ API Access สำหรับ VDS บน Tableau Cloud (2024.3) — <https://www.tableau.com/blog/use-vizql-data-service-tableau-cloud-site>
+- Metadata API — <https://help.tableau.com/current/api/metadata_api/en-us/>
+- ภาพรวม Connected Apps — <https://help.tableau.com/current/server/en-us/connected_apps.htm>
+- Embedding API v3 reference — <https://help.tableau.com/current/api/embedding_api/en-us/reference/index.html>
+- Extensions API — <https://tableau.github.io/extensions-api/>
+- Hyper API — <https://tableau.github.io/hyper-db/>
+- Tableau Server Client (Python) — <https://tableau.github.io/server-client-python/>
+- Webhooks — <https://help.tableau.com/current/developer/webhooks/en-us/>
+- เอกสาร tool ของ Tableau MCP รวม admin-insight tool และ role gate — <https://tableau.github.io/tableau-mcp/docs/category/tools>
+- ประเภทลิขสิทธิ์ Tableau (ความสามารถของ Creator / Explorer / Viewer) — <https://www.tableau.com/pricing/teams-orgs>
+
 ## 📐 ข้อกำหนด MCP และ client
 
 - ข้อกำหนด Model Context Protocol — <https://modelcontextprotocol.io/specification/>

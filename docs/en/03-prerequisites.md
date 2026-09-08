@@ -44,7 +44,7 @@
 1. **REST API enabled** — It is on by default. Confirm with `tsm configuration get -k api.server.enabled`. If your organisation disabled it, set it to `true` and apply pending changes.
 2. **Personal Access Tokens allowed** — Site setting *Settings › General › Personal Access Tokens*. Server-wide: `tsm configuration get -k features.PersonalAccessTokensEnabled`.
 3. **A dedicated Tableau user for the MCP server** — For PAT or Direct Trust testing create `svc-mcp-reader` (site role Explorer, or Viewer if it only needs views). Do not use a Server Administrator account.
-4. **Data source permissions "View" and "Connect"** — on every published data source the AI should query (VizQL Data Service needs both). A missing "Connect" capability shows up as HTTP 403 in the MCP logs. Full detail in the Permissions chapter.
+4. **Data source permissions "View", "Connect" and "API Access"** — on every published data source the AI should query. VizQL Data Service requires the *API Access* capability, which is off by default; a missing capability shows up as HTTP 403 in the MCP logs. Full detail and sources in the Permissions chapter.
 5. **Connected Apps (for Direct Trust or the portal)** — Site setting *Settings › Connected Apps*. You need to be a site administrator to create one.
 6. **Metadata API (optional)** — Improves lineage and search tools. Enable with `tsm maintenance metadata-services enable`.
 7. **OAuth redirect host (for OAuth mode)** — `tsm configuration set -k oauth.allowed_redirect_uri_hosts -v tableau-mcp.demo-company.local` then `tsm pending-changes apply`.

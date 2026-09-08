@@ -498,14 +498,14 @@ Ask, in order:
 2. *"What fields are in the Sales data source?"* → `list-fields` (or `get-datasource-metadata`).
 3. *"What were total sales by region last year?"* → `query-datasource` with a small aggregate query.
 
-If step 1 works, authentication and networking are fine. If step 3 fails but 1–2 work, it is a permission (Connect) or a field-name problem.
+If step 1 works, authentication and networking are fine. If step 3 fails but 1–2 work, it is a permission (API Access / Connect) or a field-name problem.
 
 ### Common errors and fixes
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | `401 Unauthorized` on every tool | Wrong `SERVER`/`SITE_NAME`, PAT expired, `PAT_NAME` set to username, Connected App disabled | Re-run the REST sign-in curl; regenerate the PAT; check the Connected App toggle |
-| `403 Forbidden` on `query-datasource` only | User lacks "Connect" (or "View") on that data source | Grant the capability on the data source or project |
+| `403 Forbidden` on `query-datasource` only | User lacks "API Access" (or "Connect" / "View") on that data source | Grant the capability on the data source or project — API Access is off by default |
 | `Method not allowed` when opening the URL in a browser | Normal: GET is not part of MCP | Use the curl `initialize` test |
 | Client says "authorization required" and never opens a browser | Client does not support OAuth flow, or `OAUTH_ISSUER` does not match the public URL | Use `mcp-remote` for Claude Desktop; align `OAUTH_ISSUER`, `OAUTH_RESOURCE_URI` and the nginx `server_name` |
 | OAuth sign-in loops or "redirect URI not allowed" | `tsm oauth.allowed_redirect_uri_hosts` not set or wrong host | Set it to the MCP host name, apply pending changes |

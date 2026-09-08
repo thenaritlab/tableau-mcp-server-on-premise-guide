@@ -18,7 +18,7 @@
 
 ประเภทลิขสิทธิ์คือสิ่งที่คุณซื้อ ส่วน **site role** คือสิ่งที่ผู้ดูแลกำหนดให้ผู้ใช้บน site แต่ละแห่ง ภายในขอบเขตของลิขสิทธิ์ site role คือ *เพดาน*: สิทธิ์ใดๆ ไม่สามารถให้มากกว่าที่ role อนุญาต
 
-| Site role | ลิขสิทธิ์ | ดูเนื้อหา | query published data source (Connect) | ดาวน์โหลดข้อมูลเต็ม | publish / web edit | ตัวตน AI ที่มักใช้ |
+| Site role | ลิขสิทธิ์ | ดูเนื้อหา | query published data source ผ่าน AI (View + Connect + API Access) | ดาวน์โหลดข้อมูลเต็ม | publish / web edit | ตัวตน AI ที่มักใช้ |
 |---|---|---|---|---|---|---|
 | Viewer | Viewer | ✅ | ✅ ถ้าได้รับสิทธิ์ | ❌ (เฉพาะสรุป) | ❌ | ผู้จัดการถามผ่าน portal |
 | Explorer | Explorer | ✅ | ✅ | ✅ ถ้าได้รับสิทธิ์ | web edit ได้ publish ไม่ได้ | นักวิเคราะห์ใช้ Claude / Gemini สำรวจข้อมูล |
@@ -29,9 +29,11 @@
 | Unlicensed | — | ❌ | ❌ | ❌ | ❌ | AI ไม่ได้อะไรเลย sign-in ล้มเหลว |
 
 > [!NOTE]
-> **Viewer กับสิทธิ์ "Connect"**
+> **Viewer คือ role ขั้นต่ำ — สิ่งที่มักติดคือ API Access**
 >
-> Viewer ถือ capability *Connect* บน published data source ได้ Tableau ใช้สิทธิ์นี้เพื่อให้ Viewer เปิด workbook ที่สร้างบน source นั้น และมันทำให้ VizQL Data Service (จึงรวมถึง `query-datasource`) รันให้ Viewer ได้ด้วย สิ่งที่ Viewer ทำไม่ได้คือเชื่อมจาก Tableau Desktop และดาวน์โหลดข้อมูลเต็ม ตรวจสัญญาลิขสิทธิ์ก่อนพึ่งพา Viewer สำหรับการ query ผ่าน AI แบบหนัก
+> Viewer ถือ *View*, *Connect* และ *API Access* บน published data source ได้ ซึ่งครบทุกอย่างที่ `query-datasource` ต้องการ *API Access* เป็น capability แยกที่**ปิดอยู่โดยปริยาย** เจ้าของหรือ project leader ต้องเปิดให้ สิ่งที่ Viewer ทำไม่ได้คือดาวน์โหลดข้อมูลเต็ม web edit และเชื่อมจาก Tableau Desktop ตรวจสัญญาลิขสิทธิ์ก่อนพึ่งพา Viewer สำหรับการ query ผ่าน AI แบบหนัก
+>
+> แหล่งอ้างอิง: Tableau Help › VizQL Data Service › Configuration ("To query a data source with VDS, you must first assign the API Access capability"); Permission Capabilities and Templates
 
 > [!IMPORTANT]
 > **ตรวจสอบกับเอกสารล่าสุด**
@@ -70,6 +72,7 @@ Project คือโฟลเดอร์ที่เนื้อหาอยู
 | Download Image/PDF | export ภาพ view | `get-view-image` |
 | Download Summary Data | ข้อมูลรวมเบื้องหลัง view | `get-view-data` (summary) |
 | Download Full Data | ข้อมูลระดับแถวเบื้องหลัง view | `get-view-data` เมื่อโมเดลขอข้อมูลดิบ |
+| API Access + Full Data Query (FDQ) | ให้ API หรือ agent query ข้อมูลของ workbook แทนผู้ใช้; FDQ บังคับ user filter เฉพาะเมื่อเป็น data source filter | query data source ของ *workbook* ผ่าน VDS; Tableau Agent ใน dashboard |
 | Web Edit, Download Workbook, Overwrite, Move, Delete, Set Permissions | แก้ไขและดูแล | AI แบบอ่านอย่างเดียวไม่ใช้ — deny ให้กลุ่ม AI |
 
 ### Capability ของ data source
@@ -77,7 +80,9 @@ Project คือโฟลเดอร์ที่เนื้อหาอยู
 | Capability | อนุญาตให้ | MCP tool ที่ต้องใช้ |
 |---|---|---|
 | View | เห็น data source ในรายการ | `list-datasources`, `search-content` |
-| Connect | query ได้ (Desktop, web authoring, **VizQL Data Service**) | `list-fields`, `get-datasource-metadata`, `query-datasource` |
+| Connect | เชื่อมต่อได้ (Desktop, web authoring และเป็น source ต้นทางของ workbook ที่ VDS query) | `list-fields`, `get-datasource-metadata`, `query-datasource` |
+| **API Access** | query แบบ programmatic ผ่าน **VizQL Data Service** — ปิดโดยปริยาย | `query-datasource` (จำเป็น), `get-datasource-metadata` ผ่าน VDS |
+| Create Metric Definitions | สร้าง Tableau Pulse metric บนมัน (Cloud) | tool ของ Pulse (Cloud เท่านั้น) |
 | Download Data Source / Save a Copy | ได้ไฟล์ .tdsx | ไม่จำเป็น — deny ให้กลุ่ม AI |
 | Overwrite, Delete, Set Permissions | ดูแล | deny ให้กลุ่ม AI |
 | (Extract refresh: เจ้าของหรือ project leader) | สั่ง / ตั้งเวลา refresh | `list-extract-refresh-tasks`, tool refresh — เฉพาะ instance ของ admin |
@@ -86,10 +91,10 @@ Project คือโฟลเดอร์ที่เนื้อหาอยู
 
 | กลุ่ม | วัตถุประสงค์ | Workbook | Data source | Site role |
 |---|---|---|---|---|
-| `ai-viewers` | ถามคำถามผ่าน portal | View, Filter, Download Summary Data | View, Connect | Viewer |
-| `ai-analysts` | สำรวจด้วย Claude / Gemini / VS Code | + Download Full Data, Download Image | View, Connect | Explorer |
+| `ai-viewers` | ถามคำถามผ่าน portal | View, Filter, Download Summary Data | View, Connect, API Access | Viewer |
+| `ai-analysts` | สำรวจด้วย Claude / Gemini / VS Code | + Download Full Data, Download Image | View, Connect, API Access | Explorer |
 | `ai-admins` | งานดูแลระบบด้วย admin tool group | ทั้งหมด | ทั้งหมด | Site Administrator Explorer |
-| `svc-mcp-portal` (service) | ตัวตน Direct Trust ของ portal | View, Filter, Download Summary Data | View, Connect | Viewer หรือ Explorer |
+| `svc-mcp-portal` (service) | ตัวตน Direct Trust ของ portal | View, Filter, Download Summary Data | View, Connect, API Access | Viewer หรือ Explorer |
 
 ตั้งค่าเหล่านี้บน project *Certified* โดยล็อกสิทธิ์ แล้วทั้ง tree จะตามไปเอง
 
@@ -127,6 +132,70 @@ Capability ตัดสินว่าผู้ใช้ query data source ไ�
 | `mcp-analysts` (พอร์ต 3927) | `datasource,workbook,view` | project Certified · tag `ai-ready` | ai-analysts, ai-viewers ผ่าน OAuth |
 | `mcp-portal` (พอร์ต 3928, localhost เท่านั้น) | `datasource` | project Certified | service identity ของ portal |
 | `mcp-admin` (พอร์ต 3929) | `admin,workbook,datasource` | (ทั้งหมด) | ai-admins ผ่าน OAuth |
+
+## 🧩 Tableau API ที่อยู่เบื้องหลัง Tableau MCP (อ้างอิงสำหรับนักพัฒนา)
+
+Tableau MCP เป็นชั้นบางๆ บน public API ของ Tableau การรู้ว่า tool แต่ละตัวเรียก API ใด ทำให้รู้ว่าสิทธิ์ใดมีผล ต้องอ่าน log ไหน และคุณเรียกอะไรตรงๆ จากโค้ดของตัวเองได้บ้าง
+
+| API | ทำอะไร | Auth | MCP tool ที่ใช้ | หมายเหตุ |
+|---|---|---|---|---|
+| **REST API** | sign-in, แสดง / ค้นหา / จัดการ site, project, ผู้ใช้, กลุ่ม, workbook, data source, view, สิทธิ์, extract refresh task, ภาพ view และข้อมูล view | PAT, JWT (Connected App), username/password | `list-datasources`, `list-workbooks`, `list-views`, `get-view-image`, `get-view-data`, `search-content`, `list-extract-refresh-tasks`, `start-extract-refresh`, admin tool | มีเวอร์ชัน (3.x) Tableau MCP เจรจาให้ ทุกการเรียกถูกบันทึกใน `http_requests` |
+| **VizQL Data Service (VDS)** | query published data source หรือ data source ของ workbook แบบ programmatic: อ่าน metadata (ฟิลด์ ชนิด aggregation เริ่มต้น) และรัน query แบบ aggregate พร้อม filter, sort, TOP N | session จาก REST sign-in (PAT / JWT) | `get-datasource-metadata`, `list-fields`, `query-datasource`, query ของ admin insight | ต้องมี **API Access** บน data source; Cloud ตั้งแต่ 2024.3, Server 2025.1+; timeout 30 วินาทีบน source ของ workbook แบบ interactive |
+| **Metadata API (GraphQL)** | lineage และ catalog: ตารางไหนป้อน data source ใด workbook ไหนใช้ field lineage การ certify คำเตือนคุณภาพข้อมูล | session REST เดียวกัน | tool ด้าน lineage / search เมื่อเปิด | ต้องเปิดบน Server (`tsm maintenance metadata-services enable`) ครบกว่าเมื่อมี Data Management |
+| **Tableau Pulse API** | metric definition, metric, insight, digest | session REST | tool group `pulse` | Tableau Cloud เท่านั้น — exclude บน Server |
+| **Connected Apps (JWT)** | กรอบความเชื่อถือ: Direct Trust (secret ร่วม) หรือ OAuth 2.0 Trust (IdP ภายนอก) ให้แอปสร้าง JWT เพื่อ sign-in เป็นผู้ใช้ใดก็ได้โดยไม่ต้องใช้รหัสผ่าน | JWT ที่มี `sub`, `aud`, `jti`, scope | MCP `AUTH=direct-trust`; embed token ของ portal | scope เช่น `tableau:views:embed`, `tableau:content:read` |
+| **Embedding API v3** | ฝัง view และ dashboard ในหน้าเว็บ (`<tableau-viz>`), ส่ง filter และ parameter, รับ event, ขอ VDS session ของ viz ที่ฝัง | Connected App JWT หรือ SSO | MCP ไม่ใช้; portal ในบทที่ 6 ใช้ | `getVizQLDataServiceSessionInfo()` เชื่อม viz ที่ฝังกับ VDS query |
+| **Extensions API** | dashboard / viz extension ที่รันใน Tableau อ่านข้อมูล worksheet และตอบสนองการเลือกได้ | รันใน session ของผู้ใช้ | MCP ไม่ใช้ | ทางเลือกแทน portal ภายนอก เมื่ออยากให้แชทอยู่*ใน* dashboard |
+| **Hyper API** | สร้างและอัปเดตไฟล์ extract `.hyper` แบบ programmatic | ไลบรารีในเครื่อง | MCP ไม่ใช้ | pipeline เตรียมข้อมูลป้อน published source |
+| **Tableau Server Client (TSC)** | ไลบรารี Python ครอบ REST API | PAT / JWT | MCP ไม่ใช้ | สะดวกสำหรับ script แม่แบบสิทธิ์ในบทนี้ |
+| **Webhooks** | server ส่ง event (workbook publish, refresh ล้มเหลว) ไปยัง endpoint ของคุณ | ตั้งค่าผ่าน REST | MCP ไม่ใช้ | trigger การตรวจแบบ agentic (use case 5) เมื่อ refresh เสร็จ |
+
+> [!IMPORTANT]
+> **ตรวจสอบกับเอกสารล่าสุด**
+>
+> ความพร้อมของ API ต่างกันระหว่าง Tableau Cloud และเวอร์ชัน Tableau Server (VDS, Pulse, Tableau Agent) ตรวจหน้า "What's new" ของแต่ละ API สำหรับ release ที่ใช้ ชื่อ tool ใน Tableau MCP เปลี่ยนระหว่างเวอร์ชันย่อย — ยืนยันกับ `src/tools/web/toolName.ts`
+
+แหล่งอ้างอิง: Tableau REST API reference; เอกสาร VizQL Data Service (Setup, Configuration, What's new); เอกสาร Metadata API; เอกสาร Connected Apps (Direct Trust); เอกสาร Embedding API v3; เอกสาร tool ของ Tableau MCP ลิงก์อยู่ในบทเอกสารอ้างอิง
+
+## 📊 ตารางเปรียบเทียบ site role สำหรับนักพัฒนา
+
+ใช้เลือก role ต่ำสุดที่ตอบโจทย์ use case ✅ = role อนุญาต (เมื่อได้รับสิทธิ์บนเนื้อหาด้วย) · ⚙️ = ได้เฉพาะเมื่อได้รับ capability · ❌ = role นี้ทำไม่ได้เลย
+
+| การกระทำ | Viewer | Explorer | Explorer (can publish) | Creator | Site Admin Explorer | Site Admin Creator |
+|---|---|---|---|---|---|---|
+| สร้าง Personal Access Token | ✅ * | ✅ * | ✅ * | ✅ * | ✅ | ✅ |
+| ดู workbook / view, filter, comment, subscribe | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| ดาวน์โหลดภาพ / PDF, summary data | ⚙️ | ⚙️ | ⚙️ | ⚙️ | ✅ | ✅ |
+| ดาวน์โหลดข้อมูล**เต็ม**จาก view | ❌ | ⚙️ | ⚙️ | ⚙️ | ✅ | ✅ |
+| เชื่อม published data source (web authoring / ต้นทางของ VDS) | ⚙️ | ⚙️ | ⚙️ | ⚙️ | ✅ | ✅ |
+| **query published data source ด้วย VDS / `query-datasource`** (ต้องมี API Access) | ⚙️ | ⚙️ | ⚙️ | ⚙️ | ✅ | ✅ |
+| query data source ของ workbook ด้วย VDS (API Access + Full Data Query) | ❌ ** | ⚙️ | ⚙️ | ⚙️ | ✅ | ✅ |
+| web edit workbook ที่มีอยู่ | ❌ | ⚙️ | ⚙️ | ⚙️ | ✅ | ✅ |
+| บันทึก / publish workbook (Overwrite, Save a Copy) | ❌ | ❌ | ⚙️ | ⚙️ | ✅ | ✅ |
+| publish หรือดาวน์โหลด data source | ❌ | ❌ | ⚙️ | ⚙️ | ✅ | ✅ |
+| เชื่อมข้อมูลภายนอก / สร้าง data source ใหม่, ใช้ Desktop และ Prep | ❌ | ❌ | ❌ | ✅ | ❌ | ✅ |
+| สั่ง extract refresh (`start-extract-refresh`) | ❌ | ⚙️ เจ้าของ / project leader | ⚙️ | ⚙️ | ✅ | ✅ |
+| ตั้งสิทธิ์, หน้าที่ project leader | ❌ | ⚙️ ถ้าเป็น project leader | ⚙️ | ⚙️ | ✅ | ✅ |
+| จัดการผู้ใช้และกลุ่มบน site | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| รัน tool **admin** ของ Tableau MCP (stale content, admin insight) | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Tableau Pulse: ดู metric / digest (Cloud) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Tableau Pulse: สร้าง metric definition (Cloud) | ❌ | ❌ | ⚙️ | ⚙️ | ⚙️ | ✅ |
+| งาน Server Administrator (TSM, ทุก site) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ (เฉพาะ Server Admin) |
+
+\* เว้นแต่ site administrator ปิด PAT สำหรับ site หรือผู้ใช้นั้น &nbsp; \*\* Full Data Query เป็น capability ระดับข้อมูลเต็ม ซึ่ง Viewer ถือไม่ได้
+
+**role ขั้นต่ำที่แนะนำต่อสถานการณ์ AI**
+
+| สถานการณ์ | role ขั้นต่ำ | capability บนเนื้อหาที่ต้องให้ |
+|---|---|---|
+| ถามคำถามกับ certified data source ผ่าน Claude Desktop / portal | **Viewer** | Data source: View, Connect, API Access |
+| สรุป dashboard ด้วย (`get-view-data`, `get-view-image`) | Viewer | + Workbook: View, Filter, Download Image, Download Summary Data |
+| สำรวจระดับแถว export ข้อมูลดิบ | Explorer | + Download Full Data (workbook) |
+| สร้างและ certify data source `ai-ready` ที่ AI ใช้ | Explorer (can publish) หรือ Creator | Publish บน project Certified |
+| งานดูแลระบบด้วย admin tool, admin insight | Site Administrator Explorer | (site role เพียงพอ) |
+| service identity ของ MCP สำหรับ portal (Direct Trust) | Viewer หรือ Explorer ห้าม admin | เหมือนสถานการณ์ 1–2 |
+
+แหล่งอ้างอิง: Tableau Help › Permissions ("Explorer or Viewer site roles can't publish, overwrite, or save a copy"); Permission Capabilities and Templates; หน้า pricing ของ Tableau (Viewer: download summary data; Explorer: download full data); VizQL Data Service Configuration; เอกสาร admin-insight tool ของ Tableau MCP (admin gate ปฏิเสธ role ต่ำกว่า Site Administrator) ลิงก์อยู่ในบทเอกสารอ้างอิง
 
 ## 🛡️ แนวปฏิบัติที่ดีในการออกแบบความปลอดภัย
 
@@ -168,7 +237,7 @@ Capability ตัดสินว่าผู้ใช้ query data source ไ�
 |---|---|---|
 | 1 | project Certified ล็อกแล้ว; เฉพาะทีมข้อมูล publish ได้ | ☐ |
 | 2 | มีกลุ่ม `ai-*` sync จาก directory และใช้แม่แบบสิทธิ์แล้ว | ☐ |
-| 3 | data source ที่เปิดให้ AI ทุกตัวมี View + Connect สำหรับกลุ่มที่ถูกต้องและไม่มีอย่างอื่น | ☐ |
+| 3 | data source ที่เปิดให้ AI ทุกตัวมี View + Connect + API Access สำหรับกลุ่มที่ถูกต้องและไม่มีอย่างอื่น | ☐ |
 | 4 | RLS ทำใน data source หรือ virtual connection; ทดสอบสองผู้ใช้ผ่านแล้ว | ☐ |
 | 5 | โหมด auth ส่งผู้ใช้จริงให้ Tableau (OAuth หรือ `{OAUTH_USERNAME}`) | ☐ |
 | 6 | ข้อมูล Restricted ไม่อยู่ในขอบเขต `INCLUDE_*` ใดๆ; ยืนยันด้วยการให้ AI แสดงรายการ data source | ☐ |
