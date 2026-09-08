@@ -4,9 +4,9 @@
 
 **Bilingual (🇺🇸 EN / 🇹🇭 TH) step-by-step guide — connect Tableau Server on-premise to Claude, ChatGPT, Gemini and Microsoft Copilot through the official Tableau MCP server, then wrap it in your own web portal with an AI chat box.**
 
-[![Read online](https://img.shields.io/badge/Read%20online-GitHub%20Pages-2563a8?style=for-the-badge&logo=github)](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/)
-[![English](https://img.shields.io/badge/🇺🇸_English-start-0e8574?style=for-the-badge)](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/en/01-overview.html)
-[![ไทย](https://img.shields.io/badge/🇹🇭_ภาษาไทย-เริ่มอ่าน-0e8574?style=for-the-badge)](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/th/01-overview.html)
+[![Read on GitHub](https://img.shields.io/badge/Read%20here-GitHub%20Markdown-2563a8?style=for-the-badge&logo=github)](#-navigate)
+[![English](https://img.shields.io/badge/🇺🇸_English-start-0e8574?style=for-the-badge)](docs/en/01-overview.md)
+[![ไทย](https://img.shields.io/badge/🇹🇭_ภาษาไทย-เริ่มอ่าน-0e8574?style=for-the-badge)](docs/th/01-overview.md)
 
 ![Tableau MCP 3.6](https://img.shields.io/badge/Tableau%20MCP-3.6.x-blue) ![Tableau Server 2025.3+](https://img.shields.io/badge/Tableau%20Server-2025.3%2B-blue) ![Node 22](https://img.shields.io/badge/Node.js-22%2B-339933?logo=node.js&logoColor=white) ![Static HTML](https://img.shields.io/badge/site-static%20HTML-lightgrey) ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -18,18 +18,20 @@
 
 | # | Section | What you get | 🇺🇸 EN | 🇹🇭 TH | ⏱️ |
 |:-:|---|---|:-:|:-:|:-:|
-| 1 | 📖 **Overview** | What Tableau MCP is, why on-premise, who this is for | [Read](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/en/01-overview.html) | [อ่าน](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/th/01-overview.html) | 3 min |
-| 2 | 🏗️ **Architecture** | Component diagram, 3 auth options (PAT / Connected App / OAuth), 4 deployment patterns, security boundaries | [Read](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/en/02-architecture.html) | [อ่าน](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/th/02-architecture.html) | 5 min |
-| 3 | ✅ **Prerequisites** | Version matrix, licensing, ports, permissions, OS, AI-client requirements | [Read](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/en/03-prerequisites.html) | [อ่าน](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/th/03-prerequisites.html) | 4 min |
-| 4 | ⚙️ **Installation & configuration** | Prepare Tableau Server → run MCP (stdio / Docker / systemd / nginx) → connect Claude, ChatGPT, Gemini, Copilot → verify + troubleshooting table | [Read](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/en/04-installation.html) | [อ่าน](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/th/04-installation.html) | 6 min |
-| 5 | 💡 **Top 5 use cases** | Find content → query data → executive summary → admin insights → agentic analysis | [Read](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/en/05-use-cases.html) | [อ่าน](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/th/05-use-cases.html) | 5 min |
-| 6 | 🖥️ **Web UI wrapper** (advanced) | Node.js + Express + React portal that hides the server connection, with an AI chat box, embedded viz and audit log — full code | [Read](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/en/06-web-ui-wrapper.html) | [อ่าน](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/th/06-web-ui-wrapper.html) | 5 min |
-| 7 | 🛡️ **Best practices & security** | Governance rules and a 14-point go-live checklist | [Read](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/en/07-best-practices.html) | [อ่าน](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/th/07-best-practices.html) | 3 min |
-| 8 | ❓ **FAQ & glossary** | 10 common questions, EN/TH glossary | [Read](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/en/08-faq-glossary.html) | [อ่าน](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/th/08-faq-glossary.html) | 2 min |
-| 9 | 🔗 **References** | Official Tableau, MCP and AI-vendor documentation links | [Read](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/en/09-references.html) | [อ่าน](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/th/09-references.html) | 1 min |
+| 1 | 📖 **Overview** | What Tableau MCP is, why on-premise, who this is for | [Read](docs/en/01-overview.md) | [อ่าน](docs/th/01-overview.md) | 3 min |
+| 2 | 🏗️ **Architecture** | Component diagram, 3 auth options (PAT / Connected App / OAuth), 4 deployment patterns, security boundaries | [Read](docs/en/02-architecture.md) | [อ่าน](docs/th/02-architecture.md) | 5 min |
+| 3 | ✅ **Prerequisites** | Version matrix, licensing, ports, permissions, OS, AI-client requirements | [Read](docs/en/03-prerequisites.md) | [อ่าน](docs/th/03-prerequisites.md) | 4 min |
+| 4 | ⚙️ **Installation & configuration** | Prepare Tableau Server → run MCP (stdio / Docker / systemd / nginx) → connect Claude, ChatGPT, Gemini, Copilot → verify + troubleshooting table | [Read](docs/en/04-installation.md) | [อ่าน](docs/th/04-installation.md) | 6 min |
+| 5 | 💡 **Top 5 use cases** | Find content → query data → executive summary → admin insights → agentic analysis | [Read](docs/en/05-use-cases.md) | [อ่าน](docs/th/05-use-cases.md) | 5 min |
+| 6 | 🖥️ **Web UI wrapper** (advanced) | Node.js + Express + React portal that hides the server connection, with an AI chat box, embedded viz and audit log — full code | [Read](docs/en/06-web-ui-wrapper.md) | [อ่าน](docs/th/06-web-ui-wrapper.md) | 5 min |
+| 7 | 🛡️ **Best practices & security** | Governance rules and a 14-point go-live checklist | [Read](docs/en/07-best-practices.md) | [อ่าน](docs/th/07-best-practices.md) | 3 min |
+| 8 | ❓ **FAQ & glossary** | 10 common questions, EN/TH glossary | [Read](docs/en/08-faq-glossary.md) | [อ่าน](docs/th/08-faq-glossary.md) | 2 min |
+| 9 | 🔗 **References** | Official Tableau, MCP and AI-vendor documentation links | [Read](docs/en/09-references.md) | [อ่าน](docs/th/09-references.md) | 1 min |
 
 > [!TIP]
-> Every page has a sticky sidebar, an "on this page" outline, Previous / Next links, a language switcher, copy buttons on every code block, dark mode, and a reading-progress tracker — so you can jump straight to the part you need.
+> Every page opens right here on GitHub. Each one has **Home · Previous · Next · language switch** links at the top and bottom, a collapsible table of contents, and copy buttons on every code block (GitHub adds them automatically).
+>
+> 🌐 Prefer the styled website version (sidebar, dark mode, reading progress)? It is the same content in `index.html`, `en/`, `th/` — open it locally or enable GitHub Pages (Settings → Pages → branch `main`, folder `/ (root)`) and it appears at `https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/`.
 
 ---
 
@@ -85,7 +87,7 @@ The model never touches your database. Every data access is a tool call brokered
 3. Restart the client and ask **"List my Tableau data sources."**
 
 > [!IMPORTANT]
-> A PAT is for personal testing only. For anything shared, deploy over HTTP with **OAuth** (Tableau Server 2025.3+) so every query runs as the real user — see [Section 4](https://thenaritlab.github.io/tableau-mcp-server-on-premise-guide/en/04-installation.html).
+> A PAT is for personal testing only. For anything shared, deploy over HTTP with **OAuth** (Tableau Server 2025.3+) so every query runs as the real user — see [Section 4](docs/en/04-installation.md).
 
 ---
 
@@ -113,7 +115,7 @@ The model never touches your database. Every data access is a tool call brokered
 
 ---
 
-## 💻 Run the guide locally
+## 💻 Run the website version locally
 
 ```bash
 git clone https://github.com/thenaritlab/tableau-mcp-server-on-premise-guide.git
@@ -121,18 +123,18 @@ cd tableau-mcp-server-on-premise-guide
 python3 -m http.server 8000      # then open http://localhost:8000
 ```
 
-No build step — it is plain HTML, CSS and a small script. You can also just double-click `index.html`.
+No build step — plain HTML, CSS and a small script. You can also just double-click `index.html`. The Markdown pages under `docs/` need nothing at all: they render on GitHub.
 
 ## 📁 Repository layout
 
 ```text
-├── index.html          🏠 landing page: diagram, TOC, read times, EN/TH cards
-├── en/                 🇺🇸 9 English pages (01-overview … 09-references)
-├── th/                 🇹🇭 9 Thai pages, same order
-├── assets/
-│   ├── style.css       theme, dark mode, responsive layout
-│   └── app.js          copy buttons, progress, scroll-spy, mobile menu
-└── README.md
+├── README.md           🏠 you are here — navigation hub
+├── docs/
+│   ├── en/             🇺🇸 9 Markdown pages, read on GitHub (01-overview … 09-references)
+│   ├── th/             🇹🇭 9 Markdown pages, same order
+│   └── assets/diagrams ✏️ SVG diagrams used by both languages
+├── index.html          🌐 styled website version (optional, for GitHub Pages / local)
+├── en/  th/  assets/   🌐 website pages, theme, script
 ```
 
 > [!NOTE]
@@ -140,7 +142,7 @@ No build step — it is plain HTML, CSS and a small script. You can also just do
 
 ## 🙌 Contributing
 
-Found a step that changed in a newer Tableau MCP release? Open an issue or a pull request — edit the page under `en/` or `th/` and keep both languages in sync.
+Found a step that changed in a newer Tableau MCP release? Open an issue or a pull request — edit the page under `docs/en/` or `docs/th/` and keep both languages in sync.
 
 ---
 

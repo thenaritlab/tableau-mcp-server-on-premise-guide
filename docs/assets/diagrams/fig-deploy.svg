@@ -1,0 +1,46 @@
+<svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="12.5">
+<g>
+<rect x="10" y="15" width="210" height="270" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="115" y="42" text-anchor="middle" font-weight="700" fill="#1c2430">1 · Local (stdio)</text>
+<rect x="30" y="60" width="170" height="90" rx="8" fill="#fff" stroke="#c9d1dc"/>
+<text x="115" y="84" text-anchor="middle" font-weight="600">Laptop</text>
+<text x="115" y="104" text-anchor="middle">AI client spawns</text><text x="115" y="121" text-anchor="middle">npx @tableau/mcp-server</text><text x="115" y="138" text-anchor="middle">as a child process</text>
+<text x="115" y="180" text-anchor="middle" fill="#4a5566">Auth: PAT</text>
+<text x="115" y="200" text-anchor="middle" fill="#4a5566">Users: 1</text>
+<text x="115" y="220" text-anchor="middle" fill="#4a5566">Setup: 5 minutes</text>
+<text x="115" y="258" text-anchor="middle" fill="#0f7c6b" font-weight="600">Start here</text>
+</g>
+<g>
+<rect x="235" y="15" width="210" height="270" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="340" y="42" text-anchor="middle" font-weight="700" fill="#1c2430">2 · Docker (HTTP)</text>
+<rect x="255" y="60" width="170" height="90" rx="8" fill="#fff" stroke="#c9d1dc"/>
+<text x="340" y="84" text-anchor="middle" font-weight="600">Any Docker host</text>
+<text x="340" y="104" text-anchor="middle">ghcr.io/tableau/</text><text x="340" y="121" text-anchor="middle">tableau-mcp container</text><text x="340" y="138" text-anchor="middle">port 3927</text>
+<text x="340" y="180" text-anchor="middle" fill="#4a5566">Auth: OAuth / Direct Trust</text>
+<text x="340" y="200" text-anchor="middle" fill="#4a5566">Users: team</text>
+<text x="340" y="220" text-anchor="middle" fill="#4a5566">Setup: 30 minutes</text>
+<text x="340" y="258" text-anchor="middle" fill="#0f7c6b" font-weight="600">Easiest to upgrade</text>
+</g>
+<g>
+<rect x="460" y="15" width="210" height="270" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="565" y="42" text-anchor="middle" font-weight="700" fill="#1c2430">3 · On the Tableau node</text>
+<rect x="480" y="60" width="170" height="90" rx="8" fill="#fff" stroke="#c9d1dc"/>
+<text x="565" y="84" text-anchor="middle" font-weight="600">Tableau Server host</text>
+<text x="565" y="104" text-anchor="middle">Node.js service or</text><text x="565" y="121" text-anchor="middle">container beside TSM</text><text x="565" y="138" text-anchor="middle">localhost REST calls</text>
+<text x="565" y="180" text-anchor="middle" fill="#4a5566">Auth: any</text>
+<text x="565" y="200" text-anchor="middle" fill="#4a5566">Users: team</text>
+<text x="565" y="220" text-anchor="middle" fill="#4a5566">Setup: 30 minutes</text>
+<text x="565" y="258" text-anchor="middle" fill="#a86a08" font-weight="600">Competes for CPU / RAM</text>
+</g>
+<g>
+<rect x="685" y="15" width="205" height="270" rx="10" fill="#e8f0f9" stroke="#1c5d99" stroke-width="1.5"/>
+<text x="787" y="42" text-anchor="middle" font-weight="700" fill="#0f3d6b">4 · Dedicated VM</text>
+<rect x="705" y="60" width="165" height="90" rx="8" fill="#fff" stroke="#c9d1dc"/>
+<text x="787" y="84" text-anchor="middle" font-weight="600">Small Linux VM</text>
+<text x="787" y="104" text-anchor="middle">systemd / Docker</text><text x="787" y="121" text-anchor="middle">+ nginx TLS proxy</text><text x="787" y="138" text-anchor="middle">+ firewall allow-list</text>
+<text x="787" y="180" text-anchor="middle" fill="#4a5566">Auth: OAuth</text>
+<text x="787" y="200" text-anchor="middle" fill="#4a5566">Users: organisation</text>
+<text x="787" y="220" text-anchor="middle" fill="#4a5566">Setup: half a day</text>
+<text x="787" y="258" text-anchor="middle" fill="#0f7c6b" font-weight="600">Production choice</text>
+</g>
+</svg>

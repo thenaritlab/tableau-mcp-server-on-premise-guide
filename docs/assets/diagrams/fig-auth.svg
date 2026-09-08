@@ -1,0 +1,39 @@
+<svg viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="12.5">
+<defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#7b8494"/></marker></defs>
+<g>
+<rect x="10" y="15" width="280" height="330" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="150" y="42" text-anchor="middle" font-weight="700" font-size="14" fill="#1c2430">A · Personal Access Token</text>
+<text x="150" y="62" text-anchor="middle" fill="#7b8494">Testing · single user · stdio</text>
+<rect x="30" y="80" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="150" y="99" text-anchor="middle">Admin creates PAT in</text><text x="150" y="116" text-anchor="middle">Account Settings</text>
+<line x1="150" y1="126" x2="150" y2="146" stroke="#7b8494" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="30" y="148" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="150" y="167" text-anchor="middle">MCP signs in with</text><text x="150" y="184" text-anchor="middle">PAT_NAME + PAT_VALUE</text>
+<line x1="150" y1="194" x2="150" y2="214" stroke="#7b8494" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="30" y="216" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="150" y="235" text-anchor="middle">Every request runs as the</text><text x="150" y="252" text-anchor="middle">PAT owner (one identity)</text>
+<text x="150" y="292" text-anchor="middle" fill="#a86a08" font-weight="600">Not concurrent-safe</text>
+<text x="150" y="312" text-anchor="middle" fill="#a86a08">Expires after 15 days unused</text>
+</g>
+<g>
+<rect x="310" y="15" width="280" height="330" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+<text x="450" y="42" text-anchor="middle" font-weight="700" font-size="14" fill="#1c2430">B · Connected App (Direct Trust)</text>
+<text x="450" y="62" text-anchor="middle" fill="#7b8494">Service account · embedding · UBL</text>
+<rect x="330" y="80" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="450" y="99" text-anchor="middle">Admin creates Connected App</text><text x="450" y="116" text-anchor="middle">→ client ID, secret ID, secret</text>
+<line x1="450" y1="126" x2="450" y2="146" stroke="#7b8494" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="330" y="148" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="450" y="167" text-anchor="middle">MCP mints a short-lived JWT</text><text x="450" y="184" text-anchor="middle">sub = JWT_SUB_CLAIM user</text>
+<line x1="450" y1="194" x2="450" y2="214" stroke="#7b8494" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="330" y="216" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="450" y="235" text-anchor="middle">REST API trusts the JWT and</text><text x="450" y="252" text-anchor="middle">runs as that user</text>
+<text x="450" y="292" text-anchor="middle" fill="#0f7c6b" font-weight="600">No stored user password</text>
+<text x="450" y="312" text-anchor="middle" fill="#a86a08">Fixed sub = shared identity</text>
+</g>
+<g>
+<rect x="610" y="15" width="280" height="330" rx="10" fill="#e8f0f9" stroke="#1c5d99" stroke-width="1.5"/>
+<text x="750" y="42" text-anchor="middle" font-weight="700" font-size="14" fill="#0f3d6b">C · OAuth (2025.3+)</text>
+<text x="750" y="62" text-anchor="middle" fill="#4a5566">Multi-user HTTP · recommended</text>
+<rect x="630" y="80" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="750" y="99" text-anchor="middle">Client connects → MCP replies</text><text x="750" y="116" text-anchor="middle">"authorization required"</text>
+<line x1="750" y1="126" x2="750" y2="146" stroke="#7b8494" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="630" y="148" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="750" y="167" text-anchor="middle">User signs in to Tableau site</text><text x="750" y="184" text-anchor="middle">(SAML / AD / local – unchanged)</text>
+<line x1="750" y1="194" x2="750" y2="214" stroke="#7b8494" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="630" y="216" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="750" y="235" text-anchor="middle">Embedded auth server issues</text><text x="750" y="252" text-anchor="middle">JWE access + refresh tokens</text>
+<line x1="750" y1="262" x2="750" y2="282" stroke="#7b8494" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="630" y="284" width="240" height="46" rx="8" fill="#fff" stroke="#c9d1dc"/><text x="750" y="303" text-anchor="middle">Each tool call runs as the</text><text x="750" y="320" text-anchor="middle">signed-in user → RLS applies</text>
+</g>
+</svg>

@@ -1,0 +1,41 @@
+<svg viewBox="0 0 1100 250" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, IBM Plex Sans Thai, Segoe UI, sans-serif">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#7b8494"/></marker>
+    </defs>
+    <!-- AI clients -->
+    <g>
+      <rect x="20" y="25" width="250" height="200" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+      <text x="145" y="52" text-anchor="middle" font-size="14" font-weight="600" fill="#1c2430">AI clients (MCP hosts)</text>
+      <g font-size="13" fill="#4a5566">
+        <rect x="40" y="66" width="210" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="145" y="86" text-anchor="middle">Claude Desktop / Claude Code</text>
+        <rect x="40" y="102" width="210" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="145" y="122" text-anchor="middle">ChatGPT</text>
+        <rect x="40" y="138" width="210" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="145" y="158" text-anchor="middle">Gemini CLI</text>
+        <rect x="40" y="174" width="210" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="145" y="194" text-anchor="middle">Microsoft Copilot Studio</text>
+      </g>
+    </g>
+    <!-- arrow 1 -->
+    <line x1="272" y1="125" x2="388" y2="125" stroke="#7b8494" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr)"/>
+    <text x="330" y="112" text-anchor="middle" font-size="12" fill="#7b8494">MCP · stdio or HTTP</text>
+    <!-- MCP -->
+    <g>
+      <rect x="392" y="60" width="240" height="130" rx="10" fill="#e8f0f9" stroke="#1c5d99" stroke-width="1.5"/>
+      <text x="512" y="92" text-anchor="middle" font-size="16" font-weight="700" fill="#0f3d6b">Tableau MCP server</text>
+      <text x="512" y="116" text-anchor="middle" font-size="12.5" fill="#4a5566">Node.js · @tableau/mcp-server</text>
+      <text x="512" y="140" text-anchor="middle" font-size="12.5" fill="#4a5566">tools → REST API calls</text>
+      <text x="512" y="164" text-anchor="middle" font-size="12.5" fill="#4a5566">auth: PAT · Connected App · OAuth</text>
+    </g>
+    <!-- arrow 2 -->
+    <line x1="636" y1="125" x2="752" y2="125" stroke="#7b8494" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr)"/>
+    <text x="694" y="112" text-anchor="middle" font-size="12" fill="#7b8494">HTTPS · REST API</text>
+    <!-- Tableau Server -->
+    <g>
+      <rect x="756" y="25" width="324" height="200" rx="10" fill="#f6f8fb" stroke="#dfe4ec"/>
+      <text x="918" y="52" text-anchor="middle" font-size="14" font-weight="600" fill="#1c2430">Tableau Server (on-premise)</text>
+      <g font-size="13" fill="#4a5566">
+        <rect x="776" y="66" width="284" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="918" y="86" text-anchor="middle">REST API · VizQL Data Service</text>
+        <rect x="776" y="102" width="284" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="918" y="122" text-anchor="middle">Published data sources · workbooks · views</text>
+        <rect x="776" y="138" width="284" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="918" y="158" text-anchor="middle">Permissions · row-level security</text>
+        <rect x="776" y="174" width="284" height="30" rx="6" fill="#fff" stroke="#dfe4ec"/><text x="918" y="194" text-anchor="middle">Your databases behind the firewall</text>
+      </g>
+    </g>
+  </svg>
