@@ -1,4 +1,4 @@
-[🏠 หน้าแรก](../../README.md) · [◀ ก่อนหน้า: คำถามที่พบบ่อยและอภิธานศัพท์](08-faq-glossary.md) · [🇺🇸 English](../en/09-references.md)
+[🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: คำถามที่พบบ่อยและอภิธานศัพท์](08-faq-glossary.md) · [🇺🇸 English](../en/09-references.md)
 
 ---
 
@@ -8,7 +8,7 @@
 
 แหล่งข้อมูลทางการมาก่อน ลิงก์ทั้งหมดใช้ได้ ณ กันยายน 2569 เอกสารมีการย้ายที่ หากลิงก์เสียให้ค้นหาในเว็บไซต์นั้น
 
-## Tableau MCP
+## 🔌 Tableau MCP
 
 - เอกสาร Tableau MCP — <https://tableau.github.io/tableau-mcp/>
 - Getting started (npx, source, Docker) — <https://tableau.github.io/tableau-mcp/docs/getting-started>
@@ -19,7 +19,7 @@
 - แพ็กเกจ npm — <https://www.npmjs.com/package/@tableau/mcp-server>
 - Container image — <https://github.com/tableau/tableau-mcp/pkgs/container/tableau-mcp>
 
-## Tableau Server
+## 🏢 Tableau Server
 
 - Personal Access Tokens — <https://help.tableau.com/current/server/en-us/security_personal_access_tokens.htm>
 - ตั้งค่า Connected Apps แบบ Direct Trust — <https://help.tableau.com/current/server/en-us/connected_apps_direct.htm>
@@ -29,7 +29,7 @@
 - tsm configuration set — <https://help.tableau.com/current/server/en-us/cli_configuration-set_tsm.htm>
 - Basic product data (telemetry) — <https://help.tableau.com/current/server/en-us/usage_data_basic_product_data.htm>
 
-## ข้อกำหนด MCP และ client
+## 📐 ข้อกำหนด MCP และ client
 
 - ข้อกำหนด Model Context Protocol — <https://modelcontextprotocol.io/specification/>
 - MCP TypeScript SDK — <https://github.com/modelcontextprotocol/typescript-sdk>
@@ -41,7 +41,7 @@
 - Microsoft Copilot Studio: เพิ่ม MCP server — <https://learn.microsoft.com/microsoft-copilot-studio/agent-extend-action-mcp>
 - VS Code MCP servers — <https://code.visualstudio.com/docs/copilot/chat/mcp-servers>
 
-## โปรเจกต์ตัวอย่างจากชุมชน
+## 🌱 โปรเจกต์ตัวอย่างจากชุมชน
 
 - Tableau MCP starter kit (LangChain) — <https://github.com/wjsutton/tableau_mcp_starter_kit>
 - MCPJam inspector (ดีบัก OAuth) — <https://www.mcpjam.com/>
@@ -67,6 +67,6 @@ Created by The Narit Lab ชื่อเครื่อง โทเคน แ�
 
 </details>
 
-[🏠 หน้าแรก](../../README.md) · [◀ ก่อนหน้า: คำถามที่พบบ่อยและอภิธานศัพท์](08-faq-glossary.md) · [🇺🇸 English](../en/09-references.md)
+[🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: คำถามที่พบบ่อยและอภิธานศัพท์](08-faq-glossary.md) · [🇺🇸 English](../en/09-references.md)
 
 <sub>ส่วนที่ 9 จาก 9 · Created by The Narit Lab</sub>

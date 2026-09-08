@@ -39,7 +39,7 @@
 <h1 id="architecture">Architecture</h1><div class="doc-meta"><span class="chip">Section 2 of 9</span><span class="chip">3 min read</span></div>
 <p class="lead">Three components, two hops. The AI client talks MCP to the Tableau MCP server; the MCP server talks HTTPS to Tableau Server's REST API. Everything to the right of the MCP server is your existing on-premise estate.</p>
 
-<h2 id="component-view">Component view</h2>
+<h2 id="component-view">🧩 Component view</h2>
 <figure>
 <svg viewBox="0 0 900 330" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="13">
 <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#7b8494"/></marker></defs>
@@ -93,7 +93,7 @@
 </ol>
 <div class="callout warning" markdown="0"><div class="callout-title">Data leaves the network at step 5</div><p>Tool results (metadata and query results) are sent to whichever LLM the client uses. If the model is a public SaaS API, that data leaves your network. Use tool scoping, RLS and a data classification policy to control what can be queried. For fully on-premise setups, point your custom front end (Section 6) at a self-hosted model.</p></div>
 
-<h2 id="authentication-options">Authentication options</h2>
+<h2 id="authentication-options">🔐 Authentication options</h2>
 <figure>
 <svg viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="12.5">
 <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#7b8494"/></marker></defs>
@@ -185,7 +185,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="deployment-options">Deployment options</h2>
+<h2 id="deployment-options">🚀 Deployment options</h2>
 <figure>
 <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="12.5">
 <g>
@@ -247,7 +247,7 @@
     <nav class="pagernav"><a class="pager prev" href="01-overview.html"><small>Previous</small><span>Overview</span></a><a class="pager next" href="03-prerequisites.html"><small>Next</small><span>Prerequisites</span></a></nav>
     <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">Home</a></footer>
   </main>
-  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#component-view">Component view</a><ul><li><a href="#what-flows-where">What flows where</a></li></ul></li><li><a href="#authentication-options">Authentication options</a></li><li><a href="#deployment-options">Deployment options</a><ul><li><a href="#network-and-security-boundaries">Network and security boundaries</a></li></ul></li></ul></aside>
+  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#component-view">🧩 Component view</a><ul><li><a href="#what-flows-where">What flows where</a></li></ul></li><li><a href="#authentication-options">🔐 Authentication options</a></li><li><a href="#deployment-options">🚀 Deployment options</a><ul><li><a href="#network-and-security-boundaries">Network and security boundaries</a></li></ul></li></ul></aside>
 </div>
 <button class="totop" title="Back to top" aria-label="Back to top">↑</button>
 <script src="../assets/app.js"></script>

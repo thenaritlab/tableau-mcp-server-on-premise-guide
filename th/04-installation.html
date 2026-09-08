@@ -39,7 +39,7 @@
 <h1 id="_1">การติดตั้งและตั้งค่า</h1><div class="doc-meta"><span class="chip">ส่วนที่ 4 จาก 9</span><span class="chip">อ่าน 8 นาที</span></div>
 <p class="lead">แบ่งเป็นสี่ส่วน: เตรียม Tableau Server, รัน Tableau MCP (เริ่มจาก stdio บนเครื่องตัวเอง แล้วค่อยเป็น HTTP server ใช้ร่วมกัน), เชื่อม AI client แต่ละตัว และตรวจสอบ ทุกคำสั่งใช้ชื่อตัวอย่าง ให้แทนด้วยค่าของคุณเอง</p>
 
-<h2 id="41-tableau-server">4.1 เตรียม Tableau Server</h2>
+<h2 id="41-tableau-server">🛠️ 4.1 เตรียม Tableau Server</h2>
 <h3 id="personal-access-token">สร้าง Personal Access Token (สำหรับทดสอบบนเครื่องตัวเอง)</h3>
 <ol class="steps">
 <li><strong>เข้าสู่ระบบ Tableau Server</strong> ด้วยผู้ใช้ที่ MCP server จะทำงานแทน ทดสอบเร็วๆ ใช้บัญชีตัวเองได้ แต่ถ้าใช้ร่วมกันให้ใช้ผู้ใช้เฉพาะ เช่น <code>svc-mcp-reader</code></li>
@@ -73,7 +73,7 @@ curl -s -k -X POST https://demo-server.local/api/3.24/auth/signin \
 tsm configuration set -k oauth.allowed_redirect_uri_hosts -v tableau-mcp.demo-company.local
 tsm pending-changes apply</code></pre>
 
-<h2 id="42-tableau-mcp">4.2 ติดตั้งและรัน Tableau MCP</h2>
+<h2 id="42-tableau-mcp">📦 4.2 ติดตั้งและรัน Tableau MCP</h2>
 <h3 id="a-stdio-5">ทางเลือก A – stdio บนเครื่องตัวเอง (5 นาที)</h3>
 <p>ไม่ต้องติดตั้งอะไร AI client จะรัน <code>npx -y @tableau/mcp-server@latest</code> และส่งตัวแปรสภาพแวดล้อมให้เอง ต้องการแค่ Node.js 18+ บน PATH ข้ามไป 4.3 แล้วใช้ config แบบ <em>stdio</em> ของ client ที่ใช้</p>
 <p>ตรวจ Node.js:</p>
@@ -271,7 +271,7 @@ INCLUDE_TAGS=ai-ready
 #INCLUDE_TOOLS=datasource</code></pre>
 
 <p>tool group ที่ใช้บ่อย: <code>datasource</code> (metadata + query), <code>workbook</code>, <code>view</code>, <code>pulse</code> (ควร exclude บน Server), <code>admin</code> รายการเต็มอยู่ใน <code>src/tools/web/toolName.ts</code> ของ repo</p>
-<h2 id="43-ai-client">4.3 เชื่อม AI client แต่ละตัว</h2>
+<h2 id="43-ai-client">🤖 4.3 เชื่อม AI client แต่ละตัว</h2>
 <h3 id="claude-desktop">Claude Desktop</h3>
 <ol class="steps">
 <li><strong>เปิดไฟล์ config</strong> Claude Desktop › <em>Settings › Developer › Edit Config</em> ตำแหน่งไฟล์: Windows <code>%APPDATA%\Claude\claude_desktop_config.json</code>, macOS <code>~/Library/Application Support/Claude/claude_desktop_config.json</code></li>
@@ -388,7 +388,7 @@ claude mcp list</code></pre>
 <p>เปิด Copilot Chat ในโหมด <em>Agent</em> จะเห็น tool ของ Tableau ในตัวเลือก tools</p>
 <div class="callout verify" markdown="0"><div class="callout-title">ตรวจสอบกับเอกสารล่าสุด</div><p>การรองรับ MCP ของ Copilot Studio และช่องกรอก authentication ยังเปลี่ยนแปลงอยู่ ตรวจ Microsoft Learn › Copilot Studio › "Add an MCP server" สำหรับขั้นตอนปัจจุบัน</p></div>
 
-<h2 id="44">4.4 ตรวจสอบการเชื่อมต่อ</h2>
+<h2 id="44">🧪 4.4 ตรวจสอบการเชื่อมต่อ</h2>
 <h3 id="mcp">จากเครื่องที่รัน MCP</h3>
 <pre data-lang="bash" data-file="curl-ping.sh"><code>curl -s -X POST http://127.0.0.1:3927/tableau-mcp \
   -H &#x27;accept: application/json, text/event-stream&#x27; \
@@ -489,7 +489,7 @@ claude mcp list</code></pre>
     <nav class="pagernav"><a class="pager prev" href="03-prerequisites.html"><small>ก่อนหน้า</small><span>สิ่งที่ต้องเตรียม</span></a><a class="pager next" href="05-use-cases.html"><small>ถัดไป</small><span>5 use case ยอดนิยม</span></a></nav>
     <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">หน้าแรก</a></footer>
   </main>
-  <aside class="onpage"><div class="onpage-title">ในหน้านี้</div><ul><li><a href="#41-tableau-server">4.1 เตรียม Tableau Server</a><ul><li><a href="#personal-access-token">สร้าง Personal Access Token (สำหรับทดสอบบนเครื่องตัวเอง)</a></li><li><a href="#connected-app-direct-trust-portal">สร้าง Connected App (สำหรับ Direct Trust หรือ portal)</a></li><li><a href="#oauth-redirect-oauth-20253">อนุญาต OAuth redirect (เฉพาะโหมด OAuth, 2025.3+)</a></li></ul></li><li><a href="#42-tableau-mcp">4.2 ติดตั้งและรัน Tableau MCP</a><ul><li><a href="#a-stdio-5">ทางเลือก A – stdio บนเครื่องตัวเอง (5 นาที)</a></li><li><a href="#b-http-server-docker-30">ทางเลือก B – HTTP server ใช้ร่วมกันด้วย Docker (30 นาที)</a></li><li><a href="#c-http-server-nodejs-systemd">ทางเลือก C – HTTP server ใช้ร่วมกันด้วย Node.js และ systemd</a></li><li><a href="#tls-allow-list-b-c">วาง TLS และ allow-list ไว้ข้างหน้า (ทางเลือก B และ C)</a></li><li><a href="#ai">จำกัดสิ่งที่ AI มองเห็น (ไม่บังคับแต่แนะนำ)</a></li></ul></li><li><a href="#43-ai-client">4.3 เชื่อม AI client แต่ละตัว</a><ul><li><a href="#claude-desktop">Claude Desktop</a></li><li><a href="#claude-code">Claude Code</a></li><li><a href="#chatgpt">ChatGPT</a></li><li><a href="#gemini-cli">Gemini CLI</a></li><li><a href="#microsoft-copilot">Microsoft Copilot</a></li></ul></li><li><a href="#44">4.4 ตรวจสอบการเชื่อมต่อ</a><ul><li><a href="#mcp">จากเครื่องที่รัน MCP</a></li><li><a href="#ai-client">จาก AI client</a></li><li><a href="#_2">ข้อผิดพลาดที่พบบ่อยและวิธีแก้</a></li></ul></li></ul></aside>
+  <aside class="onpage"><div class="onpage-title">ในหน้านี้</div><ul><li><a href="#41-tableau-server">🛠️ 4.1 เตรียม Tableau Server</a><ul><li><a href="#personal-access-token">สร้าง Personal Access Token (สำหรับทดสอบบนเครื่องตัวเอง)</a></li><li><a href="#connected-app-direct-trust-portal">สร้าง Connected App (สำหรับ Direct Trust หรือ portal)</a></li><li><a href="#oauth-redirect-oauth-20253">อนุญาต OAuth redirect (เฉพาะโหมด OAuth, 2025.3+)</a></li></ul></li><li><a href="#42-tableau-mcp">📦 4.2 ติดตั้งและรัน Tableau MCP</a><ul><li><a href="#a-stdio-5">ทางเลือก A – stdio บนเครื่องตัวเอง (5 นาที)</a></li><li><a href="#b-http-server-docker-30">ทางเลือก B – HTTP server ใช้ร่วมกันด้วย Docker (30 นาที)</a></li><li><a href="#c-http-server-nodejs-systemd">ทางเลือก C – HTTP server ใช้ร่วมกันด้วย Node.js และ systemd</a></li><li><a href="#tls-allow-list-b-c">วาง TLS และ allow-list ไว้ข้างหน้า (ทางเลือก B และ C)</a></li><li><a href="#ai">จำกัดสิ่งที่ AI มองเห็น (ไม่บังคับแต่แนะนำ)</a></li></ul></li><li><a href="#43-ai-client">🤖 4.3 เชื่อม AI client แต่ละตัว</a><ul><li><a href="#claude-desktop">Claude Desktop</a></li><li><a href="#claude-code">Claude Code</a></li><li><a href="#chatgpt">ChatGPT</a></li><li><a href="#gemini-cli">Gemini CLI</a></li><li><a href="#microsoft-copilot">Microsoft Copilot</a></li></ul></li><li><a href="#44">🧪 4.4 ตรวจสอบการเชื่อมต่อ</a><ul><li><a href="#mcp">จากเครื่องที่รัน MCP</a></li><li><a href="#ai-client">จาก AI client</a></li><li><a href="#_2">ข้อผิดพลาดที่พบบ่อยและวิธีแก้</a></li></ul></li></ul></aside>
 </div>
 <button class="totop" title="กลับขึ้นบน" aria-label="กลับขึ้นบน">↑</button>
 <script src="../assets/app.js"></script>

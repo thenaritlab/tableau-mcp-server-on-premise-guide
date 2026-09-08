@@ -8,24 +8,34 @@
 
 > A "mask" in front of Tableau Server: users sign in to your portal, chat with an AI that queries Tableau through MCP, and optionally see embedded dashboards. They never learn the server URL, tokens or data source IDs, and every question is logged.
 
-## Purpose
+## 🎯 Purpose
 
 - **Hide connection details.** Server URL, PAT / Connected App secrets and the MCP endpoint live only in the portal's environment.
 - **One sign-in.** The portal authenticates the user (demo: env users; production: your SSO / LDAP) and passes identity to the model as context.
 - **Bring your own model.** The sample uses the Anthropic API; swapping in OpenAI, Gemini or a self-hosted model is a single function.
 - **Audit.** Every chat turn writes who asked what, which tools ran, and how long it took.
 
-## Reference architecture
+## 🖼️ What the finished portal looks like
+
+![portal-mockup](../assets/diagrams/portal-mockup.svg)
+
+*Figure 4. The portal in use: chat on the left (answers cite the data source and filters, and show which MCP tools ran), the embedded Tableau dashboard on the right, signed in silently for the same user.*
+
+![portal-flow](../assets/diagrams/portal-flow.svg)
+
+*Figure 5. Sign-in screen, and the six things that happen behind the mask for a single chat turn.*
+
+## 🧩 Reference architecture
 
 ![fig-portal](../assets/diagrams/fig-portal.svg)
 
-*Figure 4. The portal is the only component with credentials. The browser sees a cookie; the model sees tool results.*
+*Figure 6. The portal is the only component with credentials. The browser sees a cookie; the model sees tool results.*
 
 **Tech stack.** Node.js 22, Express 4, `@modelcontextprotocol/sdk` (MCP client), `@anthropic-ai/sdk`, React 18 with Vite, `jsonwebtoken` for sessions and the Connected App embed token, `helmet` and `express-rate-limit` for basic hardening.
 
 **Why the portal talks to Tableau MCP over HTTP.** One MCP process serves many portal requests; the portal opens a short-lived MCP client per chat turn, lists tools, lets the model call them, and closes. Run Tableau MCP with Direct Trust (service identity) or OAuth + `AUTH=direct-trust` with `JWT_SUB_CLAIM={OAUTH_USERNAME}` when you want per-user RLS from the portal.
 
-## Project layout
+## 📁 Project layout
 
 ```text
 tableau-ai-portal/
@@ -43,7 +53,7 @@ tableau-ai-portal/
     └── EmbeddedView.jsx ← optional dashboard embed
 ```
 
-## Step by step
+## 👣 Step by step
 
 1. **Run Tableau MCP in HTTP mode** — on the same host or an internal address, using the Direct Trust `.env` from Section 4.2 with `DANGEROUSLY_DISABLE_OAUTH=true` *only because* the portal is the sole client and the port is bound to localhost.
 2. **Create the project**
@@ -117,7 +127,7 @@ LLM_MODEL=claude-sonnet-4-6
 DEMO_USERS=alice:alice-pass:analyst,bob:bob-pass:manager
 ```
 
-3. **Backend** — — the broker. Read the comments: sections 1–6 map to the boxes in Figure 4.
+3. **Backend** — — the broker. Read the comments: sections 1–6 map to the boxes in Figure 6.
 
 **`wrapper/server.js`**
 
@@ -447,7 +457,7 @@ export default function EmbeddedView({ viewPath }) {   // e.g. "SalesOverview/Da
 
 `/api/chat` only depends on three things: a tool list, a "call the model" function and a "call the tool" function. To use OpenAI, replace `anthropic.messages.create` with `openai.chat.completions.create` and map `tools` to the `function` format; for Gemini use `functionDeclarations`; for a self-hosted model use any OpenAI-compatible endpoint. Keep the loop and the audit code unchanged.
 
-## Security considerations
+## 🔒 Security considerations
 
 | Area | What the sample does | What to add for production |
 |---|---|---|

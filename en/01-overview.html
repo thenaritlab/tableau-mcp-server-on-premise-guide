@@ -39,7 +39,7 @@
 <h1 id="overview">Overview</h1><div class="doc-meta"><span class="chip">Section 1 of 9</span><span class="chip">3 min read</span></div>
 <p class="lead">Tableau MCP lets an AI assistant such as Claude, ChatGPT, Gemini or Microsoft Copilot read your Tableau Server content and query your published data sources through a governed, permission-aware interface. This guide takes you from a first local test to a hardened, multi-user deployment and a custom web front end.</p>
 
-<h2 id="what-is-tableau-mcp">What is Tableau MCP?</h2>
+<h2 id="what-is-tableau-mcp">🔌 What is Tableau MCP?</h2>
 <p>The Model Context Protocol (MCP) is an open standard that lets an AI application ("MCP host" or "client") call <strong>tools</strong> exposed by an external program ("MCP server"). Tableau MCP is Tableau's official MCP server. It is a small Node.js application that:</p>
 <ul>
 <li>exposes a set of tools such as <em>list data sources</em>, <em>get field metadata</em>, <em>query a data source</em>, <em>search content</em>, <em>get view image</em>, <em>list workbooks</em>, <em>trigger an extract refresh</em> and admin-insight tools;</li>
@@ -47,7 +47,7 @@
 <li>signs in to Tableau Server with a credential you control: a Personal Access Token (PAT), a Connected App (Direct Trust JWT), or, on Tableau Server 2025.3 and later, OAuth so each user acts as themselves.</li>
 </ul>
 <p>The AI model never talks to your database. It only sees what Tableau lets the signed-in user see, filtered by project permissions, data source permissions and row-level security.</p>
-<h2 id="why-pair-it-with-tableau-server-on-premise">Why pair it with Tableau Server on-premise?</h2>
+<h2 id="why-pair-it-with-tableau-server-on-premise">🏢 Why pair it with Tableau Server on-premise?</h2>
 <table>
 <thead>
 <tr>
@@ -78,14 +78,14 @@
 </tr>
 </tbody>
 </table>
-<h2 id="who-this-guide-is-for">Who this guide is for</h2>
+<h2 id="who-this-guide-is-for">👥 Who this guide is for</h2>
 <ul>
 <li><strong>Tableau Server administrators</strong> who need to deploy and secure the MCP server.</li>
 <li><strong>Solution consultants and BI developers</strong> who will build use cases, prompts and demos on top of it.</li>
 <li><strong>Developers</strong> who want to put a custom web UI in front of Tableau Server with an AI chat box.</li>
 </ul>
 <p>You should already know Tableau Server basics (sites, projects, published data sources, permissions). No prior MCP or LLM-integration experience is assumed.</p>
-<h2 id="how-the-guide-is-organised">How the guide is organised</h2>
+<h2 id="how-the-guide-is-organised">🗺️ How the guide is organised</h2>
 <ol>
 <li><strong>Architecture</strong> shows the moving parts and the three authentication options.</li>
 <li><strong>Prerequisites</strong> lists versions, ports and permissions.</li>
@@ -101,7 +101,7 @@
     <nav class="pagernav"><span></span><a class="pager next" href="02-architecture.html"><small>Next</small><span>Architecture</span></a></nav>
     <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">Home</a></footer>
   </main>
-  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#what-is-tableau-mcp">What is Tableau MCP?</a></li><li><a href="#why-pair-it-with-tableau-server-on-premise">Why pair it with Tableau Server on-premise?</a></li><li><a href="#who-this-guide-is-for">Who this guide is for</a></li><li><a href="#how-the-guide-is-organised">How the guide is organised</a></li></ul></aside>
+  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#what-is-tableau-mcp">🔌 What is Tableau MCP?</a></li><li><a href="#why-pair-it-with-tableau-server-on-premise">🏢 Why pair it with Tableau Server on-premise?</a></li><li><a href="#who-this-guide-is-for">👥 Who this guide is for</a></li><li><a href="#how-the-guide-is-organised">🗺️ How the guide is organised</a></li></ul></aside>
 </div>
 <button class="totop" title="Back to top" aria-label="Back to top">↑</button>
 <script src="../assets/app.js"></script>

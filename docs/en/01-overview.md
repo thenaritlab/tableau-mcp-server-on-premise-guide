@@ -8,7 +8,7 @@
 
 > Tableau MCP lets an AI assistant such as Claude, ChatGPT, Gemini or Microsoft Copilot read your Tableau Server content and query your published data sources through a governed, permission-aware interface. This guide takes you from a first local test to a hardened, multi-user deployment and a custom web front end.
 
-## What is Tableau MCP?
+## 🔌 What is Tableau MCP?
 
 The Model Context Protocol (MCP) is an open standard that lets an AI application ("MCP host" or "client") call **tools** exposed by an external program ("MCP server"). Tableau MCP is Tableau's official MCP server. It is a small Node.js application that:
 
@@ -18,7 +18,7 @@ The Model Context Protocol (MCP) is an open standard that lets an AI application
 
 The AI model never talks to your database. It only sees what Tableau lets the signed-in user see, filtered by project permissions, data source permissions and row-level security.
 
-## Why pair it with Tableau Server on-premise?
+## 🏢 Why pair it with Tableau Server on-premise?
 
 | Reason | What it means for you |
 |---|---|
@@ -28,7 +28,7 @@ The AI model never talks to your database. It only sees what Tableau lets the si
 | Any MCP-capable client | Claude Desktop, Claude Code, ChatGPT, Gemini CLI, Copilot Studio, VS Code, Cursor and custom apps all use the same server. |
 | A path to embedded conversational analytics | Once the server works, the same connection powers a custom web portal with a chat box (Section 6). |
 
-## Who this guide is for
+## 👥 Who this guide is for
 
 - **Tableau Server administrators** who need to deploy and secure the MCP server.
 - **Solution consultants and BI developers** who will build use cases, prompts and demos on top of it.
@@ -36,7 +36,7 @@ The AI model never talks to your database. It only sees what Tableau lets the si
 
 You should already know Tableau Server basics (sites, projects, published data sources, permissions). No prior MCP or LLM-integration experience is assumed.
 
-## How the guide is organised
+## 🗺️ How the guide is organised
 
 1. **Architecture** shows the moving parts and the three authentication options.
 2. **Prerequisites** lists versions, ports and permissions.

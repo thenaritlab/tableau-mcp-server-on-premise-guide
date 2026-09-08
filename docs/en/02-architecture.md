@@ -8,7 +8,7 @@
 
 > Three components, two hops. The AI client talks MCP to the Tableau MCP server; the MCP server talks HTTPS to Tableau Server's REST API. Everything to the right of the MCP server is your existing on-premise estate.
 
-## Component view
+## 🧩 Component view
 
 ![fig-components](../assets/diagrams/fig-components.svg)
 
@@ -27,7 +27,7 @@
 >
 > Tool results (metadata and query results) are sent to whichever LLM the client uses. If the model is a public SaaS API, that data leaves your network. Use tool scoping, RLS and a data classification policy to control what can be queried. For fully on-premise setups, point your custom front end (Section 6) at a self-hosted model.
 
-## Authentication options
+## 🔐 Authentication options
 
 ![fig-auth](../assets/diagrams/fig-auth.svg)
 
@@ -42,7 +42,7 @@
 | Extra setup | None | Create Connected App, enable it | RSA key + `tsm` redirect host |
 | Row-level security | As PAT owner | As `sub` user | Per user, automatic |
 
-## Deployment options
+## 🚀 Deployment options
 
 ![fig-deploy](../assets/diagrams/fig-deploy.svg)
 

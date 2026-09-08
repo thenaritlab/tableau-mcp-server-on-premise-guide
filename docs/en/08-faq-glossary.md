@@ -6,7 +6,7 @@
 
 `Section 8 of 9`
 
-## FAQ
+## ❓ FAQ
 
 <details><summary>Does the AI vendor see my database?</summary>
 
@@ -68,7 +68,7 @@ Tableau Agent is Tableau's built-in assistant inside the product (available on S
 
 </details>
 
-## Glossary
+## 📚 Glossary
 
 | Term | English | ไทย |
 |---|---|---|

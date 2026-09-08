@@ -10,7 +10,7 @@
 
 All examples assume a published data source called **Sales** in a project called **Demo Company** with fields such as `Order Date`, `Region`, `Category`, `Sales`, `Profit`, `Quantity`.
 
-## 1. Find and understand content — 🟢 Basic
+## 🔍 1. Find and understand content — 🟢 Basic
 
 **Business goal.** Cut the time analysts spend hunting for the right workbook or data source.
 **Who uses it.** Everyone, especially new joiners.
@@ -32,7 +32,7 @@ All examples assume a published data source called **Sales** in a project called
 
 **Pitfalls.** Field descriptions are only as good as what authors typed into Tableau: add descriptions and aliases to your published data sources or the AI will guess. Content search is scoped by permissions, so a "missing" workbook usually means the user cannot see it.
 
-## 2. Ask a question of a data source — 🟢 Basic
+## 💬 2. Ask a question of a data source — 🟢 Basic
 
 **Business goal.** Answer "what was X by Y" questions without opening a dashboard.
 **Who uses it.** Managers, sales, operations.
@@ -59,7 +59,7 @@ All examples assume a published data source called **Sales** in a project called
 >
 > In your custom portal (Section 6) tell the model to always state the data source and filters. In Claude Desktop, use a project instruction. This makes every answer auditable.
 
-## 3. Executive summary of a dashboard — 🔵 Intermediate
+## 📝 3. Executive summary of a dashboard — 🔵 Intermediate
 
 **Business goal.** Turn a weekly dashboard into a written brief for leadership.
 **Who uses it.** Analysts who prepare management updates.
@@ -81,7 +81,7 @@ All examples assume a published data source called **Sales** in a project called
 
 **Pitfalls.** `get-view-data` returns the underlying summary data of the sheet; on dense dashboards pick a specific sheet. Images are useful for layout questions but cost many tokens. Do not let the model invent causes: ask it to separate "what changed" from "possible reasons".
 
-## 4. Admin insights and housekeeping — 🔵 Intermediate
+## 🧹 4. Admin insights and housekeeping — 🔵 Intermediate
 
 **Business goal.** Keep the server clean and licences well used without writing SQL against the repository.
 **Who uses it.** Tableau Server administrators.
@@ -103,7 +103,7 @@ All examples assume a published data source called **Sales** in a project called
 
 **Pitfalls.** Admin tools need a site or server administrator identity: with OAuth that means the signed-in admin; with Direct Trust set `JWT_SUB_CLAIM` to an admin only in a locked-down deployment. Consider `INCLUDE_TOOLS` to give admins the admin group and everyone else the `datasource` group by running two MCP instances on different ports.
 
-## 5. Multi-step agentic analysis with lineage — 🟣 Advanced
+## 🧠 5. Multi-step agentic analysis with lineage — 🟣 Advanced
 
 **Business goal.** Investigate a business question end to end: find the right source, query it several ways, check where the numbers come from, and produce a recommendation.
 **Who uses it.** Senior analysts, consultants building a proof of concept.

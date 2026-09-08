@@ -40,7 +40,7 @@
 <p class="lead">Each use case builds on the previous one. Run them in order on a test site: by the fifth you will have a repeatable demo script and a clear picture of what the model can and cannot do with your data.</p>
 
 <p>All examples assume a published data source called <strong>Sales</strong> in a project called <strong>Demo Company</strong> with fields such as <code>Order Date</code>, <code>Region</code>, <code>Category</code>, <code>Sales</code>, <code>Profit</code>, <code>Quantity</code>.</p>
-<h2 id="1-find-and-understand-content-basic">1. Find and understand content <span class="level basic">Basic</span></h2>
+<h2 id="1-find-and-understand-content-basic">🔍 1. Find and understand content <span class="level basic">Basic</span></h2>
 <p><strong>Business goal.</strong> Cut the time analysts spend hunting for the right workbook or data source.
 <strong>Who uses it.</strong> Everyone, especially new joiners.
 <strong>Tools involved.</strong> <code>search-content</code>, <code>list-workbooks</code>, <code>list-datasources</code>, <code>list-fields</code>.</p>
@@ -58,7 +58,7 @@
 </ol>
 <p><strong>Expected output.</strong> A short list with names, projects, owners and last-updated dates, plus a plain-language data dictionary.</p>
 <p><strong>Pitfalls.</strong> Field descriptions are only as good as what authors typed into Tableau: add descriptions and aliases to your published data sources or the AI will guess. Content search is scoped by permissions, so a "missing" workbook usually means the user cannot see it.</p>
-<h2 id="2-ask-a-question-of-a-data-source-basic">2. Ask a question of a data source <span class="level basic">Basic</span></h2>
+<h2 id="2-ask-a-question-of-a-data-source-basic">💬 2. Ask a question of a data source <span class="level basic">Basic</span></h2>
 <p><strong>Business goal.</strong> Answer "what was X by Y" questions without opening a dashboard.
 <strong>Who uses it.</strong> Managers, sales, operations.
 <strong>Tools involved.</strong> <code>query-datasource</code> (VizQL Data Service).</p>
@@ -78,7 +78,7 @@
 <p><strong>Pitfalls.</strong> Always ask for aggregates. "Give me all orders" will try to pull row-level data and either time out or exhaust context. Date filters are the most common error: check that the model used the right fiscal calendar. Numbers should be spot-checked against a dashboard the first few times.</p>
 <div class="callout tip" markdown="0"><div class="callout-title">Set expectations in a system prompt</div><p>In your custom portal (Section 6) tell the model to always state the data source and filters. In Claude Desktop, use a project instruction. This makes every answer auditable.</p></div>
 
-<h2 id="3-executive-summary-of-a-dashboard-intermediate">3. Executive summary of a dashboard <span class="level mid">Intermediate</span></h2>
+<h2 id="3-executive-summary-of-a-dashboard-intermediate">📝 3. Executive summary of a dashboard <span class="level mid">Intermediate</span></h2>
 <p><strong>Business goal.</strong> Turn a weekly dashboard into a written brief for leadership.
 <strong>Who uses it.</strong> Analysts who prepare management updates.
 <strong>Tools involved.</strong> <code>get-view-data</code>, <code>get-view-image</code>, <code>query-datasource</code>.</p>
@@ -96,7 +96,7 @@
 </ol>
 <p><strong>Expected output.</strong> A short narrative with the actual figures, direction of change and a "what to watch" line.</p>
 <p><strong>Pitfalls.</strong> <code>get-view-data</code> returns the underlying summary data of the sheet; on dense dashboards pick a specific sheet. Images are useful for layout questions but cost many tokens. Do not let the model invent causes: ask it to separate "what changed" from "possible reasons".</p>
-<h2 id="4-admin-insights-and-housekeeping-intermediate">4. Admin insights and housekeeping <span class="level mid">Intermediate</span></h2>
+<h2 id="4-admin-insights-and-housekeeping-intermediate">🧹 4. Admin insights and housekeeping <span class="level mid">Intermediate</span></h2>
 <p><strong>Business goal.</strong> Keep the server clean and licences well used without writing SQL against the repository.
 <strong>Who uses it.</strong> Tableau Server administrators.
 <strong>Tools involved.</strong> admin tool group (<code>get-stale-content-report</code>, <code>list-extract-refresh-tasks</code>, user and permission listing), <code>list-workbooks</code>.</p>
@@ -114,7 +114,7 @@
 </ol>
 <p><strong>Expected output.</strong> Two tables and draft emails you can paste.</p>
 <p><strong>Pitfalls.</strong> Admin tools need a site or server administrator identity: with OAuth that means the signed-in admin; with Direct Trust set <code>JWT_SUB_CLAIM</code> to an admin only in a locked-down deployment. Consider <code>INCLUDE_TOOLS</code> to give admins the admin group and everyone else the <code>datasource</code> group by running two MCP instances on different ports.</p>
-<h2 id="5-multi-step-agentic-analysis-with-lineage-advanced">5. Multi-step agentic analysis with lineage <span class="level adv">Advanced</span></h2>
+<h2 id="5-multi-step-agentic-analysis-with-lineage-advanced">🧠 5. Multi-step agentic analysis with lineage <span class="level adv">Advanced</span></h2>
 <p><strong>Business goal.</strong> Investigate a business question end to end: find the right source, query it several ways, check where the numbers come from, and produce a recommendation.
 <strong>Who uses it.</strong> Senior analysts, consultants building a proof of concept.
 <strong>Tools involved.</strong> All of the above, plus lineage/metadata tools, run inside Claude Code, Gemini CLI or the custom portal where the model can take several tool steps per turn.</p>
@@ -136,7 +136,7 @@
     <nav class="pagernav"><a class="pager prev" href="04-installation.html"><small>Previous</small><span>Installation and configuration</span></a><a class="pager next" href="06-web-ui-wrapper.html"><small>Next</small><span>Advanced: build a custom Web UI wrapper</span></a></nav>
     <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">Home</a></footer>
   </main>
-  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#1-find-and-understand-content-basic">1. Find and understand content Basic</a><ul><li><a href="#sample-prompts">Sample prompts</a></li><li><a href="#walkthrough">Walkthrough</a></li></ul></li><li><a href="#2-ask-a-question-of-a-data-source-basic">2. Ask a question of a data source Basic</a><ul><li><a href="#sample-prompts_1">Sample prompts</a></li><li><a href="#walkthrough_1">Walkthrough</a></li></ul></li><li><a href="#3-executive-summary-of-a-dashboard-intermediate">3. Executive summary of a dashboard Intermediate</a><ul><li><a href="#sample-prompts_2">Sample prompts</a></li><li><a href="#walkthrough_2">Walkthrough</a></li></ul></li><li><a href="#4-admin-insights-and-housekeeping-intermediate">4. Admin insights and housekeeping Intermediate</a><ul><li><a href="#sample-prompts_3">Sample prompts</a></li><li><a href="#walkthrough_3">Walkthrough</a></li></ul></li><li><a href="#5-multi-step-agentic-analysis-with-lineage-advanced">5. Multi-step agentic analysis with lineage Advanced</a><ul><li><a href="#sample-prompt">Sample prompt</a></li><li><a href="#walkthrough_4">Walkthrough</a></li></ul></li></ul></aside>
+  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#1-find-and-understand-content-basic">🔍 1. Find and understand content Basic</a><ul><li><a href="#sample-prompts">Sample prompts</a></li><li><a href="#walkthrough">Walkthrough</a></li></ul></li><li><a href="#2-ask-a-question-of-a-data-source-basic">💬 2. Ask a question of a data source Basic</a><ul><li><a href="#sample-prompts_1">Sample prompts</a></li><li><a href="#walkthrough_1">Walkthrough</a></li></ul></li><li><a href="#3-executive-summary-of-a-dashboard-intermediate">📝 3. Executive summary of a dashboard Intermediate</a><ul><li><a href="#sample-prompts_2">Sample prompts</a></li><li><a href="#walkthrough_2">Walkthrough</a></li></ul></li><li><a href="#4-admin-insights-and-housekeeping-intermediate">🧹 4. Admin insights and housekeeping Intermediate</a><ul><li><a href="#sample-prompts_3">Sample prompts</a></li><li><a href="#walkthrough_3">Walkthrough</a></li></ul></li><li><a href="#5-multi-step-agentic-analysis-with-lineage-advanced">🧠 5. Multi-step agentic analysis with lineage Advanced</a><ul><li><a href="#sample-prompt">Sample prompt</a></li><li><a href="#walkthrough_4">Walkthrough</a></li></ul></li></ul></aside>
 </div>
 <button class="totop" title="Back to top" aria-label="Back to top">↑</button>
 <script src="../assets/app.js"></script>

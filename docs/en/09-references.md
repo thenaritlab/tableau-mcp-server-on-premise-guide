@@ -8,7 +8,7 @@
 
 Official sources first. All links were valid in September 2026; documentation moves, so search the site if a link breaks.
 
-## Tableau MCP
+## 🔌 Tableau MCP
 
 - Tableau MCP documentation — <https://tableau.github.io/tableau-mcp/>
 - Getting started (npx, source, Docker) — <https://tableau.github.io/tableau-mcp/docs/getting-started>
@@ -19,7 +19,7 @@ Official sources first. All links were valid in September 2026; documentation mo
 - npm package — <https://www.npmjs.com/package/@tableau/mcp-server>
 - Container image — <https://github.com/tableau/tableau-mcp/pkgs/container/tableau-mcp>
 
-## Tableau Server
+## 🏢 Tableau Server
 
 - Personal Access Tokens — <https://help.tableau.com/current/server/en-us/security_personal_access_tokens.htm>
 - Configure Connected Apps with Direct Trust — <https://help.tableau.com/current/server/en-us/connected_apps_direct.htm>
@@ -29,7 +29,7 @@ Official sources first. All links were valid in September 2026; documentation mo
 - tsm configuration set — <https://help.tableau.com/current/server/en-us/cli_configuration-set_tsm.htm>
 - Basic product data (telemetry) — <https://help.tableau.com/current/server/en-us/usage_data_basic_product_data.htm>
 
-## MCP specification and clients
+## 📐 MCP specification and clients
 
 - Model Context Protocol specification — <https://modelcontextprotocol.io/specification/>
 - MCP TypeScript SDK — <https://github.com/modelcontextprotocol/typescript-sdk>
@@ -41,7 +41,7 @@ Official sources first. All links were valid in September 2026; documentation mo
 - Microsoft Copilot Studio: add an MCP server — <https://learn.microsoft.com/microsoft-copilot-studio/agent-extend-action-mcp>
 - VS Code MCP servers — <https://code.visualstudio.com/docs/copilot/chat/mcp-servers>
 
-## Community starters
+## 🌱 Community starters
 
 - Tableau MCP starter kit (LangChain) — <https://github.com/wjsutton/tableau_mcp_starter_kit>
 - MCPJam inspector (OAuth debugging) — <https://www.mcpjam.com/>

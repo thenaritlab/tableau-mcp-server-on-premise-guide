@@ -39,14 +39,152 @@
 <h1 id="advanced-build-a-custom-web-ui-wrapper">Advanced: build a custom Web UI wrapper</h1><div class="doc-meta"><span class="chip">Section 6 of 9</span><span class="chip">4 min read</span></div>
 <p class="lead">A "mask" in front of Tableau Server: users sign in to your portal, chat with an AI that queries Tableau through MCP, and optionally see embedded dashboards. They never learn the server URL, tokens or data source IDs, and every question is logged.</p>
 
-<h2 id="purpose">Purpose</h2>
+<h2 id="purpose">🎯 Purpose</h2>
 <ul>
 <li><strong>Hide connection details.</strong> Server URL, PAT / Connected App secrets and the MCP endpoint live only in the portal's environment.</li>
 <li><strong>One sign-in.</strong> The portal authenticates the user (demo: env users; production: your SSO / LDAP) and passes identity to the model as context.</li>
 <li><strong>Bring your own model.</strong> The sample uses the Anthropic API; swapping in OpenAI, Gemini or a self-hosted model is a single function.</li>
 <li><strong>Audit.</strong> Every chat turn writes who asked what, which tools ran, and how long it took.</li>
 </ul>
-<h2 id="reference-architecture">Reference architecture</h2>
+<h2 id="what-the-finished-portal-looks-like">🖼️ What the finished portal looks like</h2>
+<figure>
+<svg viewBox="0 0 1100 700" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, IBM Plex Sans Thai, Segoe UI, sans-serif" font-size="13">
+  <defs>
+    <clipPath id="win"><rect x="20" y="20" width="1060" height="660" rx="14"/></clipPath>
+  </defs>
+  <!-- browser window -->
+  <rect x="20" y="20" width="1060" height="660" rx="14" fill="#f4f6fa" stroke="#cfd6e0"/>
+  <g clip-path="url(#win)">
+    <rect x="20" y="20" width="1060" height="44" fill="#e9eef5"/>
+    <circle cx="44" cy="42" r="6" fill="#f06a6a"/><circle cx="64" cy="42" r="6" fill="#f5c451"/><circle cx="84" cy="42" r="6" fill="#5fcc7a"/>
+    <rect x="110" y="30" width="700" height="24" rx="12" fill="#fff" stroke="#dfe4ec"/>
+    <text x="126" y="47" fill="#6b7280" font-size="12.5">🔒  https://analytics.demo-company.local</text>
+    <!-- app header -->
+    <rect x="20" y="64" width="1060" height="52" fill="#fff"/>
+    <line x1="20" y1="116" x2="1080" y2="116" stroke="#e3e8ef"/>
+    <rect x="40" y="78" width="26" height="26" rx="7" fill="#2563a8"/>
+    <text x="78" y="96" font-weight="700" font-size="15" fill="#1f2937">Demo Company Analytics</text>
+    <text x="820" y="96" fill="#6b7280">alice · analyst</text>
+    <rect x="936" y="78" width="120" height="28" rx="6" fill="#f4f6fa" stroke="#cfd6e0"/>
+    <text x="996" y="97" text-anchor="middle" fill="#4b5563" font-weight="600">Sign out</text>
+
+    <!-- chat panel -->
+    <rect x="20" y="116" width="600" height="564" fill="#fff"/>
+    <line x1="620" y1="116" x2="620" y2="680" stroke="#e3e8ef"/>
+    <text x="40" y="142" fill="#6b7280" font-size="12" font-weight="600">💬 ASK YOUR DATA</text>
+
+    <!-- assistant bubble 1 -->
+    <rect x="40" y="156" width="430" height="46" rx="14" fill="#f4f6fa" stroke="#e3e8ef"/>
+    <text x="56" y="184" fill="#1f2937">Hi alice. Ask me about sales, inventory, or any published data source.</text>
+
+    <!-- user bubble -->
+    <rect x="228" y="216" width="372" height="46" rx="14" fill="#2563a8"/>
+    <text x="246" y="244" fill="#fff">Which region had the highest sales last quarter?</text>
+
+    <!-- assistant bubble 2 with table -->
+    <rect x="40" y="276" width="500" height="238" rx="14" fill="#f4f6fa" stroke="#e3e8ef"/>
+    <text x="56" y="302" fill="#1f2937"><tspan font-weight="600">West</tspan> had the highest sales in Q2 2026 at <tspan font-weight="600">฿4.82M</tspan>, up 11% vs Q1.</text>
+    <!-- mini table -->
+    <rect x="56" y="316" width="468" height="128" rx="8" fill="#fff" stroke="#dfe4ec"/>
+    <rect x="56" y="316" width="468" height="28" rx="8" fill="#e9eef5"/>
+    <text x="72" y="335" font-weight="600" fill="#4b5563">Region</text><text x="250" y="335" font-weight="600" fill="#4b5563">Sales (Q2)</text><text x="400" y="335" font-weight="600" fill="#4b5563">vs Q1</text>
+    <g fill="#1f2937">
+      <text x="72" y="362">West</text><text x="250" y="362">฿4.82M</text><text x="400" y="362" fill="#0e8574">▲ 11%</text>
+      <text x="72" y="387">Central</text><text x="250" y="387">฿3.91M</text><text x="400" y="387" fill="#b83a3a">▼ 4%</text>
+      <text x="72" y="412">East</text><text x="250" y="412">฿3.40M</text><text x="400" y="412" fill="#0e8574">▲ 6%</text>
+      <text x="72" y="437">South</text><text x="250" y="437">฿2.15M</text><text x="400" y="437" fill="#0e8574">▲ 2%</text>
+    </g>
+    <text x="56" y="468" fill="#4b5563" font-size="12">Source: <tspan font-weight="600">Sales</tspan> data source · filter: Order Date = 2026 Q2 · measure: SUM(Sales)</text>
+    <!-- tool chips -->
+    <rect x="56" y="482" width="118" height="20" rx="10" fill="#e9f1fb"/><text x="115" y="496" text-anchor="middle" fill="#17457a" font-size="11" font-family="IBM Plex Mono, monospace">list-datasources</text>
+    <rect x="180" y="482" width="82" height="20" rx="10" fill="#e9f1fb"/><text x="221" y="496" text-anchor="middle" fill="#17457a" font-size="11" font-family="IBM Plex Mono, monospace">list-fields</text>
+    <rect x="268" y="482" width="118" height="20" rx="10" fill="#e9f1fb"/><text x="327" y="496" text-anchor="middle" fill="#17457a" font-size="11" font-family="IBM Plex Mono, monospace">query-datasource</text>
+
+    <!-- user bubble 2 -->
+    <rect x="300" y="528" width="300" height="46" rx="14" fill="#2563a8"/>
+    <text x="318" y="556" fill="#fff">Why did Central drop? Show sub-categories.</text>
+    <!-- typing -->
+    <rect x="40" y="588" width="200" height="34" rx="14" fill="#f4f6fa" stroke="#e3e8ef"/>
+    <text x="56" y="610" fill="#6b7280" font-style="italic">Looking at the data…</text>
+
+    <!-- composer -->
+    <rect x="20" y="632" width="600" height="48" fill="#fff"/>
+    <line x1="20" y1="632" x2="620" y2="632" stroke="#e3e8ef"/>
+    <rect x="36" y="641" width="470" height="30" rx="8" fill="#fff" stroke="#cfd6e0"/>
+    <text x="50" y="661" fill="#9ca3af">Ask a question about your data…</text>
+    <rect x="516" y="641" width="88" height="30" rx="8" fill="#2563a8"/>
+    <text x="560" y="661" text-anchor="middle" fill="#fff" font-weight="600">Send</text>
+
+    <!-- embedded dashboard panel -->
+    <rect x="620" y="116" width="460" height="564" fill="#f8fafc"/>
+    <text x="640" y="142" fill="#6b7280" font-size="12" font-weight="600">📊 SALES OVERVIEW  ·  embedded Tableau view</text>
+    <rect x="640" y="154" width="420" height="500" rx="10" fill="#fff" stroke="#e3e8ef"/>
+    <!-- KPI tiles -->
+    <g>
+      <rect x="656" y="170" width="126" height="64" rx="8" fill="#f4f6fa"/><text x="668" y="190" fill="#6b7280" font-size="11">Sales Q2</text><text x="668" y="220" font-weight="700" font-size="20" fill="#1f2937">฿14.3M</text>
+      <rect x="788" y="170" width="126" height="64" rx="8" fill="#f4f6fa"/><text x="800" y="190" fill="#6b7280" font-size="11">Profit</text><text x="800" y="220" font-weight="700" font-size="20" fill="#1f2937">฿1.9M</text>
+      <rect x="920" y="170" width="124" height="64" rx="8" fill="#f4f6fa"/><text x="932" y="190" fill="#6b7280" font-size="11">Margin</text><text x="932" y="220" font-weight="700" font-size="20" fill="#b83a3a">13.2%</text>
+    </g>
+    <!-- bar chart by region -->
+    <text x="656" y="262" fill="#4b5563" font-weight="600" font-size="12">Sales by region</text>
+    <g>
+      <text x="656" y="290" fill="#6b7280" font-size="12">West</text><rect x="716" y="278" width="300" height="16" rx="3" fill="#2563a8"/><text x="1022" y="291" fill="#1f2937" font-size="12">4.82</text>
+      <text x="656" y="318" fill="#6b7280" font-size="12">Central</text><rect x="716" y="306" width="243" height="16" rx="3" fill="#7fa7d6"/><text x="965" y="319" fill="#1f2937" font-size="12">3.91</text>
+      <text x="656" y="346" fill="#6b7280" font-size="12">East</text><rect x="716" y="334" width="212" height="16" rx="3" fill="#7fa7d6"/><text x="934" y="347" fill="#1f2937" font-size="12">3.40</text>
+      <text x="656" y="374" fill="#6b7280" font-size="12">South</text><rect x="716" y="362" width="134" height="16" rx="3" fill="#7fa7d6"/><text x="856" y="375" fill="#1f2937" font-size="12">2.15</text>
+    </g>
+    <!-- line chart trend -->
+    <text x="656" y="412" fill="#4b5563" font-weight="600" font-size="12">Monthly trend</text>
+    <polyline points="660,530 700,515 740,522 780,498 820,505 860,480 900,488 940,462 980,470 1020,440" fill="none" stroke="#0e8574" stroke-width="2.5"/>
+    <polyline points="660,545 700,540 740,548 780,536 820,542 860,530 900,538 940,528 980,533 1020,520" fill="none" stroke="#cfd6e0" stroke-width="2" stroke-dasharray="4 3"/>
+    <line x1="656" y1="560" x2="1044" y2="560" stroke="#e3e8ef"/>
+    <text x="656" y="578" fill="#9ca3af" font-size="11">Jan</text><text x="1010" y="578" fill="#9ca3af" font-size="11">Sep</text>
+    <text x="656" y="606" fill="#0e8574" font-size="11">— 2026</text><text x="716" y="606" fill="#9ca3af" font-size="11">- - 2025</text>
+    <text x="656" y="638" fill="#9ca3af" font-size="11">Signed in silently via Connected App JWT · RLS applied for alice</text>
+  </g>
+</svg>
+
+<figcaption>Figure 4. The portal in use: chat on the left (answers cite the data source and filters, and show which MCP tools ran), the embedded Tableau dashboard on the right, signed in silently for the same user.</figcaption>
+</figure>
+
+<figure>
+<svg viewBox="0 0 1100 420" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, IBM Plex Sans Thai, Segoe UI, sans-serif" font-size="13">
+  <!-- sign-in -->
+  <rect x="20" y="20" width="520" height="380" rx="14" fill="#f4f6fa" stroke="#cfd6e0"/>
+  <text x="40" y="48" fill="#6b7280" font-size="12" font-weight="600">1 · SIGN IN (portal handles identity — Tableau credentials never reach the browser)</text>
+  <rect x="150" y="76" width="260" height="290" rx="12" fill="#fff" stroke="#e3e8ef"/>
+  <rect x="172" y="98" width="28" height="28" rx="7" fill="#2563a8"/>
+  <text x="210" y="118" font-weight="700" font-size="15" fill="#1f2937">Demo Company Analytics</text>
+  <rect x="172" y="150" width="216" height="36" rx="7" fill="#fff" stroke="#cfd6e0"/><text x="186" y="173" fill="#1f2937">alice</text>
+  <rect x="172" y="196" width="216" height="36" rx="7" fill="#fff" stroke="#cfd6e0"/><text x="186" y="219" fill="#1f2937">••••••••••</text>
+  <rect x="172" y="252" width="216" height="38" rx="7" fill="#2563a8"/><text x="280" y="276" text-anchor="middle" fill="#fff" font-weight="600">Sign in</text>
+  <text x="280" y="322" text-anchor="middle" fill="#9ca3af" font-size="11">or continue with company SSO</text>
+  <rect x="172" y="330" width="216" height="24" rx="6" fill="#f4f6fa" stroke="#e3e8ef"/><text x="280" y="346" text-anchor="middle" fill="#4b5563" font-size="11">SAML / OIDC (production)</text>
+
+  <!-- what happens behind -->
+  <rect x="560" y="20" width="520" height="380" rx="14" fill="#f4f6fa" stroke="#cfd6e0"/>
+  <text x="580" y="48" fill="#6b7280" font-size="12" font-weight="600">2 · WHAT ONE CHAT TURN DOES BEHIND THE MASK</text>
+  <g font-size="12.5">
+    <rect x="580" y="66" width="480" height="40" rx="8" fill="#fff" stroke="#e3e8ef"/>
+    <text x="596" y="83" fill="#1f2937" font-weight="600">① Browser → POST /api/chat</text><text x="596" y="99" fill="#6b7280">{ messages: [...] } + session cookie</text>
+    <rect x="580" y="114" width="480" height="40" rx="8" fill="#fff" stroke="#e3e8ef"/>
+    <text x="596" y="131" fill="#1f2937" font-weight="600">② Portal → Tableau MCP  listTools()</text><text x="596" y="147" fill="#6b7280">gets the tool catalogue: list-datasources, query-datasource, …</text>
+    <rect x="580" y="162" width="480" height="40" rx="8" fill="#fff" stroke="#e3e8ef"/>
+    <text x="596" y="179" fill="#1f2937" font-weight="600">③ Portal → LLM  (question + tools + user context)</text><text x="596" y="195" fill="#6b7280">model decides: call query-datasource with Region, SUM(Sales), Q2 filter</text>
+    <rect x="580" y="210" width="480" height="40" rx="8" fill="#fff" stroke="#e3e8ef"/>
+    <text x="596" y="227" fill="#1f2937" font-weight="600">④ Portal → Tableau MCP  callTool()  → Tableau Server REST / VDS</text><text x="596" y="243" fill="#6b7280">permissions + row-level security applied by Tableau</text>
+    <rect x="580" y="258" width="480" height="40" rx="8" fill="#fff" stroke="#e3e8ef"/>
+    <text x="596" y="275" fill="#1f2937" font-weight="600">⑤ Portal → LLM  (tool result)  → final answer</text><text x="596" y="291" fill="#6b7280">loop repeats up to 8 rounds if the model needs more data</text>
+    <rect x="580" y="306" width="480" height="40" rx="8" fill="#fff" stroke="#e3e8ef"/>
+    <text x="596" y="323" fill="#1f2937" font-weight="600">⑥ audit.jsonl ← who · question · tools · latency</text><text x="596" y="339" fill="#6b7280">reply JSON goes back to the browser; no URL, token or LUID inside</text>
+  </g>
+  <text x="580" y="384" fill="#9ca3af" font-size="11">Secrets live only in the portal's .env · MCP port 3927 bound to localhost · LLM sees tool results, never the database</text>
+</svg>
+
+<figcaption>Figure 5. Sign-in screen, and the six things that happen behind the mask for a single chat turn.</figcaption>
+</figure>
+
+<h2 id="reference-architecture">🧩 Reference architecture</h2>
 <figure>
 <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="12.5">
 <defs><marker id="a6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#7b8494"/></marker></defs>
@@ -80,12 +218,12 @@
 <rect x="240" y="225" width="650" height="1" fill="#c9d1dc"/>
 <text x="565" y="248" text-anchor="middle" fill="#7b8494" font-size="11">everything right of the browser runs on your network; only the LLM call may leave it</text>
 </svg>
-<figcaption>Figure 4. The portal is the only component with credentials. The browser sees a cookie; the model sees tool results.</figcaption>
+<figcaption>Figure 6. The portal is the only component with credentials. The browser sees a cookie; the model sees tool results.</figcaption>
 </figure>
 
 <p><strong>Tech stack.</strong> Node.js 22, Express 4, <code>@modelcontextprotocol/sdk</code> (MCP client), <code>@anthropic-ai/sdk</code>, React 18 with Vite, <code>jsonwebtoken</code> for sessions and the Connected App embed token, <code>helmet</code> and <code>express-rate-limit</code> for basic hardening.</p>
 <p><strong>Why the portal talks to Tableau MCP over HTTP.</strong> One MCP process serves many portal requests; the portal opens a short-lived MCP client per chat turn, lists tools, lets the model call them, and closes. Run Tableau MCP with Direct Trust (service identity) or OAuth + <code>AUTH=direct-trust</code> with <code>JWT_SUB_CLAIM={OAUTH_USERNAME}</code> when you want per-user RLS from the portal.</p>
-<h2 id="project-layout">Project layout</h2>
+<h2 id="project-layout">📁 Project layout</h2>
 <pre data-lang="text"><code>tableau-ai-portal/
 ├── package.json
 ├── vite.config.js
@@ -100,7 +238,7 @@
     ├── styles.css
     └── EmbeddedView.jsx ← optional dashboard embed
 </code></pre>
-<h2 id="step-by-step">Step by step</h2>
+<h2 id="step-by-step">👣 Step by step</h2>
 <ol class="steps">
 <li><strong>Run Tableau MCP in HTTP mode</strong> on the same host or an internal address, using the Direct Trust <code>.env</code> from Section 4.2 with <code>DANGEROUSLY_DISABLE_OAUTH=true</code> <em>only because</em> the portal is the sole client and the port is bound to localhost.</li>
 <li><strong>Create the project</strong></li>
@@ -164,7 +302,7 @@ LLM_MODEL=claude-sonnet-4-6
 DEMO_USERS=alice:alice-pass:analyst,bob:bob-pass:manager</code></pre>
 
 <ol class="steps" style="counter-reset:step 2">
-<li><strong>Backend</strong> — the broker. Read the comments: sections 1–6 map to the boxes in Figure 4.</li>
+<li><strong>Backend</strong> — the broker. Read the comments: sections 1–6 map to the boxes in Figure 6.</li>
 </ol>
 
 <pre data-lang="javascript" data-file="wrapper/server.js"><code>// server/server.js - the &quot;mask&quot; in front of Tableau Server.
@@ -471,7 +609,7 @@ export default function EmbeddedView({ viewPath }) {   // e.g. &quot;SalesOvervi
 
 <h3 id="swapping-the-model">Swapping the model</h3>
 <p><code>/api/chat</code> only depends on three things: a tool list, a "call the model" function and a "call the tool" function. To use OpenAI, replace <code>anthropic.messages.create</code> with <code>openai.chat.completions.create</code> and map <code>tools</code> to the <code>function</code> format; for Gemini use <code>functionDeclarations</code>; for a self-hosted model use any OpenAI-compatible endpoint. Keep the loop and the audit code unchanged.</p>
-<h2 id="security-considerations">Security considerations</h2>
+<h2 id="security-considerations">🔒 Security considerations</h2>
 <table>
 <thead>
 <tr>
@@ -533,7 +671,7 @@ export default function EmbeddedView({ viewPath }) {   // e.g. &quot;SalesOvervi
     <nav class="pagernav"><a class="pager prev" href="05-use-cases.html"><small>Previous</small><span>Top 5 use cases</span></a><a class="pager next" href="07-best-practices.html"><small>Next</small><span>Best practices, governance and security checklist</span></a></nav>
     <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">Home</a></footer>
   </main>
-  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#purpose">Purpose</a></li><li><a href="#reference-architecture">Reference architecture</a></li><li><a href="#project-layout">Project layout</a></li><li><a href="#step-by-step">Step by step</a><ul><li><a href="#swapping-the-model">Swapping the model</a></li></ul></li><li><a href="#security-considerations">Security considerations</a></li></ul></aside>
+  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#purpose">🎯 Purpose</a></li><li><a href="#what-the-finished-portal-looks-like">🖼️ What the finished portal looks like</a></li><li><a href="#reference-architecture">🧩 Reference architecture</a></li><li><a href="#project-layout">📁 Project layout</a></li><li><a href="#step-by-step">👣 Step by step</a><ul><li><a href="#swapping-the-model">Swapping the model</a></li></ul></li><li><a href="#security-considerations">🔒 Security considerations</a></li></ul></aside>
 </div>
 <button class="totop" title="Back to top" aria-label="Back to top">↑</button>
 <script src="../assets/app.js"></script>

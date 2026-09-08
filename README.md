@@ -1,12 +1,18 @@
 <div align="center">
 
+🌐 **Language / ภาษา:** &nbsp; **🇺🇸 English** (this page) &nbsp;·&nbsp; [🇹🇭 ภาษาไทย → README.th.md](README.th.md)
+
+</div>
+
+<div align="center">
+
 # 📊 Tableau Server On-Premise + Tableau MCP + AI
 
 **Bilingual (🇺🇸 EN / 🇹🇭 TH) step-by-step guide — connect Tableau Server on-premise to Claude, ChatGPT, Gemini and Microsoft Copilot through the official Tableau MCP server, then wrap it in your own web portal with an AI chat box.**
 
 [![Read on GitHub](https://img.shields.io/badge/Read%20here-GitHub%20Markdown-2563a8?style=for-the-badge&logo=github)](#-navigate)
 [![English](https://img.shields.io/badge/🇺🇸_English-start-0e8574?style=for-the-badge)](docs/en/01-overview.md)
-[![ไทย](https://img.shields.io/badge/🇹🇭_ภาษาไทย-เริ่มอ่าน-0e8574?style=for-the-badge)](docs/th/01-overview.md)
+[![ไทย](https://img.shields.io/badge/🇹🇭_ภาษาไทย-README.th.md-0e8574?style=for-the-badge)](README.th.md)
 
 ![Tableau MCP 3.6](https://img.shields.io/badge/Tableau%20MCP-3.6.x-blue) ![Tableau Server 2025.3+](https://img.shields.io/badge/Tableau%20Server-2025.3%2B-blue) ![Node 22](https://img.shields.io/badge/Node.js-22%2B-339933?logo=node.js&logoColor=white) ![Static HTML](https://img.shields.io/badge/site-static%20HTML-lightgrey) ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -58,6 +64,14 @@ flowchart LR
 ```
 
 The model never touches your database. Every data access is a tool call brokered by Tableau MCP and filtered by Tableau permissions and row-level security.
+
+---
+
+## 🖼️ What you will build (Section 6)
+
+![Portal mockup: AI chat box beside an embedded Tableau dashboard](docs/assets/diagrams/portal-mockup.svg)
+
+*A custom web portal that hides the Tableau Server connection: users sign in once, chat with an AI that queries Tableau through MCP, and see the matching dashboard embedded beside it. Full Node.js + Express + React code is in [Section 6](docs/en/06-web-ui-wrapper.md).*
 
 ---
 
@@ -128,7 +142,8 @@ No build step — plain HTML, CSS and a small script. You can also just double-c
 ## 📁 Repository layout
 
 ```text
-├── README.md           🏠 you are here — navigation hub
+├── README.md           🇺🇸 English home (this page)
+├── README.th.md        🇹🇭 Thai home
 ├── docs/
 │   ├── en/             🇺🇸 9 Markdown pages, read on GitHub (01-overview … 09-references)
 │   ├── th/             🇹🇭 9 Markdown pages, same order
@@ -147,6 +162,8 @@ Found a step that changed in a newer Tableau MCP release? Open an issue or a pul
 ---
 
 <div align="center">
+
+🇺🇸 English (this page) · [🇹🇭 ภาษาไทย](README.th.md)
 
 **Created by The Narit Lab**
 Tableau · Data Analytics · AI-assisted BI

@@ -1,4 +1,4 @@
-[🏠 หน้าแรก](../../README.md) · [◀ ก่อนหน้า: สถาปัตยกรรม](02-architecture.md) · [ถัดไป: การติดตั้งและตั้งค่า ▶](04-installation.md) · [🇺🇸 English](../en/03-prerequisites.md)
+[🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: สถาปัตยกรรม](02-architecture.md) · [ถัดไป: การติดตั้งและตั้งค่า ▶](04-installation.md) · [🇺🇸 English](../en/03-prerequisites.md)
 
 ---
 
@@ -8,7 +8,7 @@
 
 > ตรวจสอบรายการเหล่านี้ก่อนติดตั้งอะไรทั้งสิ้น ความล้มเหลวครั้งแรกส่วนใหญ่มาจาก PAT หมดอายุ ขาดสิทธิ์ API access หรือ client เข้าถึง server ไม่ได้
 
-## ตารางเวอร์ชัน
+## 📋 ตารางเวอร์ชัน
 
 | องค์ประกอบ | ขั้นต่ำ | แนะนำ | หมายเหตุ |
 |---|---|---|---|
@@ -23,13 +23,13 @@
 >
 > ขั้นต่ำของ Node.js และ Tableau MCP เปลี่ยนทุกครั้งที่ออกเวอร์ชันใหม่ ตรวจฟิลด์ `engines` ในแพ็กเกจและคู่มือ enterprise deployment ก่อนกำหนดเวอร์ชัน
 
-## ลิขสิทธิ์
+## 🪪 ลิขสิทธิ์
 
 - **ลิขสิทธิ์ Tableau Server** Tableau MCP เป็น open source (Apache 2.0) ใช้ฟรี แต่ผู้ใช้ที่ query ผ่านมันใช้ลิขสิทธิ์ Tableau ตามปกติ (Creator, Explorer หรือ Viewer) Viewer อ่าน view ได้ ส่วนการ query published data source ต้องมีสิทธิ์ "Connect" บน data source
 - **Usage-based licensing (UBL)** การใช้ตัวตนเดียว (PAT หรือ `JWT_SUB_CLAIM` คงที่) ให้คนจำนวนมากใช้ร่วมกัน เหมาะสมเฉพาะเมื่อสัญญาของคุณครอบคลุม UBL มิฉะนั้นให้ใช้ OAuth เพื่อให้ทุกคนเป็น named user
 - **ค่าใช้จ่าย LLM** ผู้ให้บริการ AI แต่ละรายคิดเงินแยก เตรียมงบสำหรับ token: การ "query data source" หนึ่งรอบอาจใช้ metadata หลายพัน token
 
-## พอร์ต
+## 🔢 พอร์ต
 
 | จาก | ไป | พอร์ต | วัตถุประสงค์ |
 |---|---|---|---|
@@ -39,7 +39,7 @@
 | Tableau Server | เครื่องที่รัน MCP | 443 | OAuth redirect กลับมายัง authorization server ในตัว |
 | Portal (ส่วนที่ 6) | Tableau MCP | 3927 | server-to-server ภายในเท่านั้น |
 
-## การตั้งค่าและสิทธิ์บน Tableau Server
+## 🛠️ การตั้งค่าและสิทธิ์บน Tableau Server
 
 1. **เปิดใช้ REST API** — เปิดอยู่โดยปริยาย ตรวจด้วย `tsm configuration get -k api.server.enabled` หากองค์กรปิดไว้ ให้ตั้งเป็น `true` แล้ว apply pending changes
 2. **อนุญาต Personal Access Token** — ที่ site setting *Settings › General › Personal Access Tokens* ระดับ server: `tsm configuration get -k features.PersonalAccessTokensEnabled`
@@ -49,7 +49,7 @@
 6. **Metadata API (ไม่บังคับ)** — ช่วยให้ tool ด้าน lineage และค้นหาทำงานดีขึ้น เปิดด้วย `tsm maintenance metadata-services enable`
 7. **OAuth redirect host (เฉพาะโหมด OAuth)** — `tsm configuration set -k oauth.allowed_redirect_uri_hosts -v tableau-mcp.demo-company.local` แล้ว `tsm pending-changes apply`
 
-## ระบบปฏิบัติการของเครื่องที่รัน MCP
+## 💻 ระบบปฏิบัติการของเครื่องที่รัน MCP
 
 | สถานการณ์ | OS | หมายเหตุ |
 |---|---|---|
@@ -57,7 +57,7 @@
 | HTTP ใช้ร่วมกัน | Linux (Rocky, Ubuntu, RHEL) | 1 vCPU / 1 GB RAM เพียงพอสำหรับทีม ใช้ Docker หรือ Node 22 + systemd |
 | บนเครื่อง Tableau node | OS เดียวกับ Tableau Server | เฉพาะเมื่อขอ VM แยกไม่ได้ ระวังการแย่งทรัพยากร |
 
-## AI client
+## 🤖 AI client
 
 | Client | รันที่ไหน | Transport ที่ใช้ได้ | ต้องมี |
 |---|---|---|---|
@@ -90,6 +90,6 @@
 
 </details>
 
-[🏠 หน้าแรก](../../README.md) · [◀ ก่อนหน้า: สถาปัตยกรรม](02-architecture.md) · [ถัดไป: การติดตั้งและตั้งค่า ▶](04-installation.md) · [🇺🇸 English](../en/03-prerequisites.md)
+[🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: สถาปัตยกรรม](02-architecture.md) · [ถัดไป: การติดตั้งและตั้งค่า ▶](04-installation.md) · [🇺🇸 English](../en/03-prerequisites.md)
 
 <sub>ส่วนที่ 3 จาก 9 · Created by The Narit Lab</sub>

@@ -40,7 +40,7 @@
 <p class="lead">แต่ละ use case ต่อยอดจากอันก่อนหน้า ลองทำตามลำดับบน site ทดสอบ พอถึงอันที่ห้าคุณจะได้สคริปต์เดโมที่ทำซ้ำได้ และเห็นชัดว่าโมเดลทำอะไรกับข้อมูลของคุณได้และไม่ได้</p>
 
 <p>ตัวอย่างทั้งหมดสมมติว่ามี published data source ชื่อ <strong>Sales</strong> ใน project ชื่อ <strong>Demo Company</strong> มีฟิลด์เช่น <code>Order Date</code>, <code>Region</code>, <code>Category</code>, <code>Sales</code>, <code>Profit</code>, <code>Quantity</code></p>
-<h2 id="1">1. ค้นหาและทำความเข้าใจเนื้อหา <span class="level basic">พื้นฐาน</span></h2>
+<h2 id="1">🔍 1. ค้นหาและทำความเข้าใจเนื้อหา <span class="level basic">พื้นฐาน</span></h2>
 <p><strong>เป้าหมายทางธุรกิจ</strong> ลดเวลาที่นักวิเคราะห์ใช้ไล่หา workbook หรือ data source ที่ถูกต้อง
 <strong>ใครใช้</strong> ทุกคน โดยเฉพาะพนักงานใหม่
 <strong>tool ที่เกี่ยวข้อง</strong> <code>search-content</code>, <code>list-workbooks</code>, <code>list-datasources</code>, <code>list-fields</code></p>
@@ -58,7 +58,7 @@
 </ol>
 <p><strong>ผลลัพธ์ที่คาดหวัง</strong> รายการสั้นๆ พร้อมชื่อ project เจ้าของ วันที่อัปเดตล่าสุด และ data dictionary ภาษาคน</p>
 <p><strong>ข้อควรระวัง</strong> คำอธิบายฟิลด์ดีได้เท่าที่ผู้สร้างพิมพ์ไว้ใน Tableau เท่านั้น ให้เพิ่ม description และ alias ใน published data source มิฉะนั้น AI จะเดา การค้นหาเนื้อหาถูกจำกัดด้วยสิทธิ์ ดังนั้น workbook ที่ "หายไป" มักหมายถึงผู้ใช้มองไม่เห็น</p>
-<h2 id="2-data-source">2. ถามคำถามกับ data source <span class="level basic">พื้นฐาน</span></h2>
+<h2 id="2-data-source">💬 2. ถามคำถามกับ data source <span class="level basic">พื้นฐาน</span></h2>
 <p><strong>เป้าหมายทางธุรกิจ</strong> ตอบคำถามแบบ "X แยกตาม Y เท่าไร" โดยไม่ต้องเปิด dashboard
 <strong>ใครใช้</strong> ผู้จัดการ ฝ่ายขาย ฝ่ายปฏิบัติการ
 <strong>tool ที่เกี่ยวข้อง</strong> <code>query-datasource</code> (VizQL Data Service)</p>
@@ -78,7 +78,7 @@
 <p><strong>ข้อควรระวัง</strong> ขอ aggregate เสมอ "ขอ order ทั้งหมด" จะพยายามดึงข้อมูลระดับแถวจน timeout หรือ context เต็ม ตัวกรองวันที่ผิดพลาดบ่อยที่สุด ตรวจว่าโมเดลใช้ปฏิทินบัญชีที่ถูกต้อง ช่วงแรกควรเทียบตัวเลขกับ dashboard ทุกครั้ง</p>
 <div class="callout tip" markdown="0"><div class="callout-title">กำหนดความคาดหวังใน system prompt</div><p>ใน portal ที่สร้างเอง (ส่วนที่ 6) สั่งโมเดลให้ระบุ data source และตัวกรองเสมอ ใน Claude Desktop ใช้ project instruction ทำให้ทุกคำตอบตรวจสอบย้อนหลังได้</p></div>
 
-<h2 id="3-dashboard">3. สรุปผู้บริหารจาก dashboard <span class="level mid">ระดับกลาง</span></h2>
+<h2 id="3-dashboard">📝 3. สรุปผู้บริหารจาก dashboard <span class="level mid">ระดับกลาง</span></h2>
 <p><strong>เป้าหมายทางธุรกิจ</strong> เปลี่ยน dashboard รายสัปดาห์เป็นสรุปเขียนสำหรับผู้บริหาร
 <strong>ใครใช้</strong> นักวิเคราะห์ที่เตรียมรายงานให้ผู้บริหาร
 <strong>tool ที่เกี่ยวข้อง</strong> <code>get-view-data</code>, <code>get-view-image</code>, <code>query-datasource</code></p>
@@ -96,7 +96,7 @@
 </ol>
 <p><strong>ผลลัพธ์ที่คาดหวัง</strong> เรื่องเล่าสั้นๆ พร้อมตัวเลขจริง ทิศทางการเปลี่ยนแปลง และประโยค "สิ่งที่ต้องจับตา"</p>
 <p><strong>ข้อควรระวัง</strong> <code>get-view-data</code> คืนข้อมูลสรุปเบื้องหลังของ sheet บน dashboard ที่หนาแน่นให้เลือก sheet เฉพาะ ภาพมีประโยชน์กับคำถามเรื่อง layout แต่กิน token มาก อย่าปล่อยให้โมเดลแต่งสาเหตุ สั่งให้แยก "อะไรเปลี่ยน" ออกจาก "สาเหตุที่เป็นไปได้"</p>
-<h2 id="4-admin-insight">4. Admin insight และงานดูแลระบบ <span class="level mid">ระดับกลาง</span></h2>
+<h2 id="4-admin-insight">🧹 4. Admin insight และงานดูแลระบบ <span class="level mid">ระดับกลาง</span></h2>
 <p><strong>เป้าหมายทางธุรกิจ</strong> รักษา server ให้สะอาดและใช้ลิขสิทธิ์คุ้มค่า โดยไม่ต้องเขียน SQL กับ repository
 <strong>ใครใช้</strong> ผู้ดูแล Tableau Server
 <strong>tool ที่เกี่ยวข้อง</strong> tool group admin (<code>get-stale-content-report</code>, <code>list-extract-refresh-tasks</code>, รายการผู้ใช้และสิทธิ์), <code>list-workbooks</code></p>
@@ -114,7 +114,7 @@
 </ol>
 <p><strong>ผลลัพธ์ที่คาดหวัง</strong> สองตารางและร่างอีเมลที่คัดลอกไปใช้ได้</p>
 <p><strong>ข้อควรระวัง</strong> tool ด้าน admin ต้องการตัวตนระดับ site หรือ server administrator เมื่อใช้ OAuth คือ admin ที่ล็อกอิน เมื่อใช้ Direct Trust ตั้ง <code>JWT_SUB_CLAIM</code> เป็น admin ได้เฉพาะในระบบที่ล็อกดาวน์แล้วเท่านั้น พิจารณาใช้ <code>INCLUDE_TOOLS</code> ให้ admin ได้ group admin ส่วนคนอื่นได้ group <code>datasource</code> โดยรัน MCP สองตัวคนละพอร์ต</p>
-<h2 id="5-agentic-lineage">5. การวิเคราะห์หลายขั้นแบบ agentic พร้อม lineage <span class="level adv">ขั้นสูง</span></h2>
+<h2 id="5-agentic-lineage">🧠 5. การวิเคราะห์หลายขั้นแบบ agentic พร้อม lineage <span class="level adv">ขั้นสูง</span></h2>
 <p><strong>เป้าหมายทางธุรกิจ</strong> สืบค้นคำถามทางธุรกิจตั้งแต่ต้นจนจบ: หาแหล่งข้อมูลที่ถูกต้อง query หลายมุม ตรวจว่าตัวเลขมาจากไหน แล้วให้ข้อเสนอแนะ
 <strong>ใครใช้</strong> นักวิเคราะห์อาวุโส consultant ที่ทำ proof of concept
 <strong>tool ที่เกี่ยวข้อง</strong> ทั้งหมดข้างต้น บวก tool ด้าน lineage/metadata รันใน Claude Code, Gemini CLI หรือ portal ที่สร้างเอง ซึ่งโมเดลเรียก tool ได้หลายขั้นต่อหนึ่งรอบ</p>
@@ -136,7 +136,7 @@
     <nav class="pagernav"><a class="pager prev" href="04-installation.html"><small>ก่อนหน้า</small><span>การติดตั้งและตั้งค่า</span></a><a class="pager next" href="06-web-ui-wrapper.html"><small>ถัดไป</small><span>ขั้นสูง: สร้าง Web UI ครอบ Tableau Server</span></a></nav>
     <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">หน้าแรก</a></footer>
   </main>
-  <aside class="onpage"><div class="onpage-title">ในหน้านี้</div><ul><li><a href="#1">1. ค้นหาและทำความเข้าใจเนื้อหา พื้นฐาน</a><ul><li><a href="#prompt">ตัวอย่าง prompt</a></li><li><a href="#_1">ขั้นตอน</a></li></ul></li><li><a href="#2-data-source">2. ถามคำถามกับ data source พื้นฐาน</a><ul><li><a href="#prompt_1">ตัวอย่าง prompt</a></li><li><a href="#_2">ขั้นตอน</a></li></ul></li><li><a href="#3-dashboard">3. สรุปผู้บริหารจาก dashboard ระดับกลาง</a><ul><li><a href="#prompt_2">ตัวอย่าง prompt</a></li><li><a href="#_3">ขั้นตอน</a></li></ul></li><li><a href="#4-admin-insight">4. Admin insight และงานดูแลระบบ ระดับกลาง</a><ul><li><a href="#prompt_3">ตัวอย่าง prompt</a></li><li><a href="#_4">ขั้นตอน</a></li></ul></li><li><a href="#5-agentic-lineage">5. การวิเคราะห์หลายขั้นแบบ agentic พร้อม lineage ขั้นสูง</a><ul><li><a href="#prompt_4">ตัวอย่าง prompt</a></li><li><a href="#_5">ขั้นตอน</a></li></ul></li></ul></aside>
+  <aside class="onpage"><div class="onpage-title">ในหน้านี้</div><ul><li><a href="#1">🔍 1. ค้นหาและทำความเข้าใจเนื้อหา พื้นฐาน</a><ul><li><a href="#prompt">ตัวอย่าง prompt</a></li><li><a href="#_1">ขั้นตอน</a></li></ul></li><li><a href="#2-data-source">💬 2. ถามคำถามกับ data source พื้นฐาน</a><ul><li><a href="#prompt_1">ตัวอย่าง prompt</a></li><li><a href="#_2">ขั้นตอน</a></li></ul></li><li><a href="#3-dashboard">📝 3. สรุปผู้บริหารจาก dashboard ระดับกลาง</a><ul><li><a href="#prompt_2">ตัวอย่าง prompt</a></li><li><a href="#_3">ขั้นตอน</a></li></ul></li><li><a href="#4-admin-insight">🧹 4. Admin insight และงานดูแลระบบ ระดับกลาง</a><ul><li><a href="#prompt_3">ตัวอย่าง prompt</a></li><li><a href="#_4">ขั้นตอน</a></li></ul></li><li><a href="#5-agentic-lineage">🧠 5. การวิเคราะห์หลายขั้นแบบ agentic พร้อม lineage ขั้นสูง</a><ul><li><a href="#prompt_4">ตัวอย่าง prompt</a></li><li><a href="#_5">ขั้นตอน</a></li></ul></li></ul></aside>
 </div>
 <button class="totop" title="กลับขึ้นบน" aria-label="กลับขึ้นบน">↑</button>
 <script src="../assets/app.js"></script>

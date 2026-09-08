@@ -1,4 +1,4 @@
-[🏠 หน้าแรก](../../README.md) · [◀ ก่อนหน้า: สิ่งที่ต้องเตรียม](03-prerequisites.md) · [ถัดไป: 5 use case ยอดนิยม ▶](05-use-cases.md) · [🇺🇸 English](../en/04-installation.md)
+[🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: สิ่งที่ต้องเตรียม](03-prerequisites.md) · [ถัดไป: 5 use case ยอดนิยม ▶](05-use-cases.md) · [🇺🇸 English](../en/04-installation.md)
 
 ---
 
@@ -8,7 +8,7 @@
 
 > แบ่งเป็นสี่ส่วน: เตรียม Tableau Server, รัน Tableau MCP (เริ่มจาก stdio บนเครื่องตัวเอง แล้วค่อยเป็น HTTP server ใช้ร่วมกัน), เชื่อม AI client แต่ละตัว และตรวจสอบ ทุกคำสั่งใช้ชื่อตัวอย่าง ให้แทนด้วยค่าของคุณเอง
 
-## 4.1 เตรียม Tableau Server
+## 🛠️ 4.1 เตรียม Tableau Server
 
 ### สร้าง Personal Access Token (สำหรับทดสอบบนเครื่องตัวเอง)
 
@@ -54,7 +54,7 @@ tsm configuration set -k oauth.allowed_redirect_uri_hosts -v tableau-mcp.demo-co
 tsm pending-changes apply
 ```
 
-## 4.2 ติดตั้งและรัน Tableau MCP
+## 📦 4.2 ติดตั้งและรัน Tableau MCP
 
 ### ทางเลือก A – stdio บนเครื่องตัวเอง (5 นาที)
 
@@ -304,7 +304,7 @@ INCLUDE_TAGS=ai-ready
 
 tool group ที่ใช้บ่อย: `datasource` (metadata + query), `workbook`, `view`, `pulse` (ควร exclude บน Server), `admin` รายการเต็มอยู่ใน `src/tools/web/toolName.ts` ของ repo
 
-## 4.3 เชื่อม AI client แต่ละตัว
+## 🤖 4.3 เชื่อม AI client แต่ละตัว
 
 ### Claude Desktop
 
@@ -458,7 +458,7 @@ ChatGPT รันบนคลาวด์ของ OpenAI จึงต้อง�
 >
 > การรองรับ MCP ของ Copilot Studio และช่องกรอก authentication ยังเปลี่ยนแปลงอยู่ ตรวจ Microsoft Learn › Copilot Studio › "Add an MCP server" สำหรับขั้นตอนปัจจุบัน
 
-## 4.4 ตรวจสอบการเชื่อมต่อ
+## 🧪 4.4 ตรวจสอบการเชื่อมต่อ
 
 ### จากเครื่องที่รัน MCP
 
@@ -533,6 +533,6 @@ curl -s -X POST http://127.0.0.1:3927/tableau-mcp \
 
 </details>
 
-[🏠 หน้าแรก](../../README.md) · [◀ ก่อนหน้า: สิ่งที่ต้องเตรียม](03-prerequisites.md) · [ถัดไป: 5 use case ยอดนิยม ▶](05-use-cases.md) · [🇺🇸 English](../en/04-installation.md)
+[🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: สิ่งที่ต้องเตรียม](03-prerequisites.md) · [ถัดไป: 5 use case ยอดนิยม ▶](05-use-cases.md) · [🇺🇸 English](../en/04-installation.md)
 
 <sub>ส่วนที่ 4 จาก 9 · Created by The Narit Lab</sub>

@@ -8,7 +8,7 @@
 
 > Tableau MCP inherits Tableau's governance model, but only if you configure it that way. This checklist is the one to walk through with a customer's security team before go-live.
 
-## Deployment
+## 🚀 Deployment
 
 - Start with **stdio + PAT on one laptop** for a demo, then move to a **dedicated VM with OAuth** for anything shared. Do not skip to "on the Tableau node" just because it is convenient.
 - **Pin versions** of the npm package or container image. Upgrade on a schedule after reading the release notes: tool names and behaviour change between minor versions.
@@ -16,14 +16,14 @@
 - Run it as a **non-root service user** with a read-only file system except the log directory.
 - Set `PRODUCT_TELEMETRY_ENABLED=false` if your policy forbids outbound product telemetry.
 
-## Identity and access
+## 🔐 Identity and access
 
 - Prefer **OAuth** (2025.3+) so every tool call is attributed to a named user and RLS applies.
 - If you must use a service identity (Direct Trust or PAT), give it the **lowest site role that works** and only the data sources it needs. Never a Server Administrator.
 - Document which identity each MCP instance uses. Two instances, one for admins and one for analysts with different `INCLUDE_TOOLS`, is a clean pattern.
 - Rotate PATs and Connected App secrets on the same schedule as other service credentials.
 
-## Data governance
+## 🗄️ Data governance
 
 - **Certify** the published data sources you expose and add **field descriptions and aliases**; this is the "prompt" the model reads.
 - Use `INCLUDE_TAGS=ai-ready` (or a project) so only reviewed content is visible to the AI.
@@ -31,20 +31,20 @@
 - Classify data. Anything the LLM vendor must not see should not be queryable through the MCP instance that uses that vendor.
 - Keep **Pulse excluded** on Server; it is a Cloud feature and only produces errors.
 
-## Prompting and model behaviour
+## 💬 Prompting and model behaviour
 
 - Give the model a system instruction that says: state the data source and filters; never invent numbers; prefer aggregates; ask when a field is ambiguous.
 - Cap tool rounds per turn (8 is a good default) and set timeouts.
 - Validate the first few answers against a dashboard; write down the fiscal calendar and any business definitions the model must use.
 
-## Operations
+## 📈 Operations
 
 - Enable `ENABLED_LOGGERS=fileLogger` and forward the logs. Correlate with the portal's `audit.jsonl` and Tableau Server's `http_requests` for a complete trail.
 - Monitor: process up, `ping` succeeds, 401/403 rate, p95 tool latency, token spend per user.
 - Know the **break-glass switch**: `BREAK_GLASS_DISABLE_GLOBALLY=true` keeps the service up but fails every tool call.
 - Plan for the **refresh-token limitation**: a restart forces users to reconnect. Restart in maintenance windows.
 
-## Security checklist
+## ✅ Security checklist
 
 | # | Check | Done |
 |---|---|---|

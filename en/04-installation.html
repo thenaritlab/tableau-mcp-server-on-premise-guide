@@ -36,10 +36,10 @@
   <main class="content">
     <article class="doc-body" data-copy="Copy" data-copied="Copied" data-slug="04-installation">
 
-<h1 id="installation-and-configuration">Installation and configuration</h1><div class="doc-meta"><span class="chip">Section 4 of 9</span><span class="chip">6 min read</span></div>
+<h1 id="installation-and-configuration">Installation and configuration</h1><div class="doc-meta"><span class="chip">Section 4 of 9</span><span class="chip">7 min read</span></div>
 <p class="lead">Four parts: prepare Tableau Server, run Tableau MCP (local stdio first, then a shared HTTP server), connect each AI client, and verify. Every command uses placeholder names; replace them with your own.</p>
 
-<h2 id="41-prepare-tableau-server">4.1 Prepare Tableau Server</h2>
+<h2 id="41-prepare-tableau-server">🛠️ 4.1 Prepare Tableau Server</h2>
 <h3 id="create-a-personal-access-token-for-local-testing">Create a Personal Access Token (for local testing)</h3>
 <ol class="steps">
 <li><strong>Sign in to Tableau Server</strong> as the user the MCP server will act as. For a quick test that can be your own account; for anything shared use a dedicated user such as <code>svc-mcp-reader</code>.</li>
@@ -73,7 +73,7 @@ curl -s -k -X POST https://demo-server.local/api/3.24/auth/signin \
 tsm configuration set -k oauth.allowed_redirect_uri_hosts -v tableau-mcp.demo-company.local
 tsm pending-changes apply</code></pre>
 
-<h2 id="42-install-and-run-tableau-mcp">4.2 Install and run Tableau MCP</h2>
+<h2 id="42-install-and-run-tableau-mcp">📦 4.2 Install and run Tableau MCP</h2>
 <h3 id="option-a-local-stdio-5-minutes">Option A – local stdio (5 minutes)</h3>
 <p>Nothing to install: the AI client runs <code>npx -y @tableau/mcp-server@latest</code> and passes the environment variables. You only need Node.js 18+ on PATH. Jump to 4.3 and use the <em>stdio</em> config for your client.</p>
 <p>To check Node.js:</p>
@@ -271,7 +271,7 @@ INCLUDE_TAGS=ai-ready
 #INCLUDE_TOOLS=datasource</code></pre>
 
 <p>Tool groups you will use most: <code>datasource</code> (metadata + query), <code>workbook</code>, <code>view</code>, <code>pulse</code> (exclude on Server), <code>admin</code>. The full list is in <code>src/tools/web/toolName.ts</code> in the repo.</p>
-<h2 id="43-connect-each-ai-client">4.3 Connect each AI client</h2>
+<h2 id="43-connect-each-ai-client">🤖 4.3 Connect each AI client</h2>
 <h3 id="claude-desktop">Claude Desktop</h3>
 <ol class="steps">
 <li><strong>Open the config file</strong> Claude Desktop › <em>Settings › Developer › Edit Config</em>. Paths: Windows <code>%APPDATA%\Claude\claude_desktop_config.json</code>, macOS <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>.</li>
@@ -388,7 +388,7 @@ claude mcp list</code></pre>
 <p>Open Copilot Chat in <em>Agent</em> mode; the Tableau tools appear in the tools picker.</p>
 <div class="callout verify" markdown="0"><div class="callout-title">Verify with current docs</div><p>Copilot Studio's MCP support and the exact authentication form fields are evolving. Check Microsoft Learn › Copilot Studio › "Add an MCP server" for the current steps.</p></div>
 
-<h2 id="44-verify-the-connection">4.4 Verify the connection</h2>
+<h2 id="44-verify-the-connection">🧪 4.4 Verify the connection</h2>
 <h3 id="from-the-mcp-host">From the MCP host</h3>
 <pre data-lang="bash" data-file="curl-ping.sh"><code>curl -s -X POST http://127.0.0.1:3927/tableau-mcp \
   -H &#x27;accept: application/json, text/event-stream&#x27; \
@@ -489,7 +489,7 @@ claude mcp list</code></pre>
     <nav class="pagernav"><a class="pager prev" href="03-prerequisites.html"><small>Previous</small><span>Prerequisites</span></a><a class="pager next" href="05-use-cases.html"><small>Next</small><span>Top 5 use cases</span></a></nav>
     <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">Home</a></footer>
   </main>
-  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#41-prepare-tableau-server">4.1 Prepare Tableau Server</a><ul><li><a href="#create-a-personal-access-token-for-local-testing">Create a Personal Access Token (for local testing)</a></li><li><a href="#create-a-connected-app-for-direct-trust-or-the-portal">Create a Connected App (for Direct Trust or the portal)</a></li><li><a href="#allow-the-oauth-redirect-oauth-mode-only-20253">Allow the OAuth redirect (OAuth mode only, 2025.3+)</a></li></ul></li><li><a href="#42-install-and-run-tableau-mcp">4.2 Install and run Tableau MCP</a><ul><li><a href="#option-a-local-stdio-5-minutes">Option A – local stdio (5 minutes)</a></li><li><a href="#option-b-shared-http-server-with-docker-30-minutes">Option B – shared HTTP server with Docker (30 minutes)</a></li><li><a href="#option-c-shared-http-server-with-nodejs-and-systemd">Option C – shared HTTP server with Node.js and systemd</a></li><li><a href="#put-tls-and-an-allow-list-in-front-options-b-and-c">Put TLS and an allow-list in front (options B and C)</a></li><li><a href="#limit-what-the-ai-can-see-optional-but-recommended">Limit what the AI can see (optional but recommended)</a></li></ul></li><li><a href="#43-connect-each-ai-client">4.3 Connect each AI client</a><ul><li><a href="#claude-desktop">Claude Desktop</a></li><li><a href="#claude-code">Claude Code</a></li><li><a href="#chatgpt">ChatGPT</a></li><li><a href="#gemini-cli">Gemini CLI</a></li><li><a href="#microsoft-copilot">Microsoft Copilot</a></li></ul></li><li><a href="#44-verify-the-connection">4.4 Verify the connection</a><ul><li><a href="#from-the-mcp-host">From the MCP host</a></li><li><a href="#from-the-ai-client">From the AI client</a></li><li><a href="#common-errors-and-fixes">Common errors and fixes</a></li></ul></li></ul></aside>
+  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#41-prepare-tableau-server">🛠️ 4.1 Prepare Tableau Server</a><ul><li><a href="#create-a-personal-access-token-for-local-testing">Create a Personal Access Token (for local testing)</a></li><li><a href="#create-a-connected-app-for-direct-trust-or-the-portal">Create a Connected App (for Direct Trust or the portal)</a></li><li><a href="#allow-the-oauth-redirect-oauth-mode-only-20253">Allow the OAuth redirect (OAuth mode only, 2025.3+)</a></li></ul></li><li><a href="#42-install-and-run-tableau-mcp">📦 4.2 Install and run Tableau MCP</a><ul><li><a href="#option-a-local-stdio-5-minutes">Option A – local stdio (5 minutes)</a></li><li><a href="#option-b-shared-http-server-with-docker-30-minutes">Option B – shared HTTP server with Docker (30 minutes)</a></li><li><a href="#option-c-shared-http-server-with-nodejs-and-systemd">Option C – shared HTTP server with Node.js and systemd</a></li><li><a href="#put-tls-and-an-allow-list-in-front-options-b-and-c">Put TLS and an allow-list in front (options B and C)</a></li><li><a href="#limit-what-the-ai-can-see-optional-but-recommended">Limit what the AI can see (optional but recommended)</a></li></ul></li><li><a href="#43-connect-each-ai-client">🤖 4.3 Connect each AI client</a><ul><li><a href="#claude-desktop">Claude Desktop</a></li><li><a href="#claude-code">Claude Code</a></li><li><a href="#chatgpt">ChatGPT</a></li><li><a href="#gemini-cli">Gemini CLI</a></li><li><a href="#microsoft-copilot">Microsoft Copilot</a></li></ul></li><li><a href="#44-verify-the-connection">🧪 4.4 Verify the connection</a><ul><li><a href="#from-the-mcp-host">From the MCP host</a></li><li><a href="#from-the-ai-client">From the AI client</a></li><li><a href="#common-errors-and-fixes">Common errors and fixes</a></li></ul></li></ul></aside>
 </div>
 <button class="totop" title="Back to top" aria-label="Back to top">↑</button>
 <script src="../assets/app.js"></script>

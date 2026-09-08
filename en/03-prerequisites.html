@@ -39,7 +39,7 @@
 <h1 id="prerequisites">Prerequisites</h1><div class="doc-meta"><span class="chip">Section 3 of 9</span><span class="chip">4 min read</span></div>
 <p class="lead">Check these before you install anything. Most failed first attempts come from an expired PAT, a missing API-access permission, or a client that cannot reach the server.</p>
 
-<h2 id="version-matrix">Version matrix</h2>
+<h2 id="version-matrix">📋 Version matrix</h2>
 <table>
 <thead>
 <tr>
@@ -84,13 +84,13 @@
 </table>
 <div class="callout verify" markdown="0"><div class="callout-title">Verify with current docs</div><p>Node.js and Tableau MCP minimums move with each release. Check the <code>engines</code> field in the package and the enterprise deployment guide before you pin versions.</p></div>
 
-<h2 id="licensing">Licensing</h2>
+<h2 id="licensing">🪪 Licensing</h2>
 <ul>
 <li><strong>Tableau Server licence.</strong> Tableau MCP itself is open source (Apache 2.0) and free. Users who query through it consume a normal Tableau licence (Creator, Explorer or Viewer). A Viewer can read views; querying published data sources needs the data source permission "Connect".</li>
 <li><strong>Usage-based licensing (UBL).</strong> Running a shared identity (PAT or fixed <code>JWT_SUB_CLAIM</code>) for many people is only appropriate when your contract covers usage-based licensing. Otherwise use OAuth so each person is a named user.</li>
 <li><strong>LLM cost.</strong> Each AI vendor charges separately. Budget for tokens: a single "query the data source" turn can carry several thousand tokens of metadata.</li>
 </ul>
-<h2 id="ports">Ports</h2>
+<h2 id="ports">🔢 Ports</h2>
 <table>
 <thead>
 <tr>
@@ -133,7 +133,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="tableau-server-settings-and-permissions">Tableau Server settings and permissions</h2>
+<h2 id="tableau-server-settings-and-permissions">🛠️ Tableau Server settings and permissions</h2>
 <ol class="steps">
 <li><strong>REST API enabled</strong> It is on by default. Confirm with <code>tsm configuration get -k api.server.enabled</code>. If your organisation disabled it, set it to <code>true</code> and apply pending changes.</li>
 <li><strong>Personal Access Tokens allowed</strong> Site setting <em>Settings › General › Personal Access Tokens</em>. Server-wide: <code>tsm configuration get -k features.PersonalAccessTokensEnabled</code>.</li>
@@ -144,7 +144,7 @@
 <li><strong>OAuth redirect host (for OAuth mode)</strong> <code>tsm configuration set -k oauth.allowed_redirect_uri_hosts -v tableau-mcp.demo-company.local</code> then <code>tsm pending-changes apply</code>.</li>
 </ol>
 
-<h2 id="operating-system-for-the-mcp-host">Operating system for the MCP host</h2>
+<h2 id="operating-system-for-the-mcp-host">💻 Operating system for the MCP host</h2>
 <table>
 <thead>
 <tr>
@@ -171,7 +171,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="ai-clients">AI clients</h2>
+<h2 id="ai-clients">🤖 AI clients</h2>
 <table>
 <thead>
 <tr>
@@ -225,7 +225,7 @@
     <nav class="pagernav"><a class="pager prev" href="02-architecture.html"><small>Previous</small><span>Architecture</span></a><a class="pager next" href="04-installation.html"><small>Next</small><span>Installation and configuration</span></a></nav>
     <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">Home</a></footer>
   </main>
-  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#version-matrix">Version matrix</a></li><li><a href="#licensing">Licensing</a></li><li><a href="#ports">Ports</a></li><li><a href="#tableau-server-settings-and-permissions">Tableau Server settings and permissions</a></li><li><a href="#operating-system-for-the-mcp-host">Operating system for the MCP host</a></li><li><a href="#ai-clients">AI clients</a></li></ul></aside>
+  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#version-matrix">📋 Version matrix</a></li><li><a href="#licensing">🪪 Licensing</a></li><li><a href="#ports">🔢 Ports</a></li><li><a href="#tableau-server-settings-and-permissions">🛠️ Tableau Server settings and permissions</a></li><li><a href="#operating-system-for-the-mcp-host">💻 Operating system for the MCP host</a></li><li><a href="#ai-clients">🤖 AI clients</a></li></ul></aside>
 </div>
 <button class="totop" title="Back to top" aria-label="Back to top">↑</button>
 <script src="../assets/app.js"></script>

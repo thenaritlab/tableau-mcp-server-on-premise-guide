@@ -1,4 +1,4 @@
-[🏠 หน้าแรก](../../README.md) · [◀ ก่อนหน้า: ภาพรวม](01-overview.md) · [ถัดไป: สิ่งที่ต้องเตรียม ▶](03-prerequisites.md) · [🇺🇸 English](../en/02-architecture.md)
+[🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: ภาพรวม](01-overview.md) · [ถัดไป: สิ่งที่ต้องเตรียม ▶](03-prerequisites.md) · [🇺🇸 English](../en/02-architecture.md)
 
 ---
 
@@ -8,7 +8,7 @@
 
 > สามองค์ประกอบ สองช่วงการเชื่อมต่อ AI client คุยกับ Tableau MCP server ด้วยโปรโตคอล MCP ส่วน MCP server คุยกับ REST API ของ Tableau Server ผ่าน HTTPS ทุกอย่างที่อยู่ทางขวาของ MCP server คือระบบ on-premise ที่คุณมีอยู่แล้ว
 
-## มุมมององค์ประกอบ
+## 🧩 มุมมององค์ประกอบ
 
 ![fig-components](../assets/diagrams/fig-components.svg)
 
@@ -27,7 +27,7 @@
 >
 > ผลลัพธ์ของ tool (metadata และผล query) ถูกส่งไปยัง LLM ที่ client ใช้อยู่ หากโมเดลเป็น SaaS API สาธารณะ ข้อมูลนั้นออกจากเครือข่ายของคุณ ใช้ tool scoping, RLS และนโยบายจัดชั้นความลับข้อมูลเพื่อควบคุมว่าอะไร query ได้ ถ้าต้องการ on-premise ทั้งหมด ให้ชี้หน้าเว็บที่คุณสร้างเอง (ส่วนที่ 6) ไปยังโมเดลที่โฮสต์เอง
 
-## ทางเลือกการยืนยันตัวตน
+## 🔐 ทางเลือกการยืนยันตัวตน
 
 ![fig-auth](../assets/diagrams/fig-auth.svg)
 
@@ -42,7 +42,7 @@
 | ตั้งค่าเพิ่ม | ไม่มี | สร้างและเปิดใช้ Connected App | RSA key + `tsm` ตั้ง redirect host |
 | Row-level security | ตามเจ้าของ PAT | ตามผู้ใช้ใน `sub` | รายบุคคล อัตโนมัติ |
 
-## รูปแบบการติดตั้ง
+## 🚀 รูปแบบการติดตั้ง
 
 ![fig-deploy](../assets/diagrams/fig-deploy.svg)
 
@@ -83,6 +83,6 @@
 
 </details>
 
-[🏠 หน้าแรก](../../README.md) · [◀ ก่อนหน้า: ภาพรวม](01-overview.md) · [ถัดไป: สิ่งที่ต้องเตรียม ▶](03-prerequisites.md) · [🇺🇸 English](../en/02-architecture.md)
+[🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: ภาพรวม](01-overview.md) · [ถัดไป: สิ่งที่ต้องเตรียม ▶](03-prerequisites.md) · [🇺🇸 English](../en/02-architecture.md)
 
 <sub>ส่วนที่ 2 จาก 9 · Created by The Narit Lab</sub>

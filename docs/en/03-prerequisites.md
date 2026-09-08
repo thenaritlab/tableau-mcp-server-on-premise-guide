@@ -8,7 +8,7 @@
 
 > Check these before you install anything. Most failed first attempts come from an expired PAT, a missing API-access permission, or a client that cannot reach the server.
 
-## Version matrix
+## 📋 Version matrix
 
 | Component | Minimum | Recommended | Notes |
 |---|---|---|---|
@@ -23,13 +23,13 @@
 >
 > Node.js and Tableau MCP minimums move with each release. Check the `engines` field in the package and the enterprise deployment guide before you pin versions.
 
-## Licensing
+## 🪪 Licensing
 
 - **Tableau Server licence.** Tableau MCP itself is open source (Apache 2.0) and free. Users who query through it consume a normal Tableau licence (Creator, Explorer or Viewer). A Viewer can read views; querying published data sources needs the data source permission "Connect".
 - **Usage-based licensing (UBL).** Running a shared identity (PAT or fixed `JWT_SUB_CLAIM`) for many people is only appropriate when your contract covers usage-based licensing. Otherwise use OAuth so each person is a named user.
 - **LLM cost.** Each AI vendor charges separately. Budget for tokens: a single "query the data source" turn can carry several thousand tokens of metadata.
 
-## Ports
+## 🔢 Ports
 
 | From | To | Port | Purpose |
 |---|---|---|---|
@@ -39,7 +39,7 @@
 | Tableau Server | MCP host | 443 | OAuth redirect back to the embedded authorization server |
 | Portal (Section 6) | Tableau MCP | 3927 | Server-to-server, internal only |
 
-## Tableau Server settings and permissions
+## 🛠️ Tableau Server settings and permissions
 
 1. **REST API enabled** — It is on by default. Confirm with `tsm configuration get -k api.server.enabled`. If your organisation disabled it, set it to `true` and apply pending changes.
 2. **Personal Access Tokens allowed** — Site setting *Settings › General › Personal Access Tokens*. Server-wide: `tsm configuration get -k features.PersonalAccessTokensEnabled`.
@@ -49,7 +49,7 @@
 6. **Metadata API (optional)** — Improves lineage and search tools. Enable with `tsm maintenance metadata-services enable`.
 7. **OAuth redirect host (for OAuth mode)** — `tsm configuration set -k oauth.allowed_redirect_uri_hosts -v tableau-mcp.demo-company.local` then `tsm pending-changes apply`.
 
-## Operating system for the MCP host
+## 💻 Operating system for the MCP host
 
 | Scenario | OS | Notes |
 |---|---|---|
@@ -57,7 +57,7 @@
 | Shared HTTP | Linux (Rocky, Ubuntu, RHEL) | 1 vCPU / 1 GB RAM is enough for a team. Docker or Node 22 + systemd. |
 | On the Tableau node | Same OS as Tableau Server | Only if you cannot get a separate VM. Watch resource contention. |
 
-## AI clients
+## 🤖 AI clients
 
 | Client | Where it runs | Transport that works | Needs |
 |---|---|---|---|

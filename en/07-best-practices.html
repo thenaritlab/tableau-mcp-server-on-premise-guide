@@ -39,7 +39,7 @@
 <h1 id="best-practices-governance-and-security-checklist">Best practices, governance and security checklist</h1><div class="doc-meta"><span class="chip">Section 7 of 9</span><span class="chip">3 min read</span></div>
 <p class="lead">Tableau MCP inherits Tableau's governance model, but only if you configure it that way. This checklist is the one to walk through with a customer's security team before go-live.</p>
 
-<h2 id="deployment">Deployment</h2>
+<h2 id="deployment">🚀 Deployment</h2>
 <ul>
 <li>Start with <strong>stdio + PAT on one laptop</strong> for a demo, then move to a <strong>dedicated VM with OAuth</strong> for anything shared. Do not skip to "on the Tableau node" just because it is convenient.</li>
 <li><strong>Pin versions</strong> of the npm package or container image. Upgrade on a schedule after reading the release notes: tool names and behaviour change between minor versions.</li>
@@ -47,14 +47,14 @@
 <li>Run it as a <strong>non-root service user</strong> with a read-only file system except the log directory.</li>
 <li>Set <code>PRODUCT_TELEMETRY_ENABLED=false</code> if your policy forbids outbound product telemetry.</li>
 </ul>
-<h2 id="identity-and-access">Identity and access</h2>
+<h2 id="identity-and-access">🔐 Identity and access</h2>
 <ul>
 <li>Prefer <strong>OAuth</strong> (2025.3+) so every tool call is attributed to a named user and RLS applies.</li>
 <li>If you must use a service identity (Direct Trust or PAT), give it the <strong>lowest site role that works</strong> and only the data sources it needs. Never a Server Administrator.</li>
 <li>Document which identity each MCP instance uses. Two instances, one for admins and one for analysts with different <code>INCLUDE_TOOLS</code>, is a clean pattern.</li>
 <li>Rotate PATs and Connected App secrets on the same schedule as other service credentials.</li>
 </ul>
-<h2 id="data-governance">Data governance</h2>
+<h2 id="data-governance">🗄️ Data governance</h2>
 <ul>
 <li><strong>Certify</strong> the published data sources you expose and add <strong>field descriptions and aliases</strong>; this is the "prompt" the model reads.</li>
 <li>Use <code>INCLUDE_TAGS=ai-ready</code> (or a project) so only reviewed content is visible to the AI.</li>
@@ -62,20 +62,20 @@
 <li>Classify data. Anything the LLM vendor must not see should not be queryable through the MCP instance that uses that vendor.</li>
 <li>Keep <strong>Pulse excluded</strong> on Server; it is a Cloud feature and only produces errors.</li>
 </ul>
-<h2 id="prompting-and-model-behaviour">Prompting and model behaviour</h2>
+<h2 id="prompting-and-model-behaviour">💬 Prompting and model behaviour</h2>
 <ul>
 <li>Give the model a system instruction that says: state the data source and filters; never invent numbers; prefer aggregates; ask when a field is ambiguous.</li>
 <li>Cap tool rounds per turn (8 is a good default) and set timeouts.</li>
 <li>Validate the first few answers against a dashboard; write down the fiscal calendar and any business definitions the model must use.</li>
 </ul>
-<h2 id="operations">Operations</h2>
+<h2 id="operations">📈 Operations</h2>
 <ul>
 <li>Enable <code>ENABLED_LOGGERS=fileLogger</code> and forward the logs. Correlate with the portal's <code>audit.jsonl</code> and Tableau Server's <code>http_requests</code> for a complete trail.</li>
 <li>Monitor: process up, <code>ping</code> succeeds, 401/403 rate, p95 tool latency, token spend per user.</li>
 <li>Know the <strong>break-glass switch</strong>: <code>BREAK_GLASS_DISABLE_GLOBALLY=true</code> keeps the service up but fails every tool call.</li>
 <li>Plan for the <strong>refresh-token limitation</strong>: a restart forces users to reconnect. Restart in maintenance windows.</li>
 </ul>
-<h2 id="security-checklist">Security checklist</h2>
+<h2 id="security-checklist">✅ Security checklist</h2>
 <table>
 <thead>
 <tr>
@@ -161,7 +161,7 @@
     <nav class="pagernav"><a class="pager prev" href="06-web-ui-wrapper.html"><small>Previous</small><span>Advanced: build a custom Web UI wrapper</span></a><a class="pager next" href="08-faq-glossary.html"><small>Next</small><span>FAQ and glossary</span></a></nav>
     <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">Home</a></footer>
   </main>
-  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#deployment">Deployment</a></li><li><a href="#identity-and-access">Identity and access</a></li><li><a href="#data-governance">Data governance</a></li><li><a href="#prompting-and-model-behaviour">Prompting and model behaviour</a></li><li><a href="#operations">Operations</a></li><li><a href="#security-checklist">Security checklist</a></li></ul></aside>
+  <aside class="onpage"><div class="onpage-title">On this page</div><ul><li><a href="#deployment">🚀 Deployment</a></li><li><a href="#identity-and-access">🔐 Identity and access</a></li><li><a href="#data-governance">🗄️ Data governance</a></li><li><a href="#prompting-and-model-behaviour">💬 Prompting and model behaviour</a></li><li><a href="#operations">📈 Operations</a></li><li><a href="#security-checklist">✅ Security checklist</a></li></ul></aside>
 </div>
 <button class="totop" title="Back to top" aria-label="Back to top">↑</button>
 <script src="../assets/app.js"></script>

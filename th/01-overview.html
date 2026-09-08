@@ -39,7 +39,7 @@
 <h1 id="_1">ภาพรวม</h1><div class="doc-meta"><span class="chip">ส่วนที่ 1 จาก 9</span><span class="chip">อ่าน 3 นาที</span></div>
 <p class="lead">Tableau MCP ทำให้ผู้ช่วย AI อย่าง Claude, ChatGPT, Gemini หรือ Microsoft Copilot อ่านเนื้อหาบน Tableau Server และ query แหล่งข้อมูลที่เผยแพร่ (published data source) ของคุณได้ ผ่านช่องทางที่มีการกำกับดูแลและเคารพสิทธิ์ผู้ใช้ คู่มือนี้พาคุณตั้งแต่ทดสอบครั้งแรกบนเครื่องตัวเอง ไปจนถึงการติดตั้งแบบหลายผู้ใช้ที่ปลอดภัย และการสร้างหน้าเว็บของคุณเองครอบไว้อีกชั้น</p>
 
-<h2 id="tableau-mcp">Tableau MCP คืออะไร</h2>
+<h2 id="tableau-mcp">🔌 Tableau MCP คืออะไร</h2>
 <p>Model Context Protocol (MCP) คือมาตรฐานเปิดที่ให้แอปพลิเคชัน AI (เรียกว่า "MCP host" หรือ "client") เรียกใช้ <strong>tool</strong> ที่โปรแกรมภายนอก ("MCP server") เปิดให้ Tableau MCP คือ MCP server อย่างเป็นทางการของ Tableau เป็นแอป Node.js ขนาดเล็กที่:</p>
 <ul>
 <li>เปิด tool ชุดหนึ่งให้ AI เรียก เช่น <em>แสดงรายการ data source</em>, <em>ดู metadata ของฟิลด์</em>, <em>query data source</em>, <em>ค้นหาเนื้อหา</em>, <em>ดึงภาพ view</em>, <em>แสดงรายการ workbook</em>, <em>สั่ง refresh extract</em> และ tool ด้าน admin insight</li>
@@ -47,7 +47,7 @@
 <li>เข้าสู่ระบบ Tableau Server ด้วยข้อมูลรับรองที่คุณควบคุมเอง ได้แก่ Personal Access Token (PAT), Connected App (Direct Trust JWT) หรือบน Tableau Server 2025.3 ขึ้นไปใช้ OAuth ให้ผู้ใช้แต่ละคนทำงานในนามตัวเอง</li>
 </ul>
 <p>โมเดล AI ไม่เคยคุยกับฐานข้อมูลของคุณโดยตรง มันเห็นเฉพาะสิ่งที่ Tableau อนุญาตให้ผู้ใช้ที่ล็อกอินอยู่เห็น ซึ่งถูกกรองด้วยสิทธิ์ระดับ project สิทธิ์ของ data source และ row-level security</p>
-<h2 id="tableau-server-on-premise">ทำไมต้องใช้กับ Tableau Server on-premise</h2>
+<h2 id="tableau-server-on-premise">🏢 ทำไมต้องใช้กับ Tableau Server on-premise</h2>
 <table>
 <thead>
 <tr>
@@ -78,14 +78,14 @@
 </tr>
 </tbody>
 </table>
-<h2 id="_2">คู่มือนี้เหมาะกับใคร</h2>
+<h2 id="_2">👥 คู่มือนี้เหมาะกับใคร</h2>
 <ul>
 <li><strong>ผู้ดูแล Tableau Server</strong> ที่ต้องติดตั้งและทำให้ MCP server ปลอดภัย</li>
 <li><strong>Solution consultant และนักพัฒนา BI</strong> ที่จะสร้าง use case, prompt และเดโมบนนั้น</li>
 <li><strong>นักพัฒนา</strong> ที่ต้องการทำหน้าเว็บของตัวเองครอบ Tableau Server พร้อมช่องแชท AI</li>
 </ul>
 <p>คุณควรรู้พื้นฐาน Tableau Server อยู่แล้ว (site, project, published data source, permission) ไม่จำเป็นต้องมีประสบการณ์ MCP หรือการเชื่อมต่อ LLM มาก่อน</p>
-<h2 id="_3">โครงสร้างของคู่มือ</h2>
+<h2 id="_3">🗺️ โครงสร้างของคู่มือ</h2>
 <ol>
 <li><strong>สถาปัตยกรรม</strong> แสดงองค์ประกอบทั้งหมดและทางเลือกการยืนยันตัวตนสามแบบ</li>
 <li><strong>สิ่งที่ต้องเตรียม</strong> รายการเวอร์ชัน พอร์ต และสิทธิ์</li>
@@ -101,7 +101,7 @@
     <nav class="pagernav"><span></span><a class="pager next" href="02-architecture.html"><small>ถัดไป</small><span>สถาปัตยกรรม</span></a></nav>
     <footer class="footer"><span>Created by The Narit Lab</span><a href="../index.html">หน้าแรก</a></footer>
   </main>
-  <aside class="onpage"><div class="onpage-title">ในหน้านี้</div><ul><li><a href="#tableau-mcp">Tableau MCP คืออะไร</a></li><li><a href="#tableau-server-on-premise">ทำไมต้องใช้กับ Tableau Server on-premise</a></li><li><a href="#_2">คู่มือนี้เหมาะกับใคร</a></li><li><a href="#_3">โครงสร้างของคู่มือ</a></li></ul></aside>
+  <aside class="onpage"><div class="onpage-title">ในหน้านี้</div><ul><li><a href="#tableau-mcp">🔌 Tableau MCP คืออะไร</a></li><li><a href="#tableau-server-on-premise">🏢 ทำไมต้องใช้กับ Tableau Server on-premise</a></li><li><a href="#_2">👥 คู่มือนี้เหมาะกับใคร</a></li><li><a href="#_3">🗺️ โครงสร้างของคู่มือ</a></li></ul></aside>
 </div>
 <button class="totop" title="กลับขึ้นบน" aria-label="กลับขึ้นบน">↑</button>
 <script src="../assets/app.js"></script>

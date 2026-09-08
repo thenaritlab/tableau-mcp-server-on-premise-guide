@@ -1,4 +1,4 @@
-[🏠 หน้าแรก](../../README.md) · [◀ ก่อนหน้า: 5 use case ยอดนิยม](05-use-cases.md) · [ถัดไป: แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย ▶](07-best-practices.md) · [🇺🇸 English](../en/06-web-ui-wrapper.md)
+[🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: 5 use case ยอดนิยม](05-use-cases.md) · [ถัดไป: แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย ▶](07-best-practices.md) · [🇺🇸 English](../en/06-web-ui-wrapper.md)
 
 ---
 
@@ -8,24 +8,34 @@
 
 > "หน้ากาก" ที่วางไว้หน้า Tableau Server: ผู้ใช้ล็อกอินเข้า portal ของคุณ แชทกับ AI ที่ query Tableau ผ่าน MCP และเห็น dashboard แบบฝังได้ตามต้องการ ผู้ใช้ไม่มีทางรู้ URL ของ server, โทเคน หรือ ID ของ data source และทุกคำถามถูกบันทึก
 
-## วัตถุประสงค์
+## 🎯 วัตถุประสงค์
 
 - **ซ่อนรายละเอียดการเชื่อมต่อ** URL ของ server, secret ของ PAT / Connected App และ endpoint ของ MCP อยู่เฉพาะใน environment ของ portal
 - **ล็อกอินครั้งเดียว** portal ยืนยันตัวตนผู้ใช้ (เดโม: ผู้ใช้จาก env; production: SSO / LDAP ของคุณ) แล้วส่งตัวตนให้โมเดลเป็นบริบท
 - **เลือกโมเดลได้เอง** ตัวอย่างใช้ Anthropic API การเปลี่ยนเป็น OpenAI, Gemini หรือโมเดลที่โฮสต์เองแก้แค่ฟังก์ชันเดียว
 - **ตรวจสอบย้อนหลังได้** ทุกรอบแชทบันทึกว่าใครถามอะไร tool ไหนถูกเรียก และใช้เวลาเท่าไร
 
-## สถาปัตยกรรมอ้างอิง
+## 🖼️ หน้าตาของ portal เมื่อเสร็จแล้ว
+
+![portal-mockup](../assets/diagrams/portal-mockup.svg)
+
+*รูปที่ 4 portal ขณะใช้งาน: ช่องแชทด้านซ้าย (คำตอบระบุ data source และตัวกรอง พร้อมแสดงว่า MCP tool ใดถูกเรียก) และ dashboard ของ Tableau ฝังอยู่ด้านขวา ล็อกอินเงียบๆ ในนามผู้ใช้คนเดียวกัน*
+
+![portal-flow](../assets/diagrams/portal-flow.svg)
+
+*รูปที่ 5 หน้าล็อกอิน และ 6 สิ่งที่เกิดขึ้นหลังหน้ากากในการแชทหนึ่งรอบ*
+
+## 🧩 สถาปัตยกรรมอ้างอิง
 
 ![fig-portal](../assets/diagrams/fig-portal.svg)
 
-*รูปที่ 4 portal เป็นองค์ประกอบเดียวที่ถือข้อมูลรับรอง เบราว์เซอร์เห็นแค่ cookie โมเดลเห็นแค่ผลลัพธ์ของ tool*
+*รูปที่ 6 portal เป็นองค์ประกอบเดียวที่ถือข้อมูลรับรอง เบราว์เซอร์เห็นแค่ cookie โมเดลเห็นแค่ผลลัพธ์ของ tool*
 
 **Tech stack** Node.js 22, Express 4, `@modelcontextprotocol/sdk` (MCP client), `@anthropic-ai/sdk`, React 18 กับ Vite, `jsonwebtoken` สำหรับ session และ embed token ของ Connected App, `helmet` และ `express-rate-limit` สำหรับความปลอดภัยขั้นพื้นฐาน
 
 **ทำไม portal คุยกับ Tableau MCP ผ่าน HTTP** MCP โปรเซสเดียวรองรับคำขอจาก portal ได้หลายรายการ portal เปิด MCP client อายุสั้นต่อหนึ่งรอบแชท แสดงรายการ tool ให้โมเดลเรียก แล้วปิด รัน Tableau MCP ด้วย Direct Trust (service identity) หรือ OAuth + `AUTH=direct-trust` กับ `JWT_SUB_CLAIM={OAUTH_USERNAME}` เมื่อต้องการ RLS รายบุคคลจาก portal
 
-## โครงสร้างโปรเจกต์
+## 📁 โครงสร้างโปรเจกต์
 
 ```text
 tableau-ai-portal/
@@ -43,7 +53,7 @@ tableau-ai-portal/
     └── EmbeddedView.jsx ← ฝัง dashboard (ไม่บังคับ)
 ```
 
-## ทีละขั้นตอน
+## 👣 ทีละขั้นตอน
 
 1. **รัน Tableau MCP ในโหมด HTTP** — บนเครื่องเดียวกันหรือ address ภายใน ใช้ `.env` แบบ Direct Trust จากส่วน 4.2 พร้อม `DANGEROUSLY_DISABLE_OAUTH=true` *ได้เฉพาะเพราะ* portal เป็น client เดียวและพอร์ต bind กับ localhost
 2. **สร้างโปรเจกต์**
@@ -117,7 +127,7 @@ LLM_MODEL=claude-sonnet-4-6
 DEMO_USERS=alice:alice-pass:analyst,bob:bob-pass:manager
 ```
 
-3. **Backend** — — ตัวกลาง อ่านคอมเมนต์ในโค้ด: ส่วนที่ 1–6 ตรงกับกล่องในรูปที่ 4
+3. **Backend** — — ตัวกลาง อ่านคอมเมนต์ในโค้ด: ส่วนที่ 1–6 ตรงกับกล่องในรูปที่ 6
 
 **`wrapper/server.js`**
 
@@ -447,7 +457,7 @@ export default function EmbeddedView({ viewPath }) {   // e.g. "SalesOverview/Da
 
 `/api/chat` พึ่งพาแค่สามอย่าง: รายการ tool, ฟังก์ชัน "เรียกโมเดล" และฟังก์ชัน "เรียก tool" หากใช้ OpenAI ให้แทน `anthropic.messages.create` ด้วย `openai.chat.completions.create` และแปลง `tools` เป็นรูปแบบ `function` สำหรับ Gemini ใช้ `functionDeclarations` สำหรับโมเดลที่โฮสต์เองใช้ endpoint ที่เข้ากันได้กับ OpenAI ใดก็ได้ ส่วนวงจรและโค้ด audit ไม่ต้องแก้
 
-## ข้อพิจารณาด้านความปลอดภัย
+## 🔒 ข้อพิจารณาด้านความปลอดภัย
 
 | ด้าน | ตัวอย่างทำอะไร | ต้องเพิ่มอะไรสำหรับ production |
 |---|---|---|
@@ -483,6 +493,6 @@ export default function EmbeddedView({ viewPath }) {   // e.g. "SalesOverview/Da
 
 </details>
 
-[🏠 หน้าแรก](../../README.md) · [◀ ก่อนหน้า: 5 use case ยอดนิยม](05-use-cases.md) · [ถัดไป: แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย ▶](07-best-practices.md) · [🇺🇸 English](../en/06-web-ui-wrapper.md)
+[🏠 หน้าแรก](../../README.th.md) · [◀ ก่อนหน้า: 5 use case ยอดนิยม](05-use-cases.md) · [ถัดไป: แนวปฏิบัติที่ดี การกำกับดูแล และรายการตรวจสอบความปลอดภัย ▶](07-best-practices.md) · [🇺🇸 English](../en/06-web-ui-wrapper.md)
 
 <sub>ส่วนที่ 6 จาก 9 · Created by The Narit Lab</sub>

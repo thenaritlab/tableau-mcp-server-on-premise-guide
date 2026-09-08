@@ -8,7 +8,7 @@
 
 > Four parts: prepare Tableau Server, run Tableau MCP (local stdio first, then a shared HTTP server), connect each AI client, and verify. Every command uses placeholder names; replace them with your own.
 
-## 4.1 Prepare Tableau Server
+## 🛠️ 4.1 Prepare Tableau Server
 
 ### Create a Personal Access Token (for local testing)
 
@@ -54,7 +54,7 @@ tsm configuration set -k oauth.allowed_redirect_uri_hosts -v tableau-mcp.demo-co
 tsm pending-changes apply
 ```
 
-## 4.2 Install and run Tableau MCP
+## 📦 4.2 Install and run Tableau MCP
 
 ### Option A – local stdio (5 minutes)
 
@@ -304,7 +304,7 @@ INCLUDE_TAGS=ai-ready
 
 Tool groups you will use most: `datasource` (metadata + query), `workbook`, `view`, `pulse` (exclude on Server), `admin`. The full list is in `src/tools/web/toolName.ts` in the repo.
 
-## 4.3 Connect each AI client
+## 🤖 4.3 Connect each AI client
 
 ### Claude Desktop
 
@@ -458,7 +458,7 @@ Open Copilot Chat in *Agent* mode; the Tableau tools appear in the tools picker.
 >
 > Copilot Studio's MCP support and the exact authentication form fields are evolving. Check Microsoft Learn › Copilot Studio › "Add an MCP server" for the current steps.
 
-## 4.4 Verify the connection
+## 🧪 4.4 Verify the connection
 
 ### From the MCP host
 

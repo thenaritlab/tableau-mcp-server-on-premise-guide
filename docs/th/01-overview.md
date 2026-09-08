@@ -1,4 +1,4 @@
-[🏠 หน้าแรก](../../README.md) · [ถัดไป: สถาปัตยกรรม ▶](02-architecture.md) · [🇺🇸 English](../en/01-overview.md)
+[🏠 หน้าแรก](../../README.th.md) · [ถัดไป: สถาปัตยกรรม ▶](02-architecture.md) · [🇺🇸 English](../en/01-overview.md)
 
 ---
 
@@ -8,7 +8,7 @@
 
 > Tableau MCP ทำให้ผู้ช่วย AI อย่าง Claude, ChatGPT, Gemini หรือ Microsoft Copilot อ่านเนื้อหาบน Tableau Server และ query แหล่งข้อมูลที่เผยแพร่ (published data source) ของคุณได้ ผ่านช่องทางที่มีการกำกับดูแลและเคารพสิทธิ์ผู้ใช้ คู่มือนี้พาคุณตั้งแต่ทดสอบครั้งแรกบนเครื่องตัวเอง ไปจนถึงการติดตั้งแบบหลายผู้ใช้ที่ปลอดภัย และการสร้างหน้าเว็บของคุณเองครอบไว้อีกชั้น
 
-## Tableau MCP คืออะไร
+## 🔌 Tableau MCP คืออะไร
 
 Model Context Protocol (MCP) คือมาตรฐานเปิดที่ให้แอปพลิเคชัน AI (เรียกว่า "MCP host" หรือ "client") เรียกใช้ **tool** ที่โปรแกรมภายนอก ("MCP server") เปิดให้ Tableau MCP คือ MCP server อย่างเป็นทางการของ Tableau เป็นแอป Node.js ขนาดเล็กที่:
 
@@ -18,7 +18,7 @@ Model Context Protocol (MCP) คือมาตรฐานเปิดที่
 
 โมเดล AI ไม่เคยคุยกับฐานข้อมูลของคุณโดยตรง มันเห็นเฉพาะสิ่งที่ Tableau อนุญาตให้ผู้ใช้ที่ล็อกอินอยู่เห็น ซึ่งถูกกรองด้วยสิทธิ์ระดับ project สิทธิ์ของ data source และ row-level security
 
-## ทำไมต้องใช้กับ Tableau Server on-premise
+## 🏢 ทำไมต้องใช้กับ Tableau Server on-premise
 
 | เหตุผล | ความหมายสำหรับคุณ |
 |---|---|
@@ -28,7 +28,7 @@ Model Context Protocol (MCP) คือมาตรฐานเปิดที่
 | ใช้ได้กับ client ที่รองรับ MCP ทุกตัว | Claude Desktop, Claude Code, ChatGPT, Gemini CLI, Copilot Studio, VS Code, Cursor และแอปที่เขียนเอง ใช้ server ตัวเดียวกัน |
 | ต่อยอดสู่ conversational analytics แบบฝังตัว | เมื่อ server ทำงานได้แล้ว การเชื่อมต่อเดียวกันนี้ใช้ขับเคลื่อนหน้าเว็บ portal พร้อมช่องแชท (ส่วนที่ 6) ได้ทันที |
 
-## คู่มือนี้เหมาะกับใคร
+## 👥 คู่มือนี้เหมาะกับใคร
 
 - **ผู้ดูแล Tableau Server** ที่ต้องติดตั้งและทำให้ MCP server ปลอดภัย
 - **Solution consultant และนักพัฒนา BI** ที่จะสร้าง use case, prompt และเดโมบนนั้น
@@ -36,7 +36,7 @@ Model Context Protocol (MCP) คือมาตรฐานเปิดที่
 
 คุณควรรู้พื้นฐาน Tableau Server อยู่แล้ว (site, project, published data source, permission) ไม่จำเป็นต้องมีประสบการณ์ MCP หรือการเชื่อมต่อ LLM มาก่อน
 
-## โครงสร้างของคู่มือ
+## 🗺️ โครงสร้างของคู่มือ
 
 1. **สถาปัตยกรรม** แสดงองค์ประกอบทั้งหมดและทางเลือกการยืนยันตัวตนสามแบบ
 2. **สิ่งที่ต้องเตรียม** รายการเวอร์ชัน พอร์ต และสิทธิ์
@@ -72,6 +72,6 @@ Model Context Protocol (MCP) คือมาตรฐานเปิดที่
 
 </details>
 
-[🏠 หน้าแรก](../../README.md) · [ถัดไป: สถาปัตยกรรม ▶](02-architecture.md) · [🇺🇸 English](../en/01-overview.md)
+[🏠 หน้าแรก](../../README.th.md) · [ถัดไป: สถาปัตยกรรม ▶](02-architecture.md) · [🇺🇸 English](../en/01-overview.md)
 
 <sub>ส่วนที่ 1 จาก 9 · Created by The Narit Lab</sub>
